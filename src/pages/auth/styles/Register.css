@@ -1,0 +1,133 @@
+.contenedor-register {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2em;
+  overflow: hidden;
+  z-index: 10;
+  width: 100%;
+}
+
+.form__register {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  width: 100%;
+  max-width: 70%;
+  padding: 1em 2em;
+  margin: 0 auto;
+  background-color: #ffffff7c;
+  border: 0.1em solid #ccc;
+  border-radius: 1em;
+  box-shadow: 0 0.4em 0.6em rgba(0, 0, 0, 0.1);
+  margin-top: 3em;
+}
+
+.register__title {
+  text-align: center;
+  color: rgb(19, 3, 67);
+  font-size: 2em;
+  margin-bottom: 0.7em;
+}
+
+.form_content{
+    display: flex;
+}
+
+.form_seccion{
+    width: 50%;
+    padding: 1em;
+}
+
+.label__form__register {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8em;
+  font-weight: 800;
+  color: #000000;
+}
+
+.span__form__register {
+  margin-bottom: 0.5em;
+}
+
+.input__form__register {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  padding: 0.4em;
+  font-size: 1em;
+  text-align: center;
+}
+
+.input__form__register input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1em;
+}
+
+.input__password {
+  text-align: center;
+  font-size: 1em;
+}
+
+.input__form__register img {
+  cursor: pointer;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: 0.5em;
+}
+
+.btn__form__register {
+  background-color: var(--blue2-color);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.25em;
+  padding: 0.8em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 50%;
+  margin: 1em auto 0 auto;
+}
+
+.btn__form__register:hover {
+  background-color: var(--blue-color);
+}
+
+.img__show {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 768px) {
+  .contenedor-bpa {
+    flex-direction: column;
+  }
+
+  .form__register {
+    gap: 0.3em;
+    width: 100%;
+  }
+
+  .input__password {
+    text-align: center;
+    width: 100%;
+  }
+
+  .register__title {
+    font-size: 1.5em;
+  }
+
+  .input__form__register {
+    font-size: 1em;
+  }
+}

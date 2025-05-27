@@ -1,0 +1,30 @@
+.alert-message {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    pointer-events: none;
+    animation: fadeInOut 3s forwards;
+    height: 6vh;
+  }
+  
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  

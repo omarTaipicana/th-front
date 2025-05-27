@@ -1,0 +1,115 @@
+.logo_navbar {
+  height: 4.5rem;
+  margin: 0;
+}
+
+.header_nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 5em;
+  background: linear-gradient(180deg, #011b5ecc, #016da3cc);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.principal__header__section {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  width: 100%;
+}
+.link_content {
+  width: 90%;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: left;
+}
+
+.login_content {
+  width: 10%;
+  display: flex;
+  gap: 0.5em;
+}
+
+.link_content a {
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.link_content a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #00a8ff;
+  transition: width 0.3s ease;
+}
+
+.link_content a:hover {
+  color: #00a8ff;
+  font-weight: bold;
+}
+
+.link_content a:hover::after {
+  width: 100%;
+}
+
+.principal__header__section .user__icon {
+  width: 2m;
+  height: 3em;
+  border-radius: 50%;
+  border: 0.125em solid #c3e6cb;
+  transition: transform 0.3s ease;
+}
+
+.principal__header__section .user__icon:hover {
+  transform: scale(1.1);
+}
+
+.principal__header__section button {
+  height: 30%;
+  margin: auto;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 0.3125em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.principal__header__section button:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 48em) {
+  header {
+    padding: 1em;
+  }
+
+  .principal__header__section {
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .principal__header__section button {
+    width: 100%;
+  }
+}
