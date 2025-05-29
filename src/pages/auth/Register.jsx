@@ -156,7 +156,7 @@ const Register = () => {
                   <img
                     className="img__show"
                     onClick={() => setHidePasswordVerify(!hidePasswordVerify)}
-                    src={`../../../public/${
+                    src={`../../../${
                       hidePasswordVerify ? "show" : "hide"
                     }.png`}
                     alt=""
