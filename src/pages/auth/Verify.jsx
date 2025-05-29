@@ -59,7 +59,7 @@ const Verify = () => {
         <section className="verify_content">
           <img
             className="verify_false"
-            src={`../../../public/no_verificado.png`}
+            src={`../../../no_verificado.png`}
             alt=""
           />
           <h3 className="h3_verify_false">Su Código de Verificación es Incorrecto</h3>
@@ -68,7 +68,7 @@ const Verify = () => {
         <section className="verify_content">
           <img
             className="verify_true"
-            src={`../../../public/verificado.png`}
+            src={`../../../verificado.png`}
             alt=""
           />
           <h3 className="h3_verify_true">Usuario Verificado Correctamente</h3>

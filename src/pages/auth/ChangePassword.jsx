@@ -93,7 +93,7 @@ const ChangePassword = () => {
                   <img
                     className="img__show"
                     onClick={() => setHidePassword_1(!hidePassword_1)}
-                    src={`../../../public/${
+                    src={`../../../${
                       hidePassword_1 ? "show" : "hide"
                     }.png`}
                     alt=""
@@ -118,7 +118,7 @@ const ChangePassword = () => {
                   <img
                     className="img__show"
                     onClick={() => setHidePassword_2(!hidePassword_2)}
-                    src={`../../../public/${
+                    src={`../../../${
                       hidePassword_2 ? "show" : "hide"
                     }.png`}
                     alt=""
