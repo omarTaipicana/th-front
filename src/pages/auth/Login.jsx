@@ -158,7 +158,7 @@ const Login = () => {
                       <img
                         className="img__show"
                         onClick={() => setHidePassword(!hidePassword)}
-                        src={`../../../public/${
+                        src={`../../../${
                           hidePassword ? "show" : "hide"
                         }.png`}
                         alt=""

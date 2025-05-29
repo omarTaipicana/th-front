@@ -47,7 +47,7 @@ const PrincipalHeader = () => {
             {token && (
               <img
                 className="user__icon"
-                src="../../../public/user.png"
+                src="../../../user.png"
                 alt="User Icon"
               />
             )}
