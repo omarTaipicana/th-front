@@ -1,8 +1,9 @@
-.contenedor {
+.contenedor_login {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 3em;
 }
 
 .content_background {
@@ -34,7 +35,6 @@
   display: flex;
   gap: 1em;
   max-width: 50em;
-  max-height: 90vh;
   padding: 1.5em;
   border-radius: 0.5em;
 }
@@ -45,7 +45,6 @@
   gap: 1em;
   width: 100%;
   max-width: 50em;
-  max-height: 90vh;
 }
 
 label {
@@ -70,7 +69,6 @@ label {
   border-radius: 0.25em;
   background-color: #ffffff;
   color: #003366;
-  margin-top: 0.3125em;
 }
 
 .input__form__login__password {
@@ -178,46 +176,45 @@ a:hover {
   align-items: center;
 }
 
-
 .user_loggued {
-  background-color: #f0f4fa; /* Fondo azul claro */
-  border: 1px solid #d1dce5; /* Borde plomo claro */
-  border-radius: 1rem; /* Bordes redondeados */
-  padding: 2rem; /* Espaciado interno */
-  max-width: 90%; /* Ancho máximo relativo */
-  margin: 7rem auto; /* Centrado con margen */
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Sombra suave */
-  font-family: Arial, sans-serif; /* Fuente limpia */
+  background-color: #f0f4fa; 
+  border: 1px solid #d1dce5; 
+  border-radius: 1rem; 
+  padding: 2rem; 
+  max-width: 90%; 
+  margin: 0rem auto; 
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); 
+  font-family: Arial, sans-serif; 
 }
 
 .user_loggued_title {
-  color: #003366; /* Azul oscuro */
-  font-size: 1rem; /* Tamaño de fuente grande */
-  margin-bottom: 1.5rem; /* Espacio inferior */
-  font-weight: bold; /* Negrita */
-  text-align: center; /* Centrar texto */
+  color: #003366;
+  font-size: 1rem; 
+  margin-bottom: 1.5rem; 
+  font-weight: bold; 
+  text-align: center; 
 }
 
 .user_loggued_li {
-  display: flex; /* Alinear contenido en fila */
-  justify-content: space-between; /* Separar elementos */
-  padding: 1rem 0; /* Espaciado vertical */
-  border-bottom: 1px solid #d1dce5; /* Línea divisoria */
-  font-size: 1.2rem; /* Tamaño de texto intermedio */
+  display: flex; 
+  justify-content: space-between; 
+  padding: 1rem 0; 
+  border-bottom: 1px solid #d1dce5;
+  font-size: 1.2rem; 
 }
 
 .user_loggued_li:last-child {
-  border-bottom: none; /* Quitar línea al último elemento */
+  border-bottom: none; 
 }
 
 .user_loggued_span {
-  color: #00509e; /* Azul intermedio */
-  font-weight: 600; /* Seminegrita */
+  color: #00509e; 
+  font-weight: 600;
 }
 
 .user_loggued_span:nth-child(2) {
-  color: #333; /* Gris oscuro para datos */
-  font-weight: normal; /* Normal para datos */
+  color: #333; 
+  font-weight: normal; 
 }
 
 .user_loggued {
@@ -266,7 +263,6 @@ a:hover {
 .logout__button:active {
   background-color: #a71d2a;
 }
-
 
 @media (min-width: 768px) {
   .user_loggued {

@@ -10,6 +10,9 @@ import Register from "./pages/auth/Register";
 import Verify from "./pages/auth/Verify";
 import ResetPasswordSendEmail from "./pages/auth/ResetPasswordSendEmail";
 import ChangePassword from "./pages/auth/ChangePassword";
+import ParteDiario from "./pages/ParteDiario";
+import ServidoresPoliciales from "./pages/ServidoresPoliciales";
+import Usuarios from "./pages/auth/Usuarios";
 
 const App = () => {
   return (
@@ -21,6 +24,9 @@ const App = () => {
         <Route path="/verify/:code" element={<Verify />} />
         <Route path="/reset_password" element={<ResetPasswordSendEmail />} />
         <Route path="/reset_password/:code" element={<ChangePassword />} />
+        <Route path="/servidores" element={<ServidoresPoliciales />} />
+        <Route path="/parte_diario" element={<ParteDiario />} />
+        <Route path="/usuarios" element={<Usuarios />} />
 
         <Route path="/login" element={<Login />} />
       </Routes>

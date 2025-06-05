@@ -1,0 +1,244 @@
+.users_list_title {
+  color: #04366e;
+  text-align: center;
+  margin: 0.5em auto 0 auto;
+  font-size: 2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 4px 4px 4px rgba(33, 33, 34, 0.3);
+}
+
+.users_list_content {
+  padding: 0.5em;
+  display: flex;
+  justify-content: center;
+  color: #000000;
+}
+
+.users_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5em;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 1300px;
+}
+
+.user_card {
+  background: linear-gradient(to bottom right, #9f9f9f, #189de083);
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  padding: 2em 1.5em;
+  transition: transform 0.3s ease;
+  color: #333;
+  position: relative;
+}
+
+.user_card:hover {
+  transform: translateY(-4px);
+}
+
+.user_name {
+  margin-top: 0;
+  margin-bottom: 1em;
+  font-size: 1.05em;
+  font-weight: 700;
+  color: #263238;
+  text-align: center;
+}
+
+.btn_list_content {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  display: flex;
+  gap: 0.5em;
+}
+
+.val_verificado {
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.verified {
+  background-color: #4caf50; /* verde */
+}
+
+.not_verified {
+  background-color: #f44336; /* rojo */
+}
+
+.user_icon_btn {
+  transition: transform 0.3s ease;
+}
+
+.user_icon_btn:hover {
+  transform: translateY(-4px);
+}
+
+.user_details {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+
+.user_card p {
+  margin: 0.4em 0;
+  font-size: 0.75em;
+}
+
+.label {
+  font-weight: 600;
+  color: #263238;
+}
+
+.user_delet_content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  width: 90%;
+  max-width: 25em;
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.btn_content {
+  margin-top: 1.5em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+.btn {
+  padding: 0.6em 1.4em;
+  font-size: 1em;
+  border: none;
+  border-radius: 0.5em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn.yes {
+  background-color: #e53935;
+  color: white;
+}
+
+.btn.no {
+  background-color: #b0bec5;
+  color: #263238;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+
+.user_edit_content{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  width: 90%;
+  max-width: 40em;
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.user_edit_content h3 {
+  margin-bottom: 1.5em;
+  font-size: 1.3em;
+  text-align: center;
+  color: #37474f;
+  width: 90%;
+}
+
+
+.form_input_content{
+display: flex;
+gap: 1em;
+justify-content: center;
+}
+
+
+.label_edit_user {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5em;
+}
+
+.span_edit_user {
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  font-size: 1em;
+  color: #263238;
+}
+
+.input_edit_user {
+  padding: 0.7em;
+  border-radius: 0.5em;
+  border: 1px solid #90a4ae;
+  font-size: 1em;
+  background-color: #ffffff;
+  color: #263238;
+}
+
+.input_edit_user:focus {
+  border-color: #26c6da;
+  outline: none;
+}
+
+.user_edit_content button[type="submit"],
+.user_edit_content form button {
+  background-color: #052a9a;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 1em;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user_edit_content button[type="submit"]:hover,
+.user_edit_content form button:hover {
+  background-color: #081588b9;
+}
+
+.close_btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  border: none;
+  background: none;
+  font-size: 1.8em;
+  cursor: pointer;
+  color: #f44336;
+  transition: transform 0.2s;
+}
+
+.close_btn:hover {
+  transform: scale(1.2);
+}

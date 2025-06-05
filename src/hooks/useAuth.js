@@ -11,9 +11,23 @@ const useAuth = () => {
   const [userUpdate, setUserUpdate] = useState("");
   const [userLogged, setUserLogged] = useState();
   const [userResetPassword, setUserResetPassword] = useState("");
+  const [users, setUsers] = useState();
 
   const navigate = useNavigate();
   const urlBase = import.meta.env.VITE_API_URL;
+
+  const getUsers = () => {
+    setIsLoading(true);
+    const url = `${urlBase}/users`;
+    axios
+      .get(url, getConfigToken())
+      .then((res) => {
+        setUsers(res.data);
+        // navigate("/login");
+      })
+      .catch((err) => setError(err))
+      .finally(() => setIsLoading(false));
+  };
 
   const registerUser = (data) => {
     setIsLoading(true);
@@ -41,6 +55,18 @@ const useAuth = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const deleteUser = (id) => {
+    setIsLoading(true);
+    const url = `${urlBase}/users/${id}`;
+    axios
+      .delete(url, getConfigToken())
+      .then((res) => {
+        // console.log(res.data);
+        // navigate("/login");
+      })
+      .catch((err) => setError(err))
+      .finally(() => setIsLoading(false));
+  };
   const loginUser = (data) => {
     setIsLoading(true);
     const url = `${urlBase}/users/login`;
@@ -138,6 +164,9 @@ const useAuth = () => {
     userUpdate,
     userLogged,
     setUserLogged,
+    getUsers,
+    users,
+    deleteUser,
   ];
 };
 

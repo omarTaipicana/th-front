@@ -87,7 +87,7 @@ const Register = () => {
   return (
     <div>
       {isLoading && <IsLoading />}
-      <div className="contenedor-register">
+      <div className="contenedor_register">
         <form className="form__register" onSubmit={handleSubmit(submit)}>
           <h2 className="register__title">CREA TU CUENTA TH-DIGIN</h2>
           <article className="form_content">

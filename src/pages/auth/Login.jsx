@@ -99,7 +99,7 @@ const Login = () => {
   };
 
   return (
-    <div className="contenedor">
+    <div className="contenedor_login">
       {isLoading && <IsLoading />}
 
       <section>

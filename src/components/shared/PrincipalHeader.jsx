@@ -35,10 +35,19 @@ const PrincipalHeader = () => {
   return (
     <header className="header_nav">
       <section className="principal__header__section">
-        <img src="/images/digin.png" alt="Logo Eduka" className="logo_navbar" />
+        <Link to="/">
+          <img
+            src="/images/digin.png"
+            alt="Logo DIGIN"
+            className="logo_navbar"
+          />
+        </Link>
+
         <article className="link_content">
           {" "}
-          <Link to="/home">Parte Diario</Link>
+          {token && <Link to="/parte_diario">Parte Diario</Link>}
+          {token && <Link to="/servidores">Registro de Servidores</Link>}
+          {token && <Link to="/usuarios">Usuarios</Link>}
           {!token && <Link to="/register">Registrarse</Link>}
           {!token && <Link to="/login">Login</Link>}
         </article>
