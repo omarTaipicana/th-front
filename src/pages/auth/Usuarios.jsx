@@ -41,6 +41,11 @@ const Usuarios = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [userEdit, setUserEdit] = useState();
   const [userDelete, setUserDelete] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterDepto, setFilterDepto] = useState("");
+  const [filterSeccion, setFilterSeccion] = useState("");
+  const [filterRol, setFilterRol] = useState("");
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -69,23 +74,89 @@ const Usuarios = () => {
   };
 
   return (
-    <div>
+    <div className="users_content">
       <h2 className="users_list_title"> Usuarios Registrados</h2>
-      <section>
-        <span>Filtros</span>
+      <section className="filters_container">
+        <input
+          type="text"
+          placeholder="🔍 Buscar por nombre, correo, cédula, etc..."
+          className="filter_input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <select
+          className="filter_select"
+          value={filterDepto}
+          onChange={(e) => setFilterDepto(e.target.value)}
+        >
+          <option value="">Departamento</option>
+          {[...new Set(users?.map((u) => u.departamento))].map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="filter_select"
+          value={filterSeccion}
+          onChange={(e) => setFilterSeccion(e.target.value)}
+        >
+          <option value="">Sección</option>
+          {[...new Set(users?.map((u) => u.seccion))].map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="filter_select"
+          value={filterRol}
+          onChange={(e) => setFilterRol(e.target.value)}
+        >
+          <option value="">Rol</option>
+          {[...new Set(users?.map((u) => u.role))].map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="filter_clear_btn"
+          onClick={() => {
+            setSearchTerm("");
+            setFilterDepto("");
+            setFilterSeccion("");
+            setFilterRol("");
+          }}
+        >
+          Limpiar
+        </button>
       </section>
+
       <section className="users_list_content">
         <ul className="users_grid">
           {users
             ?.filter((user) => user?.id !== userLogged?.id)
+            .filter((user) =>
+              `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            )
+            .filter((user) =>
+              filterDepto ? user.departamento === filterDepto : true
+            )
+            .filter((user) =>
+              filterSeccion ? user.seccion === filterSeccion : true
+            )
+            .filter((user) => (filterRol ? user.role === filterRol : true))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
             .map((user) => (
               <li key={user.cI} className="user_card">
                 <div className="btn_list_content">
-                  <div
-                    className={`val_verificado ${
-                      user.isVerified ? "verified" : "not_verified"
-                    }`}
-                  ></div>
                   <img
                     className="user_icon_btn"
                     src="../../../edit.png"
@@ -108,6 +179,11 @@ const Usuarios = () => {
                       setUserDelete(user);
                     }}
                   />
+                  <div
+                    className={`val_verificado ${
+                      user.isVerified ? "verified" : "not_verified"
+                    }`}
+                  ></div>
                 </div>
                 <h3 className="user_name">
                   {user.firstName} {user.lastName}

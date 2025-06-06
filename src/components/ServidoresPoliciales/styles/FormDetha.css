@@ -12,6 +12,7 @@
   margin: 2em auto;
   border-radius: 3em;
   border: solid 0.2em black;
+  z-index: 999;
 }
 
 

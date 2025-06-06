@@ -32,17 +32,19 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%;
-  max-width: 1200px;
+  width: 98%;
 }
 
 .card {
-  background: linear-gradient(to bottom right, #f7f9fc, #d6e4f0);
+  background: linear-gradient(to bottom right, #a2a2a3, #c79e077b);
   border-radius: 1em;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   padding: 1.5em;
-  color: #333;
+  color: #232222;
+  max-width: 20em;
+  border: solid 0.05em black;
   transition: transform 0.3s ease;
+  position: relative;
 }
 
 .card:hover {
@@ -58,4 +60,71 @@
   font-weight: bold;
   color: #03294a;
   font-size: 1em;
+}
+
+.filter_section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5em 0;
+  padding: 1em;
+  background-color: #f4f4f461;
+  border-radius: 1em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.filter_section input[type="text"],
+.filter_section select {
+  padding: 0.5em 1em;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  font-size: 1em;
+  min-width: 180px;
+  background-color: white;
+  transition: border-color 0.3s;
+}
+
+.filter_section input[type="text"]:focus,
+.filter_section select:focus {
+  border-color: #189de0;
+  outline: none;
+}
+
+.filter_section button {
+  padding: 0.5em 1.2em;
+  border: none;
+  border-radius: 0.5em;
+  background-color: #189de0;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.filter_section button:hover {
+  background-color: #127cbf;
+}
+
+.btn_list_content_sp {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  display: flex;
+  gap: 0.5em;
+}
+/* Responsivo */
+@media (max-width: 768px) {
+  .filter_section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter_section input,
+  .filter_section select,
+  .filter_section button {
+    width: 100%;
+    max-width: 100%;
+  }
 }

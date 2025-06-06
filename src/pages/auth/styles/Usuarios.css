@@ -1,3 +1,45 @@
+.users_content {
+  padding-bottom: 5em;
+}
+
+.filters_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa56;
+  border-radius: 8px;
+}
+
+.filter_input {
+  flex: 2;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.filter_select {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.filter_clear_btn {
+  background-color: #01063a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter_clear_btn:hover {
+  background-color: #083fa5;
+}
+
 .users_list_title {
   color: #04366e;
   text-align: center;
@@ -23,13 +65,15 @@
   gap: 1.5em;
   list-style: none;
   padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 1300px;
+  margin: 0 auto; 
+  width: 98%;
+  justify-content: center;
 }
+
 
 .user_card {
   background: linear-gradient(to bottom right, #9f9f9f, #189de083);
+  max-width: 20em;
   border-radius: 1em;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   padding: 2em 1.5em;
@@ -89,7 +133,6 @@
   flex-wrap: wrap;
 }
 
-
 .user_card p {
   margin: 0.4em 0;
   font-size: 0.75em;
@@ -147,8 +190,7 @@
   transform: scale(1.05);
 }
 
-
-.user_edit_content{
+.user_edit_content {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -173,13 +215,11 @@
   width: 90%;
 }
 
-
-.form_input_content{
-display: flex;
-gap: 1em;
-justify-content: center;
+.form_input_content {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
 }
-
 
 .label_edit_user {
   width: 40%;
