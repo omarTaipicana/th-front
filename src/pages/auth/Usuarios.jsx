@@ -4,6 +4,7 @@ import "./styles/Usuarios.css";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
 import { useForm } from "react-hook-form";
+import IsLoading from "../../components/shared/isLoading";
 
 const Usuarios = () => {
   const [
@@ -75,6 +76,8 @@ const Usuarios = () => {
 
   return (
     <div className="users_content">
+      {isLoading && <IsLoading />}
+
       <h2 className="users_list_title"> Usuarios Registrados</h2>
       <section className="filters_container">
         <input

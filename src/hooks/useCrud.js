@@ -5,9 +5,9 @@ import getConfigToken from "../services/getConfigToken";
 const useCrud = () => {
   const BASEURL = import.meta.env.VITE_API_URL;
   const [response, setResponse] = useState([]);
-  const [newReg, setNewReg] = useState("");
-  const [deleteReg, setDeleteReg] = useState("");
-  const [updateReg, setUpdateReg] = useState("");
+  const [newReg, setNewReg] = useState();
+  const [deleteReg, setDeleteReg] = useState();
+  const [updateReg, setUpdateReg] = useState();
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

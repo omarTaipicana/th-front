@@ -5,10 +5,22 @@ import useCrud from "../../hooks/useCrud";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 
-const FormDetha = ({ setShow }) => {
+const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
   const PATH_SERVIDORES = "/servidores";
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
-  const [, , postServidor, , , error] = useCrud();
+  const [
+    servP,
+    getApi,
+    postServidor,
+    deleteApi,
+    updateServidor,
+    error,
+    isLoading,
+    newReg,
+    deleteReg,
+    updateReg,
+  ] = useCrud();
+
   const {
     register,
     handleSubmit,
@@ -20,116 +32,114 @@ const FormDetha = ({ setShow }) => {
     formState: { errors },
   } = useForm();
 
-  const submit = (data) => {
-    const cleanedData = Object.fromEntries(
-      Object.entries(data).filter(
-        ([_, value]) => value?.toString().trim() !== ""
-      )
-    );
-    const body = {
-      ...cleanedData,
-      usuarioRegistro: user.cI,
-      usuarioEdicion: user.cI,
-    };
-    postServidor(PATH_SERVIDORES, body);
-  };
 
   useEffect(() => {
     loggedUser();
   }, []);
+
+  useEffect(() => {
+    reset(userEdit);
+  }, [userEdit]);
 
   return (
     <div className="form_detha_content">
       <h2 className="servidores_form_title">
         Formulario de Registro de Servidores policiales
       </h2>
-      <button className="close_btn" onClick={() => setShow(false)}>
+      <button
+        className="close_btn"
+        onClick={() => {
+          setShow(false);
+          setUserEdit();
+          reset();
+        }}
+      >
         ❌
       </button>
       <form onSubmit={handleSubmit(submit)} className="form_servidores">
         <label>
           <span>Cedula:</span>
-          <input {...register("cI")} />
+          <input {...register("cI")} required />
         </label>
 
         <label>
           <span>Nombres:</span>
-          <input {...register("nombres")} />
+          <input {...register("nombres")} required />
         </label>
 
         <label>
           <span>Apellidos:</span>
-          <input {...register("apellidos")} />
+          <input {...register("apellidos")} required />
         </label>
 
         <label>
           <span>Fecha de nacimiento:</span>
-          <input {...register("fechaNacimiento")} type="date" />
+          <input {...register("fechaNacimiento")} required type="date" />
         </label>
 
         <label>
           <span>Fecha de Ingreso a la PPNN:</span>
-          <input {...register("fechaIngreso")} type="date" />
+          <input {...register("fechaIngreso")} required type="date" />
         </label>
 
         <label>
           <span>Estado Civil:</span>
-          <input {...register("estadoCivil")} />
+          <input {...register("estadoCivil")} required />
         </label>
 
         <label>
           <span>Sexo:</span>
-          <input {...register("sexo")} />
+          <input {...register("sexo")} required />
         </label>
 
         <label>
           <span>Etnia:</span>
-          <input {...register("etnia")} />
+          <input {...register("etnia")} required />
         </label>
 
         <label>
           <span>Correo:</span>
-          <input {...register("correoElectronico")} type="email" />
+          <input {...register("correoElectronico")} required type="email" />
         </label>
 
         <label>
           <span>Celular:</span>
-          <input {...register("celular")} />
+          <input {...register("celular")} required />
         </label>
 
         <label>
           <span>Provincia:</span>
-          <input {...register("provinciaResidencia")} />
+          <input {...register("provinciaResidencia")} required />
         </label>
 
         <label>
           <span>Cantón:</span>
-          <input {...register("cantonResidencia")} />
+          <input {...register("cantonResidencia")} required />
         </label>
 
         <label>
           <span>Dirección:</span>
-          <input {...register("direccionResidencia")} />
+          <input {...register("direccionResidencia")} required />
         </label>
 
         <label>
           <span>Contacto de Emergencia:</span>
-          <input {...register("contactoEmergencia")} />
+          <input {...register("contactoEmergencia")} required />
         </label>
 
         <label>
           <span>Número Contacto de Emergencia:</span>
-          <input {...register("numeroContactoEmergencia")} />
+          <input {...register("numeroContactoEmergencia")} required />
         </label>
 
         <label>
           <span>Parentesco</span>
-          <input {...register("parentesco")} />
+          <input {...register("parentesco")} required />
         </label>
 
         <label>
           <span>Discapacidad Registrada en el SIIPNE:</span>
-          <input {...register("alertaDiscapacidad")} />
+          <input {...register("alertaDiscapacidad")} required />
         </label>
 
         <label>
@@ -138,8 +148,8 @@ const FormDetha = ({ setShow }) => {
         </label>
 
         <label>
-          <span>Enfermedad catastrófica registrada en el SIIPNE:</span>
-          <input {...register("alertaEnfermedadCatastrofica")} />
+          <span>Enfermedad registrada en el SIIPNE:</span>
+          <input {...register("alertaEnfermedadCatastrofica")} required />
         </label>
 
         <label>
@@ -149,45 +159,45 @@ const FormDetha = ({ setShow }) => {
 
         <label>
           <span>Departamento:</span>
-          <input {...register("departamento")} />
+          <input {...register("departamento")} required />
         </label>
 
         <label>
           <span>Nomenclatura:</span>
-          <input {...register("nomenclatura")} />
+          <input {...register("nomenclatura")} required />
         </label>
 
         <label>
           <span>Cargo:</span>
-          <input {...register("cargo")} />
+          <input {...register("cargo")} required />
         </label>
 
         <label>
           <span>Pase DNATH:</span>
-          <input {...register("paseDNATH")} />
+          <input {...register("paseDNATH")} required />
         </label>
 
         <label>
           <span>Fecha de Presentacion</span>
-          <input {...register("fechaPresentacion")} type="date" />
+          <input {...register("fechaPresentacion")} required type="date" />
         </label>
 
         <label>
           <span>Figura legal de Movimiento:</span>
-          <input {...register("figuraLegal")} />
+          <input {...register("figuraLegal")} required />
         </label>
 
         <label>
           <span>No. de Documento:</span>
-          <input {...register("numDocumento")} />
-        </label>
-        
-        <label>
-          <span>Labora en la Dirección:</span>
-          <input {...register("enLaDirección")} />
+          <input {...register("numDocumento")} required />
         </label>
 
-        <button>GUARDAR</button>
+        <label>
+          <span>Labora en la Dirección:</span>
+          <input {...register("enLaDirección")} required />
+        </label>
+
+        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
       </form>
     </div>
   );

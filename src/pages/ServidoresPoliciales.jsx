@@ -2,16 +2,103 @@ import React, { useEffect, useState, useMemo } from "react";
 import "./styles/ServidoresPoliciales.css";
 import FormDetha from "../components/ServidoresPoliciales/FormDetha";
 import useCrud from "../hooks/useCrud";
+import { useDispatch } from "react-redux";
+import { showAlert } from "../store/states/alert.slice";
+import useAuth from "../hooks/useAuth";
+import IsLoading from "../components/shared/isLoading";
 
 const ServidoresPoliciales = () => {
   const PATH_SERVIDORES = "/servidores";
-  const [showEdit, setShowEdit] = useState(false);
+  const dispatch = useDispatch();
   const [userEdit, setUserEdit] = useState();
   const [userDelete, setUserDelete] = useState();
   const [showDelete, setShowDelete] = useState(false);
   const [show, setShow] = useState(false);
-  const [servP, getServidor] = useCrud();
   const [search, setSearch] = useState("");
+  const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
+
+  const [
+    servP,
+    getServidor,
+    postServidor,
+    deleteApi,
+    updateServidor,
+    error,
+    isLoading,
+    newReg,
+    deleteReg,
+    updateReg,
+  ] = useCrud();
+
+  const submit = (data) => {
+    const cleanedData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([_, value]) => value?.toString().trim() !== ""
+      )
+    );
+
+    if (!userEdit) {
+      postServidor(PATH_SERVIDORES, {
+        ...cleanedData,
+        usuarioRegistro: user.cI,
+        usuarioEdicion: user.cI,
+      });
+
+          console.log({
+        ...cleanedData,
+        usuarioRegistro: user.cI,
+        usuarioEdicion: user.cI,
+      })
+
+
+    } else {
+      updateServidor(PATH_SERVIDORES, userEdit.id, {
+        ...cleanedData,
+        usuarioEdicion: user.cI,
+      });
+    }
+
+    // setShow(false);
+  };
+
+  useEffect(() => {
+    if (updateReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se actualizó correctamente la informacion de ${updateReg.nombres} ${updateReg.apellidos}` ||
+            "Error inesperado",
+          alertType: 2,
+        })
+      );
+    }
+  }, [updateReg]);
+
+  useEffect(() => {
+    if (newReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se creó correctamente el Registro de ${newReg.nombres} ${newReg.apellidos}` ||
+            "Error inesperado",
+          alertType: 2,
+        })
+      );
+    }
+  }, [newReg]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(
+        showAlert({
+          message: `⚠️ ${error.response?.data?.message}` || "Error inesperado",
+          alertType: 1,
+        })
+      );
+    }
+  }, [error]);
+  console.log(error)
+
   const [filters, setFilters] = useState({
     sexo: "",
     departamento: "",
@@ -22,7 +109,8 @@ const ServidoresPoliciales = () => {
 
   useEffect(() => {
     getServidor(PATH_SERVIDORES);
-  }, []);
+    loggedUser();
+  }, [show]);
 
   const handleChange = (e) => {
     setFilters({
@@ -79,7 +167,16 @@ const ServidoresPoliciales = () => {
 
   return (
     <div>
-      {show && <FormDetha setShow={setShow} />}
+      {isLoading && <IsLoading />}
+
+      {show && (
+        <FormDetha
+          setUserEdit={setUserEdit}
+          userEdit={userEdit}
+          setShow={setShow}
+          submit={submit}
+        />
+      )}
 
       <section className="servidores_content">
         <h2 className="servidores_title">
@@ -163,7 +260,7 @@ const ServidoresPoliciales = () => {
                     src="../../../edit.png"
                     alt="User Icon"
                     onClick={() => {
-                      setShowEdit(true);
+                      setShow(true);
                       setUserEdit(serv);
                       // reset({
                       //   isAvailable: user.isAvailable ? "Sí" : "No",
