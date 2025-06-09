@@ -1,6 +1,6 @@
 .form_detha_content {
   width: 90%;
-  background: linear-gradient(to bottom right, #bfdeec, #5a5d5f); /* celeste a plomo */
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
   position: fixed;
   padding: 1em;
   overflow-y: auto;
@@ -10,8 +10,8 @@
   right: 0;
   bottom: 0;
   margin: 2em auto;
-  border-radius: 3em;
-  border: solid 0.2em black;
+  border-radius: 1em;
+  border: solid 0.1em black;
   z-index: 999;
 }
 

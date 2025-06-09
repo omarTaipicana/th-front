@@ -238,7 +238,13 @@ const Usuarios = () => {
             <button className="btn yes" onClick={handleDeleteUser}>
               Sí
             </button>
-            <button className="btn no" onClick={() => setShow(false)}>
+            <button
+              className="btn no"
+              onClick={() => {
+                setShow(false);
+                setUserDelete();
+              }}
+            >
               No
             </button>
           </section>

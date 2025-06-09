@@ -36,7 +36,7 @@
 }
 
 .card {
-  background: linear-gradient(to bottom right, #a2a2a3, #c79e077b);
+  background: linear-gradient(to bottom right, #a2a2a3, #f8de8170);
   border-radius: 1em;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   padding: 1.5em;
@@ -102,6 +102,16 @@
   cursor: pointer;
   transition: background-color 0.3s;
 }
+.filter_section div {
+  padding: 0.5em 1.2em;
+  border: none;
+  border-radius: 0.5em;
+  background-color: #189de0;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
 .filter_section button:hover {
   background-color: #127cbf;
@@ -110,10 +120,147 @@
 .btn_list_content_sp {
   position: absolute;
   top: 0.5em;
-  right: 1em;
+  right: 0.8em;
   display: flex;
   gap: 0.5em;
 }
+
+.btn_list_content_sp_add {
+  position: absolute;
+  bottom: 0.3em;
+  right: 0.3em;
+  display: flex;
+  gap: 0.5em;
+}
+
+.val_novedad_vigente {
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #ffffff8e;
+}
+
+.vigente {
+  background-color: #f44336ac;
+}
+
+.no_vigente {
+  background-color: #8efc0776;
+}
+
+
+
+
+/* Contenedor principal de la tabla */
+.table_section {
+  width: 100%;
+  max-height: 70vh;
+  overflow-x: auto; /* 🔁 Scroll horizontal */
+  overflow-y: auto; /* Scroll vertical */
+  margin-top: 1.5em;
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  position: relative;
+  margin-bottom: 2em;
+}
+
+/* Tabla con ancho mínimo */
+.servidores_table {
+  width: 100%;
+  min-width: 1200px; /* 🔁 Aumenta si necesitas más columnas */
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+
+/* Encabezado */
+.servidores_table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(to right, #189de0e2, #555662);
+  color: #fff;
+}
+
+/* Encabezado celdas */
+.servidores_table th {
+  text-align: left;
+  padding: 1em;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 0.8em;
+  background: inherit; /* hereda el fondo del thead */
+}
+
+/* Celdas */
+.servidores_table td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+  font-size: 0.75em;
+  vertical-align: top;
+}
+
+/* Última fila sin borde */
+.servidores_table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover fila */
+.servidores_table tbody tr:hover {
+  background-color: #caec09bd;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Íconos de acción */
+.user_icon_btn {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.user_icon_btn:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .servidores_table {
+    font-size: 0.85em;
+  }
+
+  .servidores_table th,
+  .servidores_table td {
+    padding: 0.6em;
+  }
+
+  .user_icon_btn {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+
+
+
 /* Responsivo */
 @media (max-width: 768px) {
   .filter_section {

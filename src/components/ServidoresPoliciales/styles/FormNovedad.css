@@ -1,0 +1,228 @@
+.user_novedades_content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  width: 90%;
+  max-width: 60em;
+  max-height: 90vh; /* Evita que se desborde verticalmente */
+  overflow-y: auto; /* Agrega scroll si es necesario */
+  text-align: center;
+  font-size: 1.1em;
+  color: #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user_novedades_content:hover {
+  transform: translate(-50%, -50%) scale(1.01);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.form_novedades_content {
+  width: 10%0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.user_novedades_content h3 {
+  margin-top: 0.5em;
+  margin-bottom: 1.5em;
+  font-size: 1.3em;
+  text-align: center;
+  color: #37474f;
+  width: 90%;
+}
+
+.form_input_content {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.label_novedades_user {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0em;
+}
+
+.span_novedades_user {
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #263238;
+}
+
+.input_novedades_user {
+  padding: 0.7em;
+  border-radius: 0.5em;
+  border: 1px solid #90a4ae;
+  font-size: 0.8em;
+  background-color: #ffffff;
+  color: #263238;
+}
+
+.input_novedades_user:focus {
+  border-color: #26c6da;
+  outline: none;
+}
+
+.user_novedades_content button[type="submit"],
+.user_novedades_content form button {
+  background-color: #052a9a;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 1em;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 0.5em;
+}
+
+.user_novedades_content button[type="submit"]:hover,
+.user_novedades_content form button:hover {
+  background-color: #081588b9;
+}
+
+.number_novedad_content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #020287c7;
+  padding: 0.2em 0.5em;
+  font-size: 0.5em;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.close_btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  border: none;
+  background: none;
+  font-size: 1.8em;
+  cursor: pointer;
+  color: #f44336;
+  transition: transform 0.2s;
+}
+
+.close_btn:hover {
+  transform: scale(1.2);
+}
+
+/* Contenedor que permite scroll horizontal si es necesario */
+.table_wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1.5em;
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Tabla general */
+.table_wrapper table {
+  width: 100%;
+  min-width: 800px; /* para mantener formato en pantallas pequeñas */
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.table_wrapper th,
+.table_wrapper td {
+  font-size: 0.7em; /* o el tamaño que desees */
+}
+
+/* Encabezado */
+.table_wrapper thead {
+  background: linear-gradient(to right, #189de0e2, #555662);
+  color: #fff;
+  font-size: 0.2em;
+}
+
+.table_wrapper th {
+  text-align: left;
+  padding: 1em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Celdas */
+.table_wrapper td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+/* .table_wrapper tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+} */
+
+.activo {
+  background-color: #fd11057c;
+  color: white;
+}
+
+.no_activo {
+  background-color: #f8f8f6;
+}
+
+/* Última fila sin borde */
+.table_wrapper tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive con formato de tarjetas en móviles */
+@media (max-width: 768px) {
+  .table_wrapper table {
+    min-width: unset;
+  }
+
+  .table_wrapper thead {
+    display: none;
+  }
+
+  .table_wrapper table,
+  .table_wrapper tbody,
+  .table_wrapper tr,
+  .table_wrapper td {
+    display: block;
+    width: 100%;
+  }
+
+  .table_wrapper tr {
+    margin-bottom: 1em;
+    border-radius: 0.8em;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1em;
+  }
+
+  .table_wrapper td {
+    padding: 0.5em 1em;
+    position: relative;
+  }
+
+  .table_wrapper td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: block;
+    color: #555;
+    margin-bottom: 0.4em;
+  }
+}
