@@ -318,7 +318,8 @@ const Usuarios = () => {
                   >
                     <option value="Talento Humano">Talento Humano</option>
                     <option value="Administrador">Administrador</option>
-                    <option value="Encargado">Encargado</option>
+                    <option value="Encargado">Encargado Seccion</option>
+                    <option value="EncargadoD">Encargado Digin</option>
                   </select>
                 </label>
               </div>

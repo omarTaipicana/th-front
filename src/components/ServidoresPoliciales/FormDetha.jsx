@@ -62,6 +62,11 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
+          <span>Grado:</span>
+          <input {...register("grado")} required />
+        </label>
+
+        <label>
           <span>Nombres:</span>
           <input {...register("nombres")} required />
         </label>
@@ -200,12 +205,13 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
           <span>No. de Documento:</span>
           <input {...register("numDocumento")} required />
         </label>
-        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
 
         <label>
           <span>Labora en la Dirección:</span>
           <input {...register("enLaDireccion")} required />
         </label>
+
+        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
       </form>
     </div>
   );

@@ -125,9 +125,11 @@ const ServidoresPoliciales = () => {
   const [filters, setFilters] = useState({
     sexo: "",
     departamento: "",
+    seccion: "",
     nomenclatura: "",
     cargo: "",
     figuraLegal: "",
+    grupo: "",
     vigencia: "",
   });
 
@@ -148,9 +150,11 @@ const ServidoresPoliciales = () => {
     setFilters({
       sexo: "",
       departamento: "",
+      seccion: "",
       nomenclatura: "",
       cargo: "",
       figuraLegal: "",
+      grupo: "",
       vigencia: "",
     });
   };
@@ -161,16 +165,20 @@ const ServidoresPoliciales = () => {
       serv.nombres?.toLowerCase().includes(search.toLowerCase()) ||
       serv.apellidos?.toLowerCase().includes(search.toLowerCase()) ||
       serv.departamento?.toLowerCase().includes(search.toLowerCase()) ||
+      serv.seccion?.toLowerCase().includes(search.toLowerCase()) ||
       serv.nomenclatura?.toLowerCase().includes(search.toLowerCase()) ||
       serv.cargo?.toLowerCase().includes(search.toLowerCase()) ||
+      serv.grupoAdmin?.toLowerCase().includes(search.toLowerCase()) ||
       serv.figuraLegal?.toLowerCase().includes(search.toLowerCase());
 
     const matchesFilters =
       (filters.sexo === "" || serv.sexo === filters.sexo) &&
       (filters.departamento === "" ||
         serv.departamento === filters.departamento) &&
+      (filters.seccion === "" || serv.seccion === filters.seccion) &&
       (filters.nomenclatura === "" ||
         serv.nomenclatura === filters.nomenclatura) &&
+      (filters.grupo === "" || serv.grupoAdmin === filters.grupo) &&
       (filters.cargo === "" || serv.cargo === filters.cargo) &&
       (filters.figuraLegal === "" || serv.figuraLegal === filters.figuraLegal);
 
@@ -198,7 +206,9 @@ const ServidoresPoliciales = () => {
 
     return {
       departamentos: getUnique("departamento"),
+      seccions: getUnique("seccion"),
       nomenclaturas: getUnique("nomenclatura"),
+      grupos: getUnique("grupoAdmin"),
       cargos: getUnique("cargo"),
       figurasLegales: getUnique("figuraLegal"),
     };
@@ -263,11 +273,33 @@ const ServidoresPoliciales = () => {
             ))}
           </select>
 
+          <select
+            name="seccion"
+            value={filters.seccion}
+            onChange={handleChange}
+          >
+            <option value="">Seccion</option>
+            {uniqueOptions.seccions.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+
           <select name="cargo" value={filters.cargo} onChange={handleChange}>
             <option value="">Cargo</option>
             {uniqueOptions.cargos.map((c) => (
               <option key={c} value={c}>
                 {c}
+              </option>
+            ))}
+          </select>
+
+          <select name="grupo" value={filters.grupo} onChange={handleChange}>
+            <option value="">Grupo Administrativo</option>
+            {uniqueOptions.grupos.map((n) => (
+              <option key={n} value={n}>
+                {n}
               </option>
             ))}
           </select>
@@ -403,7 +435,7 @@ const ServidoresPoliciales = () => {
                           }}
                         />
                       </td>
-                      
+
                       <td>{serv.cI}</td>
                       <td>{serv.nombres}</td>
                       <td>{serv.apellidos}</td>

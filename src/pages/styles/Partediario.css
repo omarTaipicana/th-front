@@ -1,0 +1,95 @@
+.partediario_content {
+  color: black;
+}
+
+/* Contenedor de tabla con scroll */
+.table_section_parte {
+  width: 50%;
+  max-height: 60vh;
+  overflow: auto;
+  margin-top: 1.5em;
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  position: relative;
+}
+
+/* Tabla */
+.servidores_table_parte {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+/* Encabezado */
+.servidores_table_parte thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(to right, #189de0e2, #555662);
+  color: #fff;
+}
+
+/* Celdas encabezado */
+.servidores_table_parte th {
+  text-align: left;
+  padding: 1em;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 0.8em;
+  background: inherit;
+}
+
+/* Celdas cuerpo */
+.servidores_table_parte td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+  font-size: 0.75em;
+  vertical-align: top;
+}
+
+/* Última fila sin borde */
+.servidores_table_parte tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover */
+.servidores_table_parte tbody tr:hover {
+  background-color: #caec09bd;
+  transition: background-color 0.2s ease-in-out;
+}
+
+
+
+.servidores_table_parte input {
+  width: 100%;
+  padding: 0.4em;
+  font-size: 0.75em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.servidores_table_parte button {
+  padding: 0.5em 1em;
+  font-size: 0.75em;
+  border: none;
+  border-radius: 4px;
+  background-color: #189de0;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.servidores_table_parte button:hover {
+  background-color: #127bb5;
+}
+
+
+.servidores_table_parte select {
+  width: 100%;
+  padding: 0.4em;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
