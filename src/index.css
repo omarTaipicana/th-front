@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", sans-serif;
@@ -14,8 +15,6 @@ html, body {
   width: 100%;
   height: 100%;
   position: relative;
-
-  
 }
 
 /* Agrega un pseudo-elemento para el fondo con transparencia */
@@ -26,14 +25,11 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('/images/fondo.jpg') center center / cover no-repeat;
+  background: url("/images/fondo.jpg") center center / cover no-repeat;
   background-attachment: fixed;
   opacity: 0.3; /* Cambia esto según el nivel de transparencia deseado */
   z-index: -1; /* Lo coloca detrás del contenido */
 }
-
-
-
 
 :root {
   --plomo-color: #373737;
@@ -43,14 +39,20 @@ body::before {
   --blue-color: #5b8bbd;
   --blue2-color: #022c5b;
   --green-color: #a1c357;
-  --green2-color:  #8fdc29; 
+  --green2-color: #8fdc29;
   --green3-color: #218838;
-  --green3-color: #054321; 
+  --green3-color: #054321;
   --red-color: #e30513;
   --orange-color: #ff9e15;
+  --orange2-color: #a15e00;
   --yellow-color: #ffce01;
   --black-color: black;
   --white-color: white;
+
+  --alert1-color: #e30513;
+  --alert2-color: #054321;
+  --alert3-color: #794702;
+  --alert4-color: #022c5b;
 }
 
 * {
@@ -77,8 +79,6 @@ ul {
   list-style: none;
   padding-left: 0;
 }
-
-
 
 input,
 button,

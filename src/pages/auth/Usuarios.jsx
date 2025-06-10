@@ -26,6 +26,7 @@ const Usuarios = () => {
     getUsers,
     users,
     deleteUser,
+    deleteReg,
   ] = useAuth();
   const {
     register,
@@ -46,7 +47,6 @@ const Usuarios = () => {
   const [filterDepto, setFilterDepto] = useState("");
   const [filterSeccion, setFilterSeccion] = useState("");
   const [filterRol, setFilterRol] = useState("");
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,14 +54,48 @@ const Usuarios = () => {
     loggedUser();
   }, [show, showEdit]);
 
+  useEffect(() => {
+    if (error) {
+      dispatch(
+        showAlert({
+          message: `⚠️ ${error.response?.data?.message}` || "Error inesperado",
+          alertType: 1,
+        })
+      );
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (deleteReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se eliminó correctamente el usuario  ${deleteReg.firstName}  ${deleteReg.lastName}` ||
+            "Error inesperado",
+
+          alertType: 1,
+        })
+      );
+    }
+  }, [deleteReg]);
+
+  useEffect(() => {
+    if (userUpdate) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se actualizó correctamente al usuario ${userUpdate.firstName} ${userUpdate.lastName}` ||
+            "Error inesperado",
+
+          alertType: 3,
+        })
+      );
+    }
+  }, [userUpdate]);
+
   const handleDeleteUser = () => {
     deleteUser(userDelete.id);
-    dispatch(
-      showAlert({
-        message: "⚠️ Se elimino correctamente",
-        alertType: 2,
-      })
-    );
+
     setShow(false);
   };
 

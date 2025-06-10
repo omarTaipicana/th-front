@@ -19,7 +19,7 @@ const useCrud = () => {
       .then((res) => setResponse(res.data))
       .catch((err) => {
         setError(err);
-        console.log(err);
+        // console.log(err);
       })
       .finally(() => setIsLoading(false));
   };

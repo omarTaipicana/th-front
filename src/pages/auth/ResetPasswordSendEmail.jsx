@@ -29,7 +29,6 @@ const ResetPasswordSendEmail = () => {
     const frontBaseUrl = `${location.protocol}//${location.host}/#/reset_password`;
     const body = { ...data, frontBaseUrl };
     sendEmail(body);
-    console.log(frontBaseUrl);
     reset({
       email: "",
     });

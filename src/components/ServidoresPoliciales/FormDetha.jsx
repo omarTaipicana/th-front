@@ -32,7 +32,6 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
     formState: { errors },
   } = useForm();
 
-
   useEffect(() => {
     loggedUser();
   }, []);
@@ -158,8 +157,18 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
+          <span>Grupo Administrativo:</span>
+          <input {...register("grupoAdmin")} required />
+        </label>
+
+        <label>
           <span>Departamento:</span>
           <input {...register("departamento")} required />
+        </label>
+
+        <label>
+          <span>Sección:</span>
+          <input {...register("seccion")} required />
         </label>
 
         <label>
@@ -191,13 +200,12 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
           <span>No. de Documento:</span>
           <input {...register("numDocumento")} required />
         </label>
+        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
 
         <label>
           <span>Labora en la Dirección:</span>
-          <input {...register("enLaDirección")} required />
+          <input {...register("enLaDireccion")} required />
         </label>
-
-        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
       </form>
     </div>
   );

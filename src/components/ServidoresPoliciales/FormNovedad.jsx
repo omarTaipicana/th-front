@@ -59,6 +59,48 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (newReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se creo correctamente la novedad  ${newReg.novedad}` ||
+            "Error inesperado",
+
+          alertType: 2,
+        })
+      );
+    }
+  }, [newReg]);
+
+  useEffect(() => {
+    if (updateReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se actualizó correctamente la novedad  ${updateReg.novedad}` ||
+            "Error inesperado",
+
+          alertType: 3,
+        })
+      );
+    }
+  }, [updateReg]);
+
+  useEffect(() => {
+    if (deleteReg) {
+      dispatch(
+        showAlert({
+          message:
+            `⚠️ Se eliminó correctamente la novedad  ${deleteReg.novedad}` ||
+            "Error inesperado",
+
+          alertType: 1,
+        })
+      );
+    }
+  }, [deleteReg]);
+
   const submitNovedad = (data) => {
     if (!novedadEdit) {
       postApi(PATH_NOVEDADES, {
@@ -148,6 +190,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="text"
                 className="input_novedades_user"
                 {...register("novedad")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -156,6 +199,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="text"
                 className="input_novedades_user"
                 {...register("descripcion")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -164,6 +208,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="text"
                 className="input_novedades_user"
                 {...register("tipoDocumento")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -172,6 +217,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="text"
                 className="input_novedades_user"
                 {...register("numDocumento")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -180,6 +226,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="date"
                 className="input_novedades_user"
                 {...register("fechaDocumento")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -188,6 +235,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="date"
                 className="input_novedades_user"
                 {...register("fechaInicio")}
+                required
               />
             </label>
             <label className="label_novedades_user">
@@ -198,6 +246,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 type="date"
                 className="input_novedades_user"
                 {...register("fechaFin")}
+                required
               />
             </label>
           </div>

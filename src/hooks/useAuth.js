@@ -12,6 +12,7 @@ const useAuth = () => {
   const [userLogged, setUserLogged] = useState();
   const [userResetPassword, setUserResetPassword] = useState("");
   const [users, setUsers] = useState();
+  const [deleteReg, setDeleteReg] = useState();
 
   const navigate = useNavigate();
   const urlBase = import.meta.env.VITE_API_URL;
@@ -63,6 +64,7 @@ const useAuth = () => {
       .then((res) => {
         // console.log(res.data);
         // navigate("/login");
+        setDeleteReg(res.data);
       })
       .catch((err) => setError(err))
       .finally(() => setIsLoading(false));
@@ -167,6 +169,7 @@ const useAuth = () => {
     getUsers,
     users,
     deleteUser,
+    deleteReg,
   ];
 };
 

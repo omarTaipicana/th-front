@@ -9,13 +9,13 @@ const Alert = () => {
   const getAlertColor = () => {
     switch (alertType) {
       case 1:
-        return "var(--red-color)";
+        return "var(--alert1-color)";
       case 2:
-        return "var(--green3-color)";
+        return "var(--alert2-color)";
       case 3:
-        return "var(--orange-color)";
+        return "var(--alert3-color)";
       default:
-        return "var(--blue-color)";
+        return "var(--alert4-color)";
     }
   };
 
