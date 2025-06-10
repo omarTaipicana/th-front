@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./styles/ParteDiario.css"
+import "./styles/Parte.css"
 import useAuth from "../hooks/useAuth";
 import useCrud from "../hooks/useCrud";
 
