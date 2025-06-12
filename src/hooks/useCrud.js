@@ -9,7 +9,7 @@ const useCrud = () => {
   const [deleteReg, setDeleteReg] = useState();
   const [updateReg, setUpdateReg] = useState();
   const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getApi = (path) => {
     setIsLoading(true);
