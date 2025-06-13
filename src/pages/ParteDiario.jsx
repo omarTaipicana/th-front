@@ -6,6 +6,8 @@ import FormFormacion from "../components/ParteDiario/FormFormacion";
 import IsLoading from "../components/shared/isLoading";
 import TablaResumenParte from "../components/ParteDiario/TablaResumenParte";
 
+
+
 const ParteDiario = () => {
   const [formState, setFormState] = useState({});
   const [showFormFormacion, setShowFormFormacion] = useState(false);
@@ -13,16 +15,31 @@ const ParteDiario = () => {
   const [formacionEdit, setFormacionEdit] = useState();
   const [formacionDelete, setFormacionDelete] = useState();
   const [formacionActiva, setFormacionActiva] = useState(false);
+  const [formacionActual, setFormacionActual] = useState();
   const [idFormacion, setIdFormacion] = useState();
   const [editandoId, setEditandoId] = useState(null);
 
   const PATH_SERVIDORES = "/servidores";
+  const PATH_NOVEDADES = "/novedades";
   const PATH_FORMACION = "/formacion";
   const PATH_PARTE = "/parte_diario";
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
-  const [formacion, getFormacion, , deleteFormacion, , , , , ,] = useCrud();
+  const [novedades, getNovedades, , deleteNovedades, , , , , ,] = useCrud();
+
+  const [
+    formacion,
+    getFormacion,
+    postFormacion,
+    deleteFormacion,
+    updateFormacion,
+    ,
+    ,
+    newFormacion,
+    ,
+  ] = useCrud();
+
   const [
     parte,
     getParte,
@@ -41,7 +58,8 @@ const ParteDiario = () => {
     getApi(PATH_SERVIDORES);
     getFormacion(PATH_FORMACION);
     getParte(PATH_PARTE);
-  }, [showFormFormacion]);
+    getNovedades(PATH_NOVEDADES);
+  }, [showFormFormacion, newFormacion]);
 
   useEffect(() => {
     const hayFormacionActiva = formacion.some((form) => form.isAvailable);
@@ -56,6 +74,24 @@ const ParteDiario = () => {
         [field]: value,
       },
     }));
+  };
+
+  const submitFormacion = (data) => {
+    if (!formacionEdit) {
+      postFormacion(PATH_FORMACION, {
+        ...data,
+        usuarioRegistro: user.cI,
+        usuarioEdicion: user.cI,
+      });
+    } else {
+      updateFormacion(PATH_FORMACION, formacionEdit.id, {
+        ...data,
+        usuarioRegistro: user.cI,
+        usuarioEdicion: user.cI,
+      });
+    }
+    setFormacionEdit();
+    setShowFormFormacion(false);
   };
 
   const handleGuardar = (serv) => {
@@ -125,7 +161,7 @@ const ParteDiario = () => {
           <FormFormacion
             setShowFormFormacion={setShowFormFormacion}
             formacionEdit={formacionEdit}
-            setFormacionEdit={setFormacionEdit}
+            submitFormacion={submitFormacion}
           />
         )}
       </section>
@@ -170,7 +206,10 @@ const ParteDiario = () => {
 
               return (
                 <section
-                  onClick={() => setIdFormacion(form.id)}
+                  onClick={() => {
+                    setIdFormacion(form.id);
+                    setFormacionActual(form);
+                  }}
                   className="formacion_item"
                   key={form.id}
                 >
@@ -202,7 +241,6 @@ const ParteDiario = () => {
             <table className="servidores_table_parte">
               <thead>
                 <tr>
-                  <th>Cédula</th>
                   <th>Nombre completo</th>
                   <th>Registro</th>
                   <th>Detalle</th>
@@ -212,14 +250,28 @@ const ParteDiario = () => {
 
               <tbody>
                 {resApi
-                  .filter(
-                    (serv) =>
+                  .filter((serv) => {
+                    const tieneNovedadActiva = novedades.some((n) => {
+                      const fechaFormacion = new Date(formacionActual?.fecha);
+                      const inicio = new Date(n.fechaInicio);
+                      const fin = new Date(n.fechaFin);
+
+                      return (
+                        n.servidorPolicialId === serv.id &&
+                        n.seccion === user?.seccion &&
+                        fechaFormacion >= inicio &&
+                        fechaFormacion <= fin
+                      );
+                    });
+
+                    return (
                       serv?.seccion === user?.seccion &&
-                      serv?.enLaDireccion === "Si"
-                  )
+                      serv?.enLaDireccion === "Si" &&
+                      !tieneNovedadActiva
+                    );
+                  })
                   .map((serv) => (
                     <tr key={serv.id}>
-                      <td>{serv.cI}</td>
                       <td>
                         {serv.grado} {serv.nombres} {serv.apellidos}
                       </td>
@@ -314,6 +366,8 @@ const ParteDiario = () => {
             parte={parte}
             servidores={resApi}
             idFormacion={idFormacion}
+            novedades={novedades}
+            formacionActualFecha={formacionActual}
           />
         </section>
 

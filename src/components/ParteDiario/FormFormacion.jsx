@@ -8,7 +8,7 @@ import IsLoading from "../shared/isLoading";
 const FromFrmacion = ({
   setShowFormFormacion,
   formacionEdit,
-  setFormacionEdit,
+  submitFormacion,
 }) => {
   const PATH_FORMACION = "/formacion";
 
@@ -46,23 +46,7 @@ const FromFrmacion = ({
     reset(formacionEdit);
   }, [formacionEdit]);
 
-  const submit = (data) => {
-    if (!formacionEdit) {
-      postApi(PATH_FORMACION, {
-        ...data,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-      });
-    } else {
-      updateApi(PATH_FORMACION, formacionEdit.id, {
-        ...data,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-      });
-    }
-    setFormacionEdit();
-    setShowFormFormacion(false);
-  };
+  
 
   return (
     <div>
@@ -82,7 +66,7 @@ const FromFrmacion = ({
         <h3>Genere una nueva Formación</h3>
 
         <form
-          onSubmit={handleSubmit(submit)}
+          onSubmit={handleSubmit(submitFormacion)}
           className="form_formacion_content"
         >
           <div className="form_input_content">

@@ -136,7 +136,7 @@ const ServidoresPoliciales = () => {
   useEffect(() => {
     getApi(PATH_SERVIDORES);
     loggedUser();
-  }, [show, newReg]);
+  }, [show, newReg, showNovedad]);
 
   const handleChange = (e) => {
     setFilters({

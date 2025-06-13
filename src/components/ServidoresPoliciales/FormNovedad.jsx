@@ -107,12 +107,14 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
         ...data,
         usuarioRegistro: user.cI,
         usuarioEdicion: user.cI,
+        seccion: userEditNovedad.seccion,
         servidorPolicialId: userEditNovedad.id,
       });
     } else {
       updateApi(PATH_NOVEDADES, novedadEdit.id, {
         ...data,
         usuarioEdicion: user.cI,
+        seccion: userEditNovedad.seccion,
         servidorPolicialId: userEditNovedad.id,
       });
     }
