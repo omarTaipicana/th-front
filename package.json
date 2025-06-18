@@ -13,6 +13,7 @@
     "@emailjs/browser": "^4.4.1",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
+    "dayjs": "^1.11.13",
     "framer-motion": "^12.7.4",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",

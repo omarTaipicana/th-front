@@ -6,8 +6,6 @@ import FormFormacion from "../components/ParteDiario/FormFormacion";
 import IsLoading from "../components/shared/isLoading";
 import TablaResumenParte from "../components/ParteDiario/TablaResumenParte";
 
-
-
 const ParteDiario = () => {
   const [formState, setFormState] = useState({});
   const [showFormFormacion, setShowFormFormacion] = useState(false);
@@ -18,15 +16,31 @@ const ParteDiario = () => {
   const [formacionActual, setFormacionActual] = useState();
   const [idFormacion, setIdFormacion] = useState();
   const [editandoId, setEditandoId] = useState(null);
+  const [newPdf, setNewPdf] = useState();
+  const [edictionActiva, setEdictionActiva] = useState(false);
 
   const PATH_SERVIDORES = "/servidores";
   const PATH_NOVEDADES = "/novedades";
   const PATH_FORMACION = "/formacion";
   const PATH_PARTE = "/parte_diario";
+  const PATH_PDF = "/parte_pdf";
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
-  const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
   const [novedades, getNovedades, , deleteNovedades, , , , , ,] = useCrud();
+  const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
+  const resApiFilter = resApi.filter((item) => item.enLaDireccion === "Si");
+  const [
+    pdfData,
+    getPdf,
+    postPdf,
+    deletePdf,
+    updatePdf,
+    errorPdf,
+    isLoadingPdf,
+    newRegPdf,
+    deleteRegPdf,
+    updateRegPdf,
+  ] = useCrud();
 
   const [
     formacion,
@@ -59,7 +73,8 @@ const ParteDiario = () => {
     getFormacion(PATH_FORMACION);
     getParte(PATH_PARTE);
     getNovedades(PATH_NOVEDADES);
-  }, [showFormFormacion, newFormacion]);
+    getPdf(PATH_PDF);
+  }, [showFormFormacion, newFormacion, newPdf]);
 
   useEffect(() => {
     const hayFormacionActiva = formacion.some((form) => form.isAvailable);
@@ -109,6 +124,10 @@ const ParteDiario = () => {
     };
 
     postParte(PATH_PARTE, payload);
+    setFormState((prevState) => ({
+      ...prevState,
+      [serv.id]: { ...prevState[serv.id], detalle: "" },
+    }));
   };
 
   const handleEditParte = (serv, parteId) => {
@@ -145,6 +164,10 @@ const ParteDiario = () => {
     };
 
     updateParte(PATH_PARTE, parteId, payload);
+    setFormState((prevState) => ({
+      ...prevState,
+      [serv.id]: { ...prevState[serv.id], detalle: "" },
+    }));
     setEditandoId(null); // <--- Salimos del modo edición
   };
 
@@ -209,6 +232,7 @@ const ParteDiario = () => {
                   onClick={() => {
                     setIdFormacion(form.id);
                     setFormacionActual(form);
+                    setEdictionActiva(true);
                   }}
                   className="formacion_item"
                   key={form.id}
@@ -277,7 +301,7 @@ const ParteDiario = () => {
                       </td>
                       <td>
                         <select
-                          disabled={!idFormacion}
+                          disabled={!edictionActiva}
                           value={formState[serv.id]?.registro || ""}
                           onChange={(e) =>
                             handleInputChange(
@@ -295,7 +319,7 @@ const ParteDiario = () => {
                       </td>
                       <td>
                         <input
-                          disabled={!idFormacion}
+                          disabled={!edictionActiva}
                           type="text"
                           value={formState[serv.id]?.detalle || ""}
                           onChange={(e) =>
@@ -317,7 +341,7 @@ const ParteDiario = () => {
 
                           const yaRegistrado = !!parteExistente;
 
-                          if (yaRegistrado) {
+                          if (yaRegistrado && edictionActiva) {
                             const esEditando = editandoId === serv.id;
 
                             return esEditando ? (
@@ -343,12 +367,12 @@ const ParteDiario = () => {
                             return (
                               <button
                                 onClick={() => handleGuardar(serv)}
-                                disabled={!idFormacion}
+                                disabled={!edictionActiva}
                                 className={`guardar_btn ${
-                                  idFormacion ? "guardar_btn" : "btn_blank"
+                                  edictionActiva ? "guardar_btn" : "btn_blank"
                                 }`}
                               >
-                                {idFormacion ? "GUARDAR" : ""}
+                                {edictionActiva ? "GUARDAR" : ""}
                               </button>
                             );
                           }
@@ -363,16 +387,56 @@ const ParteDiario = () => {
 
         <section className="reporte_content">
           <TablaResumenParte
+            user={user}
             parte={parte}
-            servidores={resApi}
+            servidores={resApiFilter}
             idFormacion={idFormacion}
             novedades={novedades}
             formacionActualFecha={formacionActual}
+            setNewPdf={setNewPdf}
           />
         </section>
 
         <section className="registros_content">
-          <h2>registros parte</h2>
+          <h2 className="registros_title">Registro de Partes</h2>
+          <article className="registros_list">
+            {pdfData
+              .filter((formPdf) => formPdf?.seccion === user?.seccion)
+              .map((formPdf) => (
+                <section className="registros_card" key={formPdf.id}>
+                  <div className="registros_card_body">
+                    <span className="registros_date">
+                      {formPdf.formacion.fecha}
+                    </span>
+                    <span className="registros_date"> / </span>
+                    <span className="registros_time">
+                      {formPdf.formacion.hora.slice(0, 5)}
+                    </span>
+                  </div>
+                  <div className="registros_card_actions">
+                    <button className="registros_btn">
+                      <img
+                        className="registros_icon"
+                        src={`../../../${true ? "subir" : "vista"}.png`}
+                        alt="Vista"
+                      />
+                    </button>
+                    <button className="registros_btn">
+                      <img
+                        className="registros_icon"
+                        src="../../../cargar.png"
+                        alt="Eliminar"
+                        onClick={() => {
+                          setIdFormacion(formPdf.formacionId);
+                          setFormacionActual(formPdf.formacion);
+                          setEdictionActiva(false)
+                        }}
+                      />
+                    </button>
+                  </div>
+                </section>
+              ))}
+          </article>
         </section>
 
         <section className="formacion_content">

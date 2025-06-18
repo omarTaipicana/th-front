@@ -64,7 +64,7 @@
   padding: 1em;
   font-weight: 600;
   white-space: nowrap;
-  font-size: 0.6em;
+  font-size: 0.7em;
   background: inherit;
 }
 
@@ -73,9 +73,9 @@
   padding: 0.8em 1em;
   border-bottom: 1px solid #e0e0e0;
   color: #050505;
-  font-size: 0.55em;
+  font-size: 0.7em;
   vertical-align: top;
-  font-weight: 600;
+  font-weight: 300;
 }
 
 /* Última fila sin borde */
@@ -99,7 +99,8 @@
 
 .servidores_table_parte button {
   padding: 0.5em 1em;
-  font-size: 0.75em;
+  font-size: 0.8em;
+  font-weight: 700;
   border: none;
   border-radius: 4px;
   color: white;
@@ -135,9 +136,73 @@
 /* Registros Parte Diario --------------------------------------------------------------------------------------- */
 
 .registros_content {
-  width: 10%;
-  color: #333;
-  /* background-color: #90b8ec; */
+  width: 10%; /* Restringe el ancho al 10% */
+  padding: 0.5rem;
+  background-color: #f9f9f94c;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos internos se alineen en columna */
+  gap: 0.5rem; /* Espaciado entre elementos internos */
+  align-items: center; /* Centra las tarjetas dentro del contenedor */
+  overflow-y: auto; /* Habilita desplazamiento si el contenido excede la altura */
+}
+
+.registros_title {
+  font-size: 1rem;
+  color: #1e3a8a;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.registros_list {
+  width: 100%; /* Las tarjetas ocupan el ancho total del contenedor */
+  display: flex;
+  flex-direction: column; /* Las tarjetas se apilan verticalmente */
+  gap: 0.5rem; /* Espaciado entre tarjetas */
+}
+
+.registros_card {
+  background-color: #97dc6f91;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 0.7rem; /* Reduce el tamaño de texto para compactar */
+}
+
+.registros_card_body {
+  margin-bottom: 0.3rem;
+}
+
+.registros_date,
+.registros_time {
+  color: #333333;
+  white-space: nowrap; /* Evita cortes de texto */
+}
+
+.registros_card_actions {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.registros_btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.registros_btn:hover {
+  transform: scale(1.1);
+}
+
+.registros_icon {
+  width: 20px; 
+  height: 20px;
 }
 
 /* Formación Parte Diario --------------------------------------------------------------------------------------- */

@@ -140,19 +140,18 @@
   width: 100%;
   min-width: 800px; /* para mantener formato en pantallas pequeñas */
   border-collapse: collapse;
-  font-size: 0.95em;
 }
 
 .table_wrapper th,
 .table_wrapper td {
-  font-size: 0.7em; /* o el tamaño que desees */
+  font-size: 0.2em; /* o el tamaño que desees */
 }
 
 /* Encabezado */
 .table_wrapper thead {
   background: linear-gradient(to right, #189de0e2, #555662);
   color: #fff;
-  font-size: 0.2em;
+  font-size: 3em;
 }
 
 .table_wrapper th {
@@ -167,6 +166,8 @@
   padding: 0.8em 1em;
   border-bottom: 1px solid #e0e0e0;
   color: #333;
+    font-size: 0.6em;
+
 }
 
 /* .table_wrapper tbody tr:nth-child(even) {

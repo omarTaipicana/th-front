@@ -131,6 +131,7 @@ const ServidoresPoliciales = () => {
     figuraLegal: "",
     grupo: "",
     vigencia: "",
+    enLaDireccion: "",
   });
 
   useEffect(() => {
@@ -156,6 +157,7 @@ const ServidoresPoliciales = () => {
       figuraLegal: "",
       grupo: "",
       vigencia: "",
+      enLaDireccion: "",
     });
   };
 
@@ -169,6 +171,7 @@ const ServidoresPoliciales = () => {
       serv.nomenclatura?.toLowerCase().includes(search.toLowerCase()) ||
       serv.cargo?.toLowerCase().includes(search.toLowerCase()) ||
       serv.grupoAdmin?.toLowerCase().includes(search.toLowerCase()) ||
+      serv.enLaDireccion?.toLowerCase().includes(search.toLowerCase()) ||
       serv.figuraLegal?.toLowerCase().includes(search.toLowerCase());
 
     const matchesFilters =
@@ -180,6 +183,8 @@ const ServidoresPoliciales = () => {
         serv.nomenclatura === filters.nomenclatura) &&
       (filters.grupo === "" || serv.grupoAdmin === filters.grupo) &&
       (filters.cargo === "" || serv.cargo === filters.cargo) &&
+      (filters.enLaDireccion === "" ||
+        serv.enLaDireccion === filters.enLaDireccion) &&
       (filters.figuraLegal === "" || serv.figuraLegal === filters.figuraLegal);
 
     const hoy = new Date().toISOString().split("T")[0];
@@ -325,6 +330,16 @@ const ServidoresPoliciales = () => {
             <option value="">Vigencia</option>
             <option value="vigente">Vigente</option>
             <option value="no_vigente">No vigente</option>
+          </select>
+
+          <select
+            name="enLaDireccion"
+            value={filters.enLaDireccion}
+            onChange={handleChange}
+          >
+            <option value="">Labora en la Dirección:</option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
           </select>
 
           <button onClick={handleClearFilters}>Limpiar</button>

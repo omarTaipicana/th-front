@@ -53,7 +53,7 @@
 }
 
 .servidores_table_reporte tbody li {
-  font-size: 0.7em;
+  font-size: 0.9em;
   text-align: left;
 }
 
@@ -61,7 +61,31 @@
   border-bottom: none;
 }
 
-.servidores_table_reporte tbody tr:hover {
-  background-color: #caec09bd;
+.novedades_list:hover {
+  background-color: #f1f511ac !important;
   transition: background-color 0.2s ease-in-out;
+}
+
+
+.servidores_table_reporte tbody tr:hover {
+  background-color: #fdab40bd;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn_generar_pdf {
+  display: block;
+  margin: 1rem auto; /* Centra el botón horizontalmente */
+  padding: 0.5rem 1rem;
+  background-color: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem; /* Ajusta el tamaño de la fuente */
+  transition: background-color 0.3s ease; /* Transición suave para hover */
+}
+
+.btn_generar_pdf:hover {
+  background-color: #374cce; /* Color más claro al hacer hover */
 }
