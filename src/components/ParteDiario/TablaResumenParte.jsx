@@ -427,7 +427,7 @@ const TablaResumenParte = ({
     );
 
     const fullName = `${
-      user.role
+      user.grado
     } ${user.lastName.toUpperCase()} ${user.firstName.toUpperCase()}`;
 
     const ccText = `CC: ${user.cI}`;

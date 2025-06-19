@@ -6,6 +6,7 @@ const useCrud = () => {
   const BASEURL = import.meta.env.VITE_API_URL;
   const [response, setResponse] = useState([]);
   const [newReg, setNewReg] = useState();
+  const [newPdf, setNewPdf] = useState()
   const [deleteReg, setDeleteReg] = useState();
   const [updateReg, setUpdateReg] = useState();
   const [error, setError] = useState(false);
@@ -74,6 +75,34 @@ const useCrud = () => {
       });
   };
 
+  const uploadPdf = (path, id, file) => {
+  setIsLoading(true);
+
+  // Crear un objeto FormData y agregar el archivo
+  const formData = new FormData();
+  formData.append("pdf", file);
+
+  const url = `${BASEURL}${path}/${id}`;
+
+  axios
+    .put(url, formData, {
+      headers: {
+        ...getConfigToken().headers,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      setResponse(response.map((e) => (e.id === id ? res.data : e)));
+      setNewPdf(res.data.pdf)
+    })
+    .finally(() => setIsLoading(false))
+    .catch((err) => {
+      setError(err);
+      console.error(err);
+    });
+};
+
+
   return [
     response,
     getApi,
@@ -85,6 +114,8 @@ const useCrud = () => {
     newReg,
     deleteReg,
     updateReg,
+    uploadPdf,
+    newPdf,
   ];
 };
 

@@ -69,6 +69,7 @@ const Register = () => {
       registerUser(body);
       reset({
         email: "",
+        grado: "",
         firstName: "",
         lastName: "",
         password: "",
@@ -133,9 +134,7 @@ const Register = () => {
                   <img
                     className="img__show"
                     onClick={() => setHidePassword(!hidePassword)}
-                    src={`../../../${
-                      hidePassword ? "show" : "hide"
-                    }.png`}
+                    src={`../../../${hidePassword ? "show" : "hide"}.png`}
                     alt=""
                   />
                 </div>
@@ -156,9 +155,7 @@ const Register = () => {
                   <img
                     className="img__show"
                     onClick={() => setHidePasswordVerify(!hidePasswordVerify)}
-                    src={`../../../${
-                      hidePasswordVerify ? "show" : "hide"
-                    }.png`}
+                    src={`../../../${hidePasswordVerify ? "show" : "hide"}.png`}
                     alt=""
                   />
                 </div>
@@ -210,6 +207,15 @@ const Register = () => {
                 <input
                   required
                   {...register("seccion")}
+                  className="input__form__register"
+                  type="text"
+                />
+              </label>
+              <label className="label__form__register">
+                <span className="span__form__register">Grado: </span>
+                <input
+                  required
+                  {...register("grado")}
                   className="input__form__register"
                   type="text"
                 />

@@ -5,15 +5,18 @@ import useCrud from "../hooks/useCrud";
 import FormFormacion from "../components/ParteDiario/FormFormacion";
 import IsLoading from "../components/shared/isLoading";
 import TablaResumenParte from "../components/ParteDiario/TablaResumenParte";
+import InputPdf from "../components/ParteDiario/InputPdf";
 
 const ParteDiario = () => {
   const [formState, setFormState] = useState({});
   const [showFormFormacion, setShowFormFormacion] = useState(false);
   const [showDeleteFormacion, setShowDeleteFormacion] = useState(false);
+  const [showInputPdf, setShowInputPdf] = useState(false);
   const [formacionEdit, setFormacionEdit] = useState();
   const [formacionDelete, setFormacionDelete] = useState();
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [formacionActual, setFormacionActual] = useState();
+  const [idUploadPdf, setIdUploadPdf] = useState();
   const [idFormacion, setIdFormacion] = useState();
   const [editandoId, setEditandoId] = useState(null);
   const [newPdf, setNewPdf] = useState();
@@ -74,7 +77,7 @@ const ParteDiario = () => {
     getParte(PATH_PARTE);
     getNovedades(PATH_NOVEDADES);
     getPdf(PATH_PDF);
-  }, [showFormFormacion, newFormacion, newPdf]);
+  }, [showFormFormacion, newFormacion, newPdf, newPdf, showInputPdf]);
 
   useEffect(() => {
     const hayFormacionActiva = formacion.some((form) => form.isAvailable);
@@ -406,21 +409,42 @@ const ParteDiario = () => {
                 <section className="registros_card" key={formPdf.id}>
                   <div className="registros_card_body">
                     <span className="registros_date">
-                      {formPdf.formacion.fecha}
+                      {formPdf?.formacion?.fecha}
                     </span>
                     <span className="registros_date"> / </span>
                     <span className="registros_time">
-                      {formPdf.formacion.hora.slice(0, 5)}
+                      {formPdf?.formacion?.hora.slice(0, 5)}
                     </span>
                   </div>
                   <div className="registros_card_actions">
-                    <button className="registros_btn">
-                      <img
-                        className="registros_icon"
-                        src={`../../../${true ? "subir" : "vista"}.png`}
-                        alt="Vista"
-                      />
-                    </button>
+                    {formPdf.pdf ? (
+                      <a
+                        className="registros_btn"
+                        href={formPdf.pdf} // URL del PDF
+                        target="_blank" // Abrir en una nueva pestaña
+                        rel="noopener noreferrer" // Seguridad adicional
+                      >
+                        <img
+                          className="registros_icon"
+                          src="../../../vista.png" // Ícono para visualizar
+                          alt="Vista"
+                        />
+                      </a>
+                    ) : (
+                      <button
+                        className="registros_btn"
+                        onClick={() => {
+                          setShowInputPdf(true);
+                          setIdUploadPdf(formPdf.id);
+                        }}
+                      >
+                        <img
+                          className="registros_icon"
+                          src="../../../subir.png" // Ícono para subir
+                          alt="Subir"
+                        />
+                      </button>
+                    )}
                     <button className="registros_btn">
                       <img
                         className="registros_icon"
@@ -429,7 +453,7 @@ const ParteDiario = () => {
                         onClick={() => {
                           setIdFormacion(formPdf.formacionId);
                           setFormacionActual(formPdf.formacion);
-                          setEdictionActiva(false)
+                          setEdictionActiva(false);
                         }}
                       />
                     </button>
@@ -437,6 +461,12 @@ const ParteDiario = () => {
                 </section>
               ))}
           </article>
+          {showInputPdf && (
+            <InputPdf
+              setShowInputPdf={setShowInputPdf}
+              idUploadPdf={idUploadPdf}
+            />
+          )}
         </section>
 
         <section className="formacion_content">
