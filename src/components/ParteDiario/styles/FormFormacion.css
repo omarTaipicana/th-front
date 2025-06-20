@@ -23,6 +23,7 @@
 
 .close_btn_formacion {
   position: absolute;
+  width: 3em;
   top: 0.4em;
   right: 0.4em;
   border: none;

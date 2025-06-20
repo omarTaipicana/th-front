@@ -1,0 +1,92 @@
+
+.title_table_reporte {
+  color: rgb(58, 52, 16);
+  width: 100%;
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
+}
+
+.table_section_reporte_general {
+  width: 80%;
+  max-height: 50vh;
+  overflow: auto;
+  margin: 1em auto;
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff75;
+  position: relative;
+}
+
+.servidores_table_reporte {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.servidores_table_reporte thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(to right, #189de0e2, #555662);
+  color: #fff;
+}
+
+.servidores_table_reporte th {
+  padding: 1em;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 0.6em;
+  background: inherit;
+}
+
+.servidores_table_reporte td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+  font-size: 0.7em;
+  vertical-align: top;
+  text-align: center;
+}
+
+.servidores_table_reporte tbody li {
+  font-size: 0.9em;
+  text-align: left;
+}
+
+.servidores_table_reporte tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.novedades_list:hover {
+  background-color: #f1f511ac !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+
+.servidores_table_reporte tbody tr:hover {
+  background-color: #fdab40bd;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn_generar_pdf {
+  display: block;
+  margin: 1rem auto; /* Centra el botón horizontalmente */
+  padding: 0.5rem 1rem;
+  background-color: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem; /* Ajusta el tamaño de la fuente */
+  transition: background-color 0.3s ease; /* Transición suave para hover */
+}
+
+.btn_generar_pdf:hover {
+  background-color: #374cce; /* Color más claro al hacer hover */
+}

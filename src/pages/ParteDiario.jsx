@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./styles/Parte.css";
 import useAuth from "../hooks/useAuth";
 import useCrud from "../hooks/useCrud";
-import FormFormacion from "../components/ParteDiario/FormFormacion";
 import IsLoading from "../components/shared/isLoading";
 import TablaResumenParte from "../components/ParteDiario/TablaResumenParte";
 import InputPdf from "../components/ParteDiario/InputPdf";
+import ResumenGeneral from "../components/ParteDiario/ResumenGeneral";
 
 const ParteDiario = () => {
   const [formState, setFormState] = useState({});
+  const [showInputPdf, setShowInputPdf] = useState(false);
+  const [showEncargado, setShowEncargado] = useState(false);
   const [showFormFormacion, setShowFormFormacion] = useState(false);
   const [showDeleteFormacion, setShowDeleteFormacion] = useState(false);
-  const [showInputPdf, setShowInputPdf] = useState(false);
-  const [formacionEdit, setFormacionEdit] = useState();
-  const [formacionDelete, setFormacionDelete] = useState();
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [formacionActual, setFormacionActual] = useState();
   const [idUploadPdf, setIdUploadPdf] = useState();
@@ -24,8 +23,8 @@ const ParteDiario = () => {
 
   const PATH_SERVIDORES = "/servidores";
   const PATH_NOVEDADES = "/novedades";
-  const PATH_FORMACION = "/formacion";
   const PATH_PARTE = "/parte_diario";
+  const PATH_FORMACION = "/formacion";
   const PATH_PDF = "/parte_pdf";
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
@@ -73,11 +72,18 @@ const ParteDiario = () => {
   useEffect(() => {
     loggedUser();
     getApi(PATH_SERVIDORES);
-    getFormacion(PATH_FORMACION);
     getParte(PATH_PARTE);
     getNovedades(PATH_NOVEDADES);
     getPdf(PATH_PDF);
-  }, [showFormFormacion, newFormacion, newPdf, newPdf, showInputPdf]);
+    getFormacion(PATH_FORMACION);
+  }, [
+    newFormacion,
+    newPdf,
+    newPdf,
+    showInputPdf,
+    showDeleteFormacion,
+    showFormFormacion,
+  ]);
 
   useEffect(() => {
     const hayFormacionActiva = formacion.some((form) => form.isAvailable);
@@ -92,24 +98,6 @@ const ParteDiario = () => {
         [field]: value,
       },
     }));
-  };
-
-  const submitFormacion = (data) => {
-    if (!formacionEdit) {
-      postFormacion(PATH_FORMACION, {
-        ...data,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-      });
-    } else {
-      updateFormacion(PATH_FORMACION, formacionEdit.id, {
-        ...data,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-      });
-    }
-    setFormacionEdit();
-    setShowFormFormacion(false);
   };
 
   const handleGuardar = (serv) => {
@@ -151,11 +139,6 @@ const ParteDiario = () => {
     setEditandoId(serv.id); // <--- Activamos la edición
   };
 
-  const handleDeleteFormacion = () => {
-    deleteFormacion(PATH_FORMACION, formacionDelete.id);
-    setShowDeleteFormacion();
-  };
-
   const handleGuardarEdicion = (serv, parteId) => {
     const datos = formState[serv.id];
     if (!datos?.registro) return;
@@ -177,44 +160,18 @@ const ParteDiario = () => {
   return (
     <div className="partediario_content">
       {isLoading && <IsLoading />}
+      <button
+        onClick={() => setShowEncargado(true)}
+        className="btn_show encargado"
+      >
+        ENCARGADO GENERAL
+      </button>
+      <button className="btn_show turno">PERSONAL DE TURNO</button>
 
       <h2 className="parte_diario_title">
         Parte Diario de Novedades de Planta Central de la Dirección General de
         Investigaciones
       </h2>
-      <section>
-        {showFormFormacion && (
-          <FormFormacion
-            setShowFormFormacion={setShowFormFormacion}
-            formacionEdit={formacionEdit}
-            submitFormacion={submitFormacion}
-          />
-        )}
-      </section>
-
-      {showDeleteFormacion && (
-        <article className="user_delet_content">
-          <span>
-            ¿Deseas eliminar la formacion de la fecha {formacionDelete.fecha} y
-            hora {formacionDelete.hora} ?
-          </span>
-
-          <section className="btn_content">
-            <button className="btn yes" onClick={handleDeleteFormacion}>
-              Sí
-            </button>
-            <button
-              className="btn no"
-              onClick={() => {
-                setShowDeleteFormacion(false);
-                setFormacionDelete();
-              }}
-            >
-              No
-            </button>
-          </section>
-        </article>
-      )}
 
       {formacionActiva && (
         <article className="formacion_activa_container">
@@ -469,55 +426,22 @@ const ParteDiario = () => {
           )}
         </section>
 
-        <section className="formacion_content">
-          <button onClick={() => setShowFormFormacion(true)}>
-            Generar una nueva formacion
-          </button>
-          <article className="formacion_container">
-            {[...formacion]
-              .sort((a, b) => {
-                const dateA = new Date(`${a.fecha}T${a.hora}`);
-                const dateB = new Date(`${b.fecha}T${b.hora}`);
-                return dateB - dateA;
-              })
-              .filter((form) => form?.usuarioRegistro === user?.cI)
-              .map((form) => (
-                <section
-                  className={`formacion_item ${
-                    !form.isAvailable ? "formacion_inactiva" : ""
-                  }`}
-                  key={form.id}
-                >
-                  <div>
-                    Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
-                    <strong>{form.hora}</strong>
-                  </div>
-                  {form.isAvailable && (
-                    <div>
-                      <img
-                        className="user_icon_btn"
-                        src="../../../edit.png"
-                        alt="Editar"
-                        onClick={() => {
-                          setFormacionEdit(form);
-                          setShowFormFormacion(true);
-                        }}
-                      />
-                      <img
-                        className="user_icon_btn"
-                        src="../../../delete_3.png"
-                        alt="Eliminar"
-                        onClick={() => {
-                          setFormacionDelete(form);
-                          setShowDeleteFormacion(true);
-                        }}
-                      />
-                    </div>
-                  )}
-                </section>
-              ))}
-          </article>
-        </section>
+        {showEncargado && (
+          <ResumenGeneral
+            setShowEncargado={setShowEncargado}
+            setShowFormFormacion={setShowFormFormacion}
+            showFormFormacion={showFormFormacion}
+            setShowDeleteFormacion={setShowDeleteFormacion}
+            showDeleteFormacion={showDeleteFormacion}
+            user={user}
+            parte={parte}
+            servidores={resApiFilter}
+            idFormacion={idFormacion}
+            novedades={novedades}
+            formacionActualFecha={formacionActual}
+            setNewPdf={setNewPdf}
+          />
+        )}
       </article>
     </div>
   );

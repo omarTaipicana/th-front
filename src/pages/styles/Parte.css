@@ -1,9 +1,14 @@
+.partediario_content {
+  position: relative;
+}
+
 .parte_diario_title {
-  color: #0056b3;
+  color: #03376e;
   text-align: center;
+  width: 90%;
   margin: 0.5em auto 0.5em auto;
-  font-size: 1.3em;
-  font-weight: bold;
+  font-size: 1.25em;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -14,6 +19,43 @@
   display: flex;
   width: 100%;
   justify-content: space-around;
+}
+
+.encargado {
+  top: 0em;
+}
+
+.turno {
+  top: 3.2em;
+}
+
+.btn_show {
+  width: 14em;
+  position: absolute;
+  background-color: #de9415; 
+  color: #000000; 
+  border: solid 0.2em black;
+  padding: 0.6em 1.2em;
+  border-radius: 0.5em;
+  font-size: 0.5rem;
+  font-weight: 600;
+  font-family: "Segoe UI", sans-serif;
+  box-shadow: 10px 14px 12px rgba(8, 13, 28, 0.2);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.btn_show:hover {
+  background-color: #012b6e; /* azul más claro */
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  cursor: pointer;
+}
+
+.btn_show:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(30, 58, 138, 0.3);
 }
 
 /* Tabla Parte Diario --------------------------------------------------------------------------------------- */
@@ -32,7 +74,7 @@
 
 /* Contenedor de tabla con scroll */
 .table_section_parte {
-  width: 35%;
+  width: 45%;
   max-height: 65vh;
   overflow: auto;
   margin: 1em 0.5em 0 0.5em;
@@ -136,7 +178,7 @@
 /* Registros Parte Diario --------------------------------------------------------------------------------------- */
 
 .registros_content {
-  width: 10%; /* Restringe el ancho al 10% */
+  width: 12%; /* Restringe el ancho al 10% */
   padding: 0.5rem;
   background-color: #f9f9f94c;
   border-radius: 8px;
@@ -201,88 +243,6 @@
 }
 
 .registros_icon {
-  width: 20px; 
+  width: 20px;
   height: 20px;
-}
-
-/* Formación Parte Diario --------------------------------------------------------------------------------------- */
-
-.formacion_content {
-  width: 15%;
-  display: flex;
-  flex-direction: column;
-  font-size: 1em;
-}
-
-.formacion_content button {
-  width: 70%;
-  padding: 0.5em 1em;
-  font-size: 0.8em;
-  border: none;
-  border-radius: 1em;
-  background-color: #189de0;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin: 0 auto;
-}
-
-.formacion_content button:hover {
-  background-color: #127bb5;
-}
-
-.formacion_container {
-  margin-top: 0.5em;
-  padding: 1em;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 1em;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(4px);
-  color: #333;
-  font-size: 0.9em;
-  max-height: 65vh;
-  overflow-y: auto;
-}
-
-.formacion_activa_container {
-  position: fixed;
-  z-index: 99999;
-  right: 1em;
-  top: 3em;
-  width: 20em;
-  margin-top: 0.5em;
-  padding: 1em;
-  background-color: rgba(247, 16, 16, 0.591);
-  border-radius: 1em;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(4px);
-  color: #333;
-  font-size: 0.9em;
-  max-height: 65vh;
-  overflow-y: auto;
-}
-
-.formacion_item {
-  display: flex;
-  padding: 0.7em 1em;
-  margin-bottom: 0.5em;
-  border-left: 4px solid #189de0;
-  background-color: #ffffffd2;
-  border-radius: 0.5em;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s ease-in-out;
-}
-
-.formacion_inactiva {
-  background-color: #bad8f6d2;
-}
-
-.formacion_item div,
-strong {
-  font-size: 0.9em;
-}
-
-.formacion_item:hover {
-  background-color: #ebef08bd;
-  cursor: pointer;
 }
