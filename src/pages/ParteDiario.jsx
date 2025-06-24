@@ -154,14 +154,22 @@ const ParteDiario = () => {
       ...prevState,
       [serv.id]: { ...prevState[serv.id], detalle: "" },
     }));
-    setEditandoId(null); // <--- Salimos del modo edición
+    setEditandoId(null);
+  };
+
+  const clouseFormacion = () => {
+    setIdFormacion();
+    setFormacionActual();
+    setEdictionActiva();
   };
 
   return (
     <div className="partediario_content">
       {isLoading && <IsLoading />}
       <button
-        onClick={() => setShowEncargado(true)}
+        onClick={() => {
+          setShowEncargado(true);
+        }}
         className="btn_show encargado"
       >
         ENCARGADO GENERAL
@@ -436,10 +444,9 @@ const ParteDiario = () => {
             user={user}
             parte={parte}
             servidores={resApiFilter}
-            idFormacion={idFormacion}
             novedades={novedades}
-            formacionActualFecha={formacionActual}
             setNewPdf={setNewPdf}
+            clouseFormacion={clouseFormacion}
           />
         )}
       </article>

@@ -14,16 +14,20 @@ const ResumenGeneral = ({
   showDeleteFormacion,
   parte,
   servidores,
-  idFormacion,
   novedades,
-  formacionActualFecha,
-
   setNewPdf,
+  clouseFormacion,
 }) => {
   const PATH_FORMACION = "/formacion";
+  const PATH_SERVIDORES = "/servidores";
 
   const [formacionDelete, setFormacionDelete] = useState();
   const [formacionEdit, setFormacionEdit] = useState();
+  const [formacionActiva, setFormacionActiva] = useState(false);
+  const [idFormacion, setIdFormacion] = useState();
+  const [formacionActualFecha, setFormacionActualFecha] = useState();
+
+  const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [
@@ -41,7 +45,13 @@ const ResumenGeneral = ({
   useEffect(() => {
     loggedUser();
     getFormacion(PATH_FORMACION);
+    getApi(PATH_SERVIDORES);
   }, [showFormFormacion]);
+
+  useEffect(() => {
+    const hayFormacionActiva = formacion.some((form) => form.isAvailable);
+    setFormacionActiva(hayFormacionActiva);
+  }, [formacion]);
 
   const submitFormacion = (data) => {
     if (!formacionEdit) {
@@ -73,6 +83,8 @@ const ResumenGeneral = ({
           className="close_btn_formacion"
           onClick={() => {
             setShowEncargado(false);
+            clouseFormacion();
+
             // reset();
           }}
         >
@@ -82,6 +94,41 @@ const ResumenGeneral = ({
         <h2 className="parte_diario_title">
           PARTE GENERAL DE LA DIRECCIÓN GENERAL DE INVESTIGACIONES
         </h2>
+
+        {formacionActiva && (
+          <article className="formacion_activa_container">
+            {[...formacion]
+              .sort((a, b) => {
+                const dateA = new Date(`${a.fecha}T${a.hora}`);
+                const dateB = new Date(`${b.fecha}T${b.hora}`);
+                return dateB - dateA;
+              })
+              .filter((form) => form.isAvailable)
+              .map((form) => {
+                const usuario = resApi.find(
+                  (serv) => serv?.cI === form?.usuarioRegistro
+                );
+
+                return (
+                  <section
+                    onClick={() => {
+                      setIdFormacion(form.id);
+                      setFormacionActualFecha(form);
+                    }}
+                    className="formacion_item"
+                    key={form.id}
+                  >
+                    <div>
+                      Anexarse a la formación de la fecha{" "}
+                      <strong>{form.fecha}</strong> y hora{" "}
+                      <strong>{form.hora}</strong> creado por el encargado{" "}
+                      {usuario?.grado} {usuario?.nombres} {usuario?.apellidos}
+                    </div>
+                  </section>
+                );
+              })}
+          </article>
+        )}
 
         <section className="formacion_encargado_info_content">
           <section className="formacion_list_content">

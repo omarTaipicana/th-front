@@ -63,24 +63,6 @@
   background-color: #127bb5;
 }
 
-.formacion_activa_container {
-  position: fixed;
-  z-index: 99999;
-  font-size: 0.75em !important;
-  right: 1em;
-  top: 3.3em;
-  width: 20em;
-  margin-top: 0.5em;
-  padding: 1em;
-  background-color: rgba(247, 16, 16, 0.591);
-  border-radius: 1em;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(4px);
-  color: #333;
-  font-size: 0.9em;
-  max-height: 65vh;
-  overflow-y: auto;
-}
 
 .formacion_item {
   display: flex;
