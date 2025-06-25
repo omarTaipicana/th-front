@@ -15,14 +15,40 @@ const TablaResumenParteGeneral = ({
   idFormacion,
   novedades,
   formacionActualFecha,
+  faltante,
 }) => {
   dayjs.locale("es");
   const dispatch = useDispatch();
   const PATH_PDF = "/parte_pdf";
+  const PATH_FORMACION = "/formacion";
 
   const [novedadActiva, setNovedadActiva] = useState(null);
   const [seccionActiva, setSeccionActiva] = useState(null);
-  const [viewBy, setViewBy] = useState("novedades"); // 'novedades' o 'secciones'
+  const [viewBy, setViewBy] = useState("novedades");
+  const [
+    response,
+    getPdf,
+    postPdf,
+    deletePdf,
+    updatePdf,
+    error,
+    isLoading,
+    newReg,
+    deleteReg,
+    updateReg,
+  ] = useCrud();
+
+  const [
+    formacion,
+    getFormacion,
+    postFormacion,
+    deleteFormacion,
+    updateFormacion,
+    ,
+    ,
+    newFormacion,
+    ,
+  ] = useCrud();
 
   const gruposOcupacionales = {
     directivosSuperiores: ["GRAD", "CRNL", "TCNL", "MAYR"],
@@ -207,25 +233,37 @@ const TablaResumenParteGeneral = ({
   });
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
+  const submitRegPdf = () => {
+    // const body = {
+    //   seccion: "encargado",
+    //   generado: true,
+    //   usuarioRegistro: user.cI,
+    //   usuarioEdicion: user.cI,
+    //   formacionId: idFormacion,
+    // };
+    // postPdf(PATH_PDF, body);
+    console.log(body);
+  };
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
 
   return (
     <div className="table_section_reporte_general">
       <div className="title_table_reporte">PARTE GENERAL DE LA DIRECCION</div>
-
-      <button
-        onClick={() => {
-          setViewBy((prev) =>
-            prev === "novedades" ? "secciones" : "novedades"
-          );
-          setNovedadActiva(null);
-          setSeccionActiva(null);
-        }}
-        className="btn_generar_pdf"
-      >
-        Ver por {viewBy === "novedades" ? "Secciones" : "Novedades"}
-      </button>
+      {idFormacion && (
+        <button
+          onClick={() => {
+            setViewBy((prev) =>
+              prev === "novedades" ? "secciones" : "novedades"
+            );
+            setNovedadActiva(null);
+            setSeccionActiva(null);
+          }}
+          className="btn_generar_pdf"
+        >
+          Ver por {viewBy === "novedades" ? "Secciones" : "Novedades"}
+        </button>
+      )}
 
       <table className="servidores_table_reporte">
         <thead>
@@ -471,13 +509,23 @@ const TablaResumenParteGeneral = ({
           </tr>
         </tbody>
       </table>
-      <button
-        onClick={() =>
-          generarPdfGeneral(datosUnificados, formacionActualFecha, user)
-        }
-      >
-        Generar
-      </button>
+      {idFormacion && (
+        <article className="btn_content">
+          <button
+            className="btn_generar_pdf"
+            onClick={() =>
+              generarPdfGeneral(datosUnificados, formacionActualFecha, user)
+            }
+            disabled={faltante !== 0}
+          >
+            {faltante === 0 ? "generar PDF" : "Completar Secciones"}
+          </button>
+
+          <button onClick={submitRegPdf} className="btn_generar_pdf">
+            Registrar Parte
+          </button>
+        </article>
+      )}
     </div>
   );
 };

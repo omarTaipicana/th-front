@@ -20,15 +20,20 @@ const ResumenGeneral = ({
 }) => {
   const PATH_FORMACION = "/formacion";
   const PATH_SERVIDORES = "/servidores";
+  const PATH_VARIABLES = "/variables";
+  const PATH_PDF = "/parte_pdf";
 
   const [formacionDelete, setFormacionDelete] = useState();
   const [formacionEdit, setFormacionEdit] = useState();
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [idFormacion, setIdFormacion] = useState();
   const [formacionActualFecha, setFormacionActualFecha] = useState();
+  const [faltante, setFaltante] = useState();
   const [filter, setFilter] = useState("");
 
   const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
+  const [variables, getVariables] = useCrud();
+  const [pdfData, getPdf] = useCrud();
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [
@@ -47,6 +52,8 @@ const ResumenGeneral = ({
     loggedUser();
     getFormacion(PATH_FORMACION);
     getApi(PATH_SERVIDORES);
+    getVariables(PATH_VARIABLES);
+    getPdf(PATH_PDF);
   }, [showFormFormacion]);
 
   useEffect(() => {
@@ -94,6 +101,21 @@ const ResumenGeneral = ({
       }
       return true; // Mostrar todos si no hay filtro seleccionado
     });
+
+  useEffect(() => {
+    const countFaltante = [
+      ...new Set(variables.map((variable) => variable.seccion)),
+    ]
+      .filter(Boolean)
+      .filter(
+        (seccion) =>
+          !pdfData.some(
+            (pdf) => pdf.seccion === seccion && pdf.formacionId === idFormacion
+          )
+      ).length;
+
+    setFaltante(countFaltante);
+  }, [variables, pdfData, idFormacion]);
 
   return (
     <section className="formacion_content">
@@ -170,14 +192,12 @@ const ResumenGeneral = ({
                 <option value="others">Otros</option>
               </select>
             </div>
-
-            {/* Lista de formaciones filtradas */}
             <article className="formacion_list">
               {filteredFormacion.map((form) => (
                 <section
                   className={`formacion_item ${
                     !form.isAvailable ? "formacion_inactiva" : ""
-                  }`}
+                  } ${form.id === idFormacion ? "formacion_resaltada" : ""}`} // Clase adicional
                   key={form.id}
                 >
                   <div>
@@ -220,10 +240,52 @@ const ResumenGeneral = ({
               novedades={novedades}
               formacionActualFecha={formacionActualFecha}
               setNewPdf={setNewPdf}
+              faltante={faltante}
             />
           </article>
 
-          <article className="lista_completos">LISTA DE COMPLETADOS</article>
+          <article className="lista_completos">
+            <h2>SECCIONES REGISTRADAS</h2>
+            {!idFormacion ? (
+              <p className="selecciona_formacion">
+                Selecciona una formación Activa
+              </p>
+            ) : (
+              <>
+                <p
+                  className={`faltan_text ${
+                    faltante === 0 && "faltante_en_cero"
+                  }`}
+                >
+                  {" "}
+                  {faltante === 0
+                    ? "SECCIONES COMPLETAS"
+                    : `Faltan: ${faltante}`}
+                </p>
+                <article className="secciones_list">
+                  {[...new Set(variables.map((variable) => variable.seccion))]
+                    .filter(Boolean)
+                    .map((seccion, index) => {
+                      const exists = pdfData.some(
+                        (pdf) =>
+                          pdf.seccion === seccion &&
+                          pdf.formacionId === idFormacion
+                      );
+                      return (
+                        <div
+                          key={index}
+                          className={`seccion_item ${
+                            exists ? "completed" : "missing"
+                          }`}
+                        >
+                          {seccion}
+                        </div>
+                      );
+                    })}
+                </article>
+              </>
+            )}
+          </article>
         </section>
 
         <section className="hide-show">

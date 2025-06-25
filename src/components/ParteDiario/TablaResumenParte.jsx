@@ -75,71 +75,71 @@ const TablaResumenParte = ({
     : null;
 
   // Novedades Adicionales
-if (fechaFormacion) {
-  // Crear un mapa para almacenar la última novedad por servidorPolicialId
-  const ultimasNovedades = new Map();
+  if (fechaFormacion) {
+    // Crear un mapa para almacenar la última novedad por servidorPolicialId
+    const ultimasNovedades = new Map();
 
-  // Iterar las novedades y almacenar solo la más reciente para cada servidorPolicialId
-  novedades.forEach((n) => {
-    const fechaInicio = new Date(n.fechaInicio);
-    const fechaFin = new Date(n.fechaFin);
+    // Iterar las novedades y almacenar solo la más reciente para cada servidorPolicialId
+    novedades.forEach((n) => {
+      const fechaInicio = new Date(n.fechaInicio);
+      const fechaFin = new Date(n.fechaFin);
 
-    if (
-      fechaFormacion >= fechaInicio &&
-      fechaFormacion <= fechaFin &&
-      n.seccion === user?.seccion
-    ) {
-      const servidorId = n.servidorPolicialId;
       if (
-        !ultimasNovedades.has(servidorId) ||
-        new Date(n.createdAt) > new Date(ultimasNovedades.get(servidorId).createdAt)
+        fechaFormacion >= fechaInicio &&
+        fechaFormacion <= fechaFin &&
+        n.seccion === user?.seccion
       ) {
-        ultimasNovedades.set(servidorId, n);
+        const servidorId = n.servidorPolicialId;
+        if (
+          !ultimasNovedades.has(servidorId) ||
+          new Date(n.createdAt) >
+            new Date(ultimasNovedades.get(servidorId).createdAt)
+        ) {
+          ultimasNovedades.set(servidorId, n);
+        }
       }
-    }
-  });
-
-  // Procesar solo las últimas novedades
-  ultimasNovedades.forEach((n) => {
-    const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
-    if (!servidor) return;
-
-    idsConNovedades.add(n.servidorPolicialId);
-
-    const grupo = getGrupo(servidor.grado);
-    const clave = `Novedad-${n.novedad}`;
-
-    let entry = datosUnificados.find((e) => e.clave === clave);
-    if (!entry) {
-      entry = {
-        clave,
-        novedad: n.novedad,
-        resumen: {
-          "Directivos Superiores": 0,
-          "Directivos Subalternos": 0,
-          "Técnico Operativos": 0,
-          Total: 0,
-        },
-        detalles: {
-          "Directivos Superiores": [],
-          "Directivos Subalternos": [],
-          "Técnico Operativos": [],
-        },
-      };
-      datosUnificados.push(entry);
-    }
-
-    entry.resumen[grupo]++;
-    entry.resumen.Total++;
-    entry.detalles[grupo].push({
-      nombre: `${servidor.nombres} ${servidor.apellidos}`,
-      grado: servidor.grado,
-      ci: servidor.cI,
-      detalle: n.descripcion,
     });
-  });
-}
 
+    // Procesar solo las últimas novedades
+    ultimasNovedades.forEach((n) => {
+      const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
+      if (!servidor) return;
+
+      idsConNovedades.add(n.servidorPolicialId);
+
+      const grupo = getGrupo(servidor.grado);
+      const clave = `Novedad-${n.novedad}`;
+
+      let entry = datosUnificados.find((e) => e.clave === clave);
+      if (!entry) {
+        entry = {
+          clave,
+          novedad: n.novedad,
+          resumen: {
+            "Directivos Superiores": 0,
+            "Directivos Subalternos": 0,
+            "Técnico Operativos": 0,
+            Total: 0,
+          },
+          detalles: {
+            "Directivos Superiores": [],
+            "Directivos Subalternos": [],
+            "Técnico Operativos": [],
+          },
+        };
+        datosUnificados.push(entry);
+      }
+
+      entry.resumen[grupo]++;
+      entry.resumen.Total++;
+      entry.detalles[grupo].push({
+        nombre: `${servidor.nombres} ${servidor.apellidos}`,
+        grado: servidor.grado,
+        ci: servidor.cI,
+        detalle: n.descripcion,
+      });
+    });
+  }
 
   // Parte Diario
 
@@ -399,13 +399,15 @@ if (fechaFormacion) {
         </tbody>
       </table>
 
-      <button
-        className="btn_generar_pdf"
-        onClick={handleClick}
-        disabled={!isButtonEnabled && !completMessage}
-      >
-        {existeRegistro ? "Generar Pdf" : "Registrar Parte"}
-      </button>
+      {idFormacion && (
+        <button
+          className="btn_generar_pdf"
+          onClick={handleClick}
+          disabled={!isButtonEnabled && !completMessage}
+        >
+          {existeRegistro ? "Generar Pdf" : "Registrar Parte"}
+        </button>
+      )}
     </div>
   );
 };

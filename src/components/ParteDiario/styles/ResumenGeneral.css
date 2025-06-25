@@ -46,6 +46,25 @@
   overflow-y: auto;
 }
 
+@keyframes parpadeo {
+  0% {
+    background-color: yellow;
+  }
+  30% {
+    background-color: white;
+  }
+  65% {
+    background-color: rgb(77, 255, 0);
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+.formacion_resaltada {
+  animation: parpadeo 1.5s infinite; /* Parpadeo cada segundo */
+}
+
 .btn_encargado_opcion {
   width: 60%;
   padding: 0.5em 1em;
@@ -123,10 +142,78 @@ strong {
   width: 60%;
 }
 
-
 /* LISTA COMPLETO --------------------------------------------------------------------------------------- */
 
-.lista_completos{
+.lista_completos {
   width: 20%;
+  margin-top: 4em !important;
   background-color: rgba(2, 33, 113, 0.248);
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrado horizontal */
+  justify-content: flex-start; /* Alineación vertical inicial */
+  box-sizing: border-box;
+}
+
+.lista_completos h2 {
+  font-size: 1.2rem; /* Tamaño acorde al espacio */
+  margin-bottom: 10px;
+  color: #333;
+  text-align: center; /* Centrar el título */
+}
+
+.faltan_text {
+  font-size: 1em;
+  color: #c60505;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center; /* Centrar texto */
+}
+
+.faltante_en_cero {
+  color: #2e7d32;
+}
+
+.selecciona_formacion {
+  font-size: 0.9rem;
+  color: #c62828;
+  font-weight: bold;
+  text-align: center;
+  margin: auto 0; /* Centrar verticalmente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secciones_list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 50vh;
+}
+
+.seccion_item {
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.seccion_item.completed {
+  background-color: #e6f7e6;
+  color: #2e7d32;
+  border: 1px solid #2e7d32;
+}
+
+.seccion_item.missing {
+  background-color: #fdecea;
+  color: #c62828;
+  border: 1px solid #c62828;
 }

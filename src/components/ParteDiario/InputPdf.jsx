@@ -36,7 +36,7 @@ const InputPdf = ({ setShowInputPdf, idUploadPdf }) => {
   const submit = (data) => {
     const file = data.pdf[0];
 
-    uploadPdf(PATH_PDF, idUploadPdf, file);
+    // uploadPdf(PATH_PDF, idUploadPdf, file);
 
     reset();
     setShowInputPdf(false);

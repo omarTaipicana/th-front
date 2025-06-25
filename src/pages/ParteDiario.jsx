@@ -32,18 +32,7 @@ const ParteDiario = () => {
   const [novedades, getNovedades, , deleteNovedades, , , , , ,] = useCrud();
   const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
   const resApiFilter = resApi.filter((item) => item.enLaDireccion === "Si");
-  const [
-    pdfData,
-    getPdf,
-    postPdf,
-    deletePdf,
-    updatePdf,
-    errorPdf,
-    isLoadingPdf,
-    newRegPdf,
-    deleteRegPdf,
-    updateRegPdf,
-  ] = useCrud();
+  const [pdfData, getPdf] = useCrud();
 
   const [
     formacion,
