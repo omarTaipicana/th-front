@@ -26,6 +26,7 @@ const ResumenGeneral = ({
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [idFormacion, setIdFormacion] = useState();
   const [formacionActualFecha, setFormacionActualFecha] = useState();
+  const [filter, setFilter] = useState("");
 
   const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
 
@@ -75,6 +76,24 @@ const ResumenGeneral = ({
     deleteFormacion(PATH_FORMACION, formacionDelete.id);
     setShowDeleteFormacion();
   };
+
+  const filteredFormacion = [...formacion]
+    .sort((a, b) => {
+      const dateA = new Date(`${a.fecha}T${a.hora}`);
+      const dateB = new Date(`${b.fecha}T${b.hora}`);
+      return dateB - dateA;
+    })
+    .filter((form) => form?.usuarioRegistro === user?.cI)
+    .filter((form) => {
+      if (filter === "morning") {
+        const hour = parseInt(form.hora.slice(0, 2), 10);
+        return hour >= 7 && hour < 9;
+      } else if (filter === "others") {
+        const hour = parseInt(form.hora.slice(0, 2), 10);
+        return hour < 7 || hour >= 9;
+      }
+      return true; // Mostrar todos si no hay filtro seleccionado
+    });
 
   return (
     <section className="formacion_content">
@@ -136,51 +155,59 @@ const ResumenGeneral = ({
               className="btn_encargado_opcion"
               onClick={() => setShowFormFormacion(true)}
             >
-              Generar una nueva formacion
+              Generar una nueva formación
             </button>
+
+            <div className="formacion_filter">
+              <select
+                id="filterSelect"
+                className="formacion_select"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="morning">De las 08H00</option>
+                <option value="others">Otros</option>
+              </select>
+            </div>
+
+            {/* Lista de formaciones filtradas */}
             <article className="formacion_list">
-              {[...formacion]
-                .sort((a, b) => {
-                  const dateA = new Date(`${a.fecha}T${a.hora}`);
-                  const dateB = new Date(`${b.fecha}T${b.hora}`);
-                  return dateB - dateA;
-                })
-                .filter((form) => form?.usuarioRegistro === user?.cI)
-                .map((form) => (
-                  <section
-                    className={`formacion_item ${
-                      !form.isAvailable ? "formacion_inactiva" : ""
-                    }`}
-                    key={form.id}
-                  >
+              {filteredFormacion.map((form) => (
+                <section
+                  className={`formacion_item ${
+                    !form.isAvailable ? "formacion_inactiva" : ""
+                  }`}
+                  key={form.id}
+                >
+                  <div>
+                    Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
+                    <strong>{form.hora}</strong>
+                  </div>
+                  {form.isAvailable && (
                     <div>
-                      Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
-                      <strong>{form.hora}</strong>
+                      <img
+                        className="user_icon_btn"
+                        src="../../../edit.png"
+                        alt="Editar"
+                        onClick={() => {
+                          setFormacionEdit(form);
+                          setShowFormFormacion(true);
+                        }}
+                      />
+                      <img
+                        className="user_icon_btn"
+                        src="../../../delete_3.png"
+                        alt="Eliminar"
+                        onClick={() => {
+                          setFormacionDelete(form);
+                          setShowDeleteFormacion(true);
+                        }}
+                      />
                     </div>
-                    {form.isAvailable && (
-                      <div>
-                        <img
-                          className="user_icon_btn"
-                          src="../../../edit.png"
-                          alt="Editar"
-                          onClick={() => {
-                            setFormacionEdit(form);
-                            setShowFormFormacion(true);
-                          }}
-                        />
-                        <img
-                          className="user_icon_btn"
-                          src="../../../delete_3.png"
-                          alt="Eliminar"
-                          onClick={() => {
-                            setFormacionDelete(form);
-                            setShowDeleteFormacion(true);
-                          }}
-                        />
-                      </div>
-                    )}
-                  </section>
-                ))}
+                  )}
+                </section>
+              ))}
             </article>
           </section>
 

@@ -6,15 +6,18 @@ import useCrud from "../../hooks/useCrud";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
 
-const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
+const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
   const [novedadDelete, setNovedadDelete] = useState();
   const [showDeleteNovedad, setShowDeleteNovedad] = useState(false);
   const [novedadEdit, setNovedadEdit] = useState();
 
   const PATH_NOVEDADES = "/novedades";
+  const PATH_VARIABLES = "/variables";
+
   const dispatch = useDispatch();
   const formRef = useRef(null);
 
+  const [variables, getVariables] = useCrud();
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [
     resApi,
@@ -42,11 +45,15 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
   useEffect(() => {
     loggedUser();
     getApi(PATH_NOVEDADES);
+    getVariables(PATH_VARIABLES);
   }, []);
 
+
   useEffect(() => {
-    reset(novedadEdit);
-  }, [novedadEdit]);
+    if (novedadEdit && variables.length > 0) {
+      reset(novedadEdit);
+    }
+  }, [novedadEdit, variables, reset]);
 
   useEffect(() => {
     if (error) {
@@ -107,15 +114,15 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
         ...data,
         usuarioRegistro: user.cI,
         usuarioEdicion: user.cI,
-        seccion: userEditNovedad.seccion,
-        servidorPolicialId: userEditNovedad.id,
+        seccion: servidorPolicialEditNovedad.seccion,
+        servidorPolicialId: servidorPolicialEditNovedad.id,
       });
     } else {
       updateApi(PATH_NOVEDADES, novedadEdit.id, {
         ...data,
         usuarioEdicion: user.cI,
-        seccion: userEditNovedad.seccion,
-        servidorPolicialId: userEditNovedad.id,
+        seccion: servidorPolicialEditNovedad.seccion,
+        servidorPolicialId: servidorPolicialEditNovedad.id,
       });
     }
     reset({
@@ -130,7 +137,7 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
   };
 
   const ultimaNovedad = resApi
-    .filter((nov) => nov.servidorPolicialId === userEditNovedad.id)
+    .filter((nov) => nov.servidorPolicialId === servidorPolicialEditNovedad.id)
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
   const validacionActivo =
@@ -151,12 +158,13 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
           <div className="number_novedad">
             {
               resApi.filter(
-                (nov) => nov.servidorPolicialId === userEditNovedad.id
+                (nov) =>
+                  nov.servidorPolicialId === servidorPolicialEditNovedad.id
               ).length
             }{" "}
             Registro
             {resApi.filter(
-              (nov) => nov.servidorPolicialId === userEditNovedad.id
+              (nov) => nov.servidorPolicialId === servidorPolicialEditNovedad.id
             ).length > 1
               ? "s"
               : ""}{" "}
@@ -176,9 +184,12 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
         <span ref={formRef}>
           <h3>
             {`Registre la Novedad ${
-              userEditNovedad.sexo === "H" ? "del" : "de la"
-            } Servidor${userEditNovedad.sexo === "H" ? "" : "a"} Policial `}
-            {userEditNovedad.nombres} {userEditNovedad.apellidos}
+              servidorPolicialEditNovedad.sexo === "Hombre" ? "del" : "de la"
+            } Servidor${
+              servidorPolicialEditNovedad.sexo === "Hombre" ? "" : "a"
+            } Policial `}
+            {servidorPolicialEditNovedad.nombres}{" "}
+            {servidorPolicialEditNovedad.apellidos}
           </h3>
         </span>
         <form
@@ -188,13 +199,25 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
           <div className="form_input_content">
             <label className="label_novedades_user">
               <span className="span_novedades_user">Novedad: </span>
-              <input
-                type="text"
+              <select
                 className="input_novedades_user"
-                {...register("novedad")}
                 required
-              />
+                {...register("novedad")}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  -- Seleccione un novedad --
+                </option>
+                {Array.from(
+                  new Set(variables.map((v) => v.novedad).filter(Boolean))
+                ).map((novedad, index) => (
+                  <option key={index} value={novedad}>
+                    {novedad}
+                  </option>
+                ))}
+              </select>
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">Descripción: </span>
               <input
@@ -204,15 +227,28 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
                 required
               />
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">Tipo de Documento: </span>
-              <input
-                type="text"
+              <select
                 className="input_novedades_user"
-                {...register("tipoDocumento")}
                 required
-              />
+                {...register("tipoDocumento")}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  -- Seleccione un tipo de Documento --
+                </option>
+                {Array.from(
+                  new Set(variables.map((v) => v.tipoDocumento).filter(Boolean))
+                ).map((tipoDocumento, index) => (
+                  <option key={index} value={tipoDocumento}>
+                    {tipoDocumento}
+                  </option>
+                ))}
+              </select>
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">Número de Documento: </span>
               <input
@@ -292,7 +328,10 @@ const FormNovedad = ({ userEditNovedad, setShowNovedad }) => {
             </thead>
             <tbody>
               {resApi
-                .filter((nov) => nov.servidorPolicialId === userEditNovedad.id)
+                .filter(
+                  (nov) =>
+                    nov.servidorPolicialId === servidorPolicialEditNovedad.id
+                )
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Orden descendente
                 .map((nov) => (
                   <tr

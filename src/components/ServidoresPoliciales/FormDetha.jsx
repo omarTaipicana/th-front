@@ -1,12 +1,29 @@
 import { input } from "framer-motion/client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles/FormDetha.css";
 import useCrud from "../../hooks/useCrud";
 import { useForm } from "react-hook-form";
 import useAuth from "../../hooks/useAuth";
 
-const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
+const FormDetha = ({
+  setShow,
+  show,
+  servidorPolicialEdit,
+  setServidorPolicialEdit,
+  submit,
+}) => {
   const PATH_SERVIDORES = "/servidores";
+  const PATH_VARIABLES = "/variables";
+  const PATH_SENPLADES = "/senplades";
+
+  const [provinciaSeleccionada, setProvinciaSeleccionada] = useState();
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
+  const [seccionSeleccionada, setSeccionSeleccionada] = useState("");
+  const [nomenclaturaSeleccionada, setNomenclaturaSeleccionada] = useState("");
+
+  const [variables, getVariables] = useCrud();
+  const [senplades, getSenplades] = useCrud();
+
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [
     servP,
@@ -34,11 +51,20 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
 
   useEffect(() => {
     loggedUser();
+    getVariables(PATH_VARIABLES);
+    getSenplades(PATH_SENPLADES);
   }, []);
 
   useEffect(() => {
-    reset(userEdit);
-  }, [userEdit]);
+    if (servidorPolicialEdit && variables.length > 0) {
+      setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
+      setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
+      setSeccionSeleccionada(servidorPolicialEdit.seccion);
+      setNomenclaturaSeleccionada(servidorPolicialEdit.nomenclatura);
+
+      reset(servidorPolicialEdit);
+    }
+  }, [servidorPolicialEdit, variables, reset]);
 
   return (
     <div className="form_detha_content">
@@ -49,7 +75,7 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         className="close_btn"
         onClick={() => {
           setShow(false);
-          setUserEdit();
+          setServidorPolicialEdit();
           reset();
         }}
       >
@@ -62,8 +88,19 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
-          <span>Grado:</span>
-          <input {...register("grado")} required />
+          <span>Grado: </span>
+          <select required {...register("grado")} defaultValue="">
+            <option value="" disabled>
+              -- Seleccione un grado --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.grado).filter(Boolean))
+            ).map((grado, index) => (
+              <option key={index} value={grado}>
+                {grado}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
@@ -87,18 +124,51 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
-          <span>Estado Civil:</span>
-          <input {...register("estadoCivil")} required />
+          <span>Estado Civil: </span>
+          <select required {...register("estadoCivil")} defaultValue="">
+            <option value="" disabled>
+              -- Seleccione un estadoCivil --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.estadoCivil).filter(Boolean))
+            ).map((estadoCivil, index) => (
+              <option key={index} value={estadoCivil}>
+                {estadoCivil}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Sexo:</span>
-          <input {...register("sexo")} required />
+          <span>Sexo: </span>
+          <select required {...register("sexo")} defaultValue="">
+            <option value="" disabled>
+              -- Seleccione un sexo --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.sexo).filter(Boolean))
+            ).map((sexo, index) => (
+              <option key={index} value={sexo}>
+                {sexo}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Etnia:</span>
-          <input {...register("etnia")} required />
+          <span>Etnia: </span>
+          <select required {...register("etnia")} defaultValue="">
+            <option value="" disabled>
+              -- Seleccione un etnia --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.etnia).filter(Boolean))
+            ).map((etnia, index) => (
+              <option key={index} value={etnia}>
+                {etnia}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
@@ -112,13 +182,54 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
-          <span>Provincia:</span>
-          <input {...register("provinciaResidencia")} required />
+          <span>Provincia: </span>
+          <select
+            required
+            {...register("provinciaResidencia", {
+              onChange: (e) => {
+                setProvinciaSeleccionada(e.target.value);
+                setValue("seccion", "");
+              },
+            })}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione una Provincia --
+            </option>
+            {Array.from(
+              new Set(senplades.map((v) => v.provincia).filter(Boolean))
+            ).map((prov, i) => (
+              <option key={i} value={prov}>
+                {prov}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Cantón:</span>
-          <input {...register("cantonResidencia")} required />
+          <span>Canton: </span>
+          <select
+            required
+            {...register("cantonResidencia")}
+            disabled={!provinciaSeleccionada}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione un Cantón --
+            </option>
+            {Array.from(
+              new Set(
+                senplades
+                  .filter((v) => v.provincia === provinciaSeleccionada)
+                  .map((v) => v.canton)
+                  .filter(Boolean)
+              )
+            ).map((canton, i) => (
+              <option key={i} value={canton}>
+                {canton}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
@@ -143,7 +254,13 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
 
         <label>
           <span>Discapacidad Registrada en el SIIPNE:</span>
-          <input {...register("alertaDiscapacidad")} required />
+          <select {...register("alertaDiscapacidad")} defaultValue="" required>
+            <option value="" disabled>
+              -- Seleccione una opción --
+            </option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
         </label>
 
         <label>
@@ -153,7 +270,17 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
 
         <label>
           <span>Enfermedad registrada en el SIIPNE:</span>
-          <input {...register("alertaEnfermedadCatastrofica")} required />
+          <select
+            {...register("alertaEnfermedadCatastrofica")}
+            defaultValue=""
+            required
+          >
+            <option value="" disabled>
+              -- Seleccione una opción --
+            </option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
         </label>
 
         <label>
@@ -163,27 +290,145 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
 
         <label>
           <span>Grupo Administrativo:</span>
-          <input {...register("grupoAdmin")} required />
+
+          <select {...register("grupoAdmin")} defaultValue="" required>
+            <option value="" disabled>
+              -- Seleccione una opción --
+            </option>
+            <option value="Grupo 01">Grupo 01</option>
+            <option value="Grupo 02">Grupo 02</option>
+            <option value="Grupo 03">Grupo 03</option>
+            <option value="Grupo 04">Grupo 04</option>
+          </select>
         </label>
 
         <label>
-          <span>Departamento:</span>
-          <input {...register("departamento")} required />
+          <span>Figuralegal: </span>
+          <select required {...register("figuraLegal")} defaultValue="">
+            <option value="" disabled>
+              -- Seleccione una figuraLegal --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.figuraLegal).filter(Boolean))
+            ).map((figuraLegal, index) => (
+              <option key={index} value={figuraLegal}>
+                {figuraLegal}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Sección:</span>
-          <input {...register("seccion")} required />
+          <span>Departamento: </span>
+          <select
+            required
+            {...register("departamento", {
+              onChange: (e) => {
+                setDepartamentoSeleccionado(e.target.value);
+                setValue("seccion", "");
+              },
+            })}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione un departamento --
+            </option>
+            {Array.from(
+              new Set(variables.map((v) => v.departamento).filter(Boolean))
+            ).map((dep, i) => (
+              <option key={i} value={dep}>
+                {dep}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Nomenclatura:</span>
-          <input {...register("nomenclatura")} required />
+          <span>Sección: </span>
+          <select
+            required
+            {...register("seccion", {
+              onChange: (e) => {
+                setSeccionSeleccionada(e.target.value);
+                setValue("nomenclatura", "");
+              },
+            })}
+            disabled={!departamentoSeleccionado}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione una sección --
+            </option>
+            {Array.from(
+              new Set(
+                variables
+                  .filter((v) => v.departamento === departamentoSeleccionado)
+                  .map((v) => v.seccion)
+                  .filter(Boolean)
+              )
+            ).map((sec, i) => (
+              <option key={i} value={sec}>
+                {sec}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
-          <span>Cargo:</span>
-          <input {...register("cargo")} required />
+          <span>Nomenclatura: </span>
+          <select
+            required
+            {...register("nomenclatura", {
+              onChange: (e) => {
+                setNomenclaturaSeleccionada(e.target.value);
+                setValue("cargo", "");
+              },
+            })}
+            disabled={!seccionSeleccionada}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione una nomenclatura --
+            </option>
+            {Array.from(
+              new Set(
+                variables
+                  .filter((v) => v.seccion === seccionSeleccionada)
+                  .map((v) => v.nomenclatura)
+                  .filter(Boolean)
+              )
+            ).map((nomen, i) => (
+              <option key={i} value={nomen}>
+                {nomen}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <span>Cargo: </span>
+          <select
+            required
+            {...register("cargo")}
+            disabled={!nomenclaturaSeleccionada}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              -- Seleccione un cargo --
+            </option>
+            {Array.from(
+              new Set(
+                variables
+                  .filter((v) => v.nomenclatura === nomenclaturaSeleccionada)
+                  .map((v) => v.cargo)
+                  .filter(Boolean)
+              )
+            ).map((cargo, i) => (
+              <option key={i} value={cargo}>
+                {cargo}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
@@ -197,21 +442,23 @@ const FormDetha = ({ setShow, userEdit, setUserEdit, submit }) => {
         </label>
 
         <label>
-          <span>Figura legal de Movimiento:</span>
-          <input {...register("figuraLegal")} required />
-        </label>
-
-        <label>
           <span>No. de Documento:</span>
           <input {...register("numDocumento")} required />
         </label>
 
         <label>
           <span>Labora en la Dirección:</span>
-          <input {...register("enLaDireccion")} required />
+
+          <select {...register("enLaDireccion")} defaultValue="" required>
+            <option value="" disabled>
+              -- Seleccione una opción --
+            </option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
         </label>
 
-        <button>{userEdit ? "EDITAR" : "GUARDAR"}</button>
+        <button>{servidorPolicialEdit ? "EDITAR" : "GUARDAR"}</button>
       </form>
     </div>
   );

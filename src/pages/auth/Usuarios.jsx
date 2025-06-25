@@ -103,6 +103,7 @@ const Usuarios = () => {
     const body = {
       isAvailable: data.isAvailable === "Sí" ? true : false,
       role: data.role,
+      seccion: data.seccion,
     };
     updateUser(body, userEdit.id);
     setShowEdit(false);
@@ -204,6 +205,7 @@ const Usuarios = () => {
                       reset({
                         isAvailable: user.isAvailable ? "Sí" : "No",
                         role: user.role,
+                        seccion: user.seccion,
                       });
                     }}
                   />
@@ -299,17 +301,6 @@ const Usuarios = () => {
             <form onSubmit={handleSubmit(submit)}>
               <div className="form_input_content">
                 <label className="label_edit_user">
-                  <span className="span_edit_user">Habilitado: </span>
-                  <select
-                    required
-                    {...register("isAvailable")}
-                    className="input_edit_user"
-                  >
-                    <option value="Sí">Sí</option>
-                    <option value="No">No</option>
-                  </select>
-                </label>
-                <label className="label_edit_user">
                   <span className="span_edit_user">Rol de Usuario: </span>
                   <select
                     required
@@ -318,8 +309,28 @@ const Usuarios = () => {
                   >
                     <option value="Talento Humano">Talento Humano</option>
                     <option value="Administrador">Administrador</option>
-                    <option value="Encargado">Encargado Seccion</option>
-                    <option value="EncargadoD">Encargado Digin</option>
+                    <option value="Encargado">Encargado</option>
+                  </select>
+                </label>
+                <label className="label_edit_user">
+                  <span className="span_edit_user">Sección: </span>
+                  <input
+                    type="text"
+                    name=""
+                    required
+                    {...register("seccion")}
+                    className="input_edit_user"
+                  />
+                </label>
+                <label className="label_edit_user">
+                  <span className="span_edit_user">Habilitado: </span>
+                  <select
+                    required
+                    {...register("isAvailable")}
+                    className="input_edit_user"
+                  >
+                    <option value="Sí">Sí</option>
+                    <option value="No">No</option>
                   </select>
                 </label>
               </div>

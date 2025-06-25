@@ -15,7 +15,6 @@
   text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
 }
 
-
 .formacion_activa_container {
   position: fixed;
   font-size: 0.75em !important;
@@ -51,8 +50,8 @@
 .btn_show {
   width: 14em;
   position: absolute;
-  background-color: #de9415; 
-  color: #000000; 
+  background-color: #de9415;
+  color: #000000;
   border: solid 0.2em black;
   padding: 0.6em 1.2em;
   border-radius: 0.5em;
@@ -205,7 +204,7 @@
   flex-direction: column; /* Asegura que los elementos internos se alineen en columna */
   gap: 0.5rem; /* Espaciado entre elementos internos */
   align-items: center; /* Centra las tarjetas dentro del contenedor */
-  overflow-y: auto; /* Habilita desplazamiento si el contenido excede la altura */
+  overflow-y: auto;
 }
 
 .registros_title {
@@ -213,6 +212,35 @@
   color: #1e3a8a;
   text-align: center;
   margin-bottom: 0.5rem;
+}
+
+.registros_filter {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.registros_filter label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.registros_select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.registros_select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .registros_list {
@@ -232,6 +260,10 @@
   align-items: center;
   text-align: center;
   font-size: 0.7rem; /* Reduce el tamaño de texto para compactar */
+}
+
+.sin_pdf_color {
+  background-color: #e0320791;
 }
 
 .registros_card_body {

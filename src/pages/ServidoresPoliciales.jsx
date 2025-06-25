@@ -12,8 +12,9 @@ import FormNovedad from "../components/ServidoresPoliciales/FormNovedad";
 const ServidoresPoliciales = () => {
   const PATH_SERVIDORES = "/servidores";
   const dispatch = useDispatch();
-  const [userEdit, setUserEdit] = useState();
-  const [userEditNovedad, setUserEditNovedad] = useState();
+  const [servidorPolicialEdit, setServidorPolicialEdit] = useState();
+  const [servidorPolicialEditNovedad, setServidorPolicialEditNovedad] =
+    useState();
   const [userDelete, setUserDelete] = useState();
   const [showDelete, setShowDelete] = useState(false);
   const [showNovedad, setShowNovedad] = useState(false);
@@ -53,14 +54,14 @@ const ServidoresPoliciales = () => {
       )
     );
 
-    if (!userEdit) {
+    if (!servidorPolicialEdit) {
       postApi(PATH_SERVIDORES, {
         ...cleanedData,
         usuarioRegistro: user.cI,
         usuarioEdicion: user.cI,
       });
     } else {
-      updateApi(PATH_SERVIDORES, userEdit.id, {
+      updateApi(PATH_SERVIDORES, servidorPolicialEdit.id, {
         ...cleanedData,
         usuarioEdicion: user.cI,
       });
@@ -92,7 +93,7 @@ const ServidoresPoliciales = () => {
           message:
             `⚠️ Se actualizó correctamente la información de ${updateReg.nombres} ${updateReg.apellidos}` ||
             "Error inesperado",
-          alertType: 2,
+          alertType: 3,
         })
       );
     }
@@ -225,8 +226,9 @@ const ServidoresPoliciales = () => {
 
       {show && (
         <FormDetha
-          setUserEdit={setUserEdit}
-          userEdit={userEdit}
+          setServidorPolicialEdit={setServidorPolicialEdit}
+          servidorPolicialEdit={servidorPolicialEdit}
+          show={show}
           setShow={setShow}
           submit={submit}
         />
@@ -248,8 +250,8 @@ const ServidoresPoliciales = () => {
 
           <select name="sexo" value={filters.sexo} onChange={handleChange}>
             <option value="">Sexo</option>
-            <option value="H">Masculino</option>
-            <option value="M">Femenino</option>
+            <option value="Hombre">Masculino</option>
+            <option value="Mujer">Femenino</option>
           </select>
 
           <select
@@ -353,17 +355,18 @@ const ServidoresPoliciales = () => {
             Servidores Policiales
           </div>
           <button onClick={() => setTable(!table)}>{`${
-            table ? "Tarjeta" : "Tabla"
+            table ? "Tabla" : "Tarjeta"
           }`}</button>
         </section>
 
-        {table ? (
+        {!table ? (
           <section className="table_section">
             <table className="servidores_table">
               <thead>
                 <tr>
                   <th>Acciones</th>
                   <th>Cédula</th>
+                  <th>Grado</th>
                   <th>Nombres</th>
                   <th>Apellidos</th>
                   <th>Fecha Nacimiento</th>
@@ -373,6 +376,7 @@ const ServidoresPoliciales = () => {
                   <th>Etnia</th>
                   <th>Correo</th>
                   <th>Celular</th>
+                  <th>Grupo</th>
                   <th>Provincia</th>
                   <th>Cantón</th>
                   <th>Dirección</th>
@@ -428,7 +432,7 @@ const ServidoresPoliciales = () => {
                           alt="Editar"
                           onClick={() => {
                             setShow(true);
-                            setUserEdit(serv);
+                            setServidorPolicialEdit(serv);
                           }}
                         />
                         <img
@@ -446,12 +450,13 @@ const ServidoresPoliciales = () => {
                           alt="Novedad"
                           onClick={() => {
                             setShowNovedad(true);
-                            setUserEditNovedad(serv);
+                            setServidorPolicialEditNovedad(serv);
                           }}
                         />
                       </td>
 
                       <td>{serv.cI}</td>
+                      <td>{serv.grado}</td>
                       <td>{serv.nombres}</td>
                       <td>{serv.apellidos}</td>
                       <td>{serv.fechaNacimiento}</td>
@@ -461,6 +466,7 @@ const ServidoresPoliciales = () => {
                       <td>{serv.etnia}</td>
                       <td>{serv.correoElectronico}</td>
                       <td>{serv.celular}</td>
+                      <td>{serv.grupoAdmin}</td>
                       <td>{serv.provinciaResidencia}</td>
                       <td>{serv.cantonResidencia}</td>
                       <td>{serv.direccionResidencia}</td>
@@ -498,7 +504,7 @@ const ServidoresPoliciales = () => {
                         alt="User Icon"
                         onClick={() => {
                           setShow(true);
-                          setUserEdit(serv);
+                          setServidorPolicialEdit(serv);
                         }}
                       />
                       <img
@@ -517,7 +523,7 @@ const ServidoresPoliciales = () => {
                         alt="User Icon"
                         onClick={() => {
                           setShowNovedad(true);
-                          setUserEditNovedad(serv);
+                          setServidorPolicialEditNovedad(serv);
                         }}
                       />
                     </div>
@@ -589,7 +595,7 @@ const ServidoresPoliciales = () => {
 
         {showNovedad && (
           <FormNovedad
-            userEditNovedad={userEditNovedad}
+            servidorPolicialEditNovedad={servidorPolicialEditNovedad}
             setShowNovedad={setShowNovedad}
           />
         )}

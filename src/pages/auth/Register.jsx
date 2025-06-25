@@ -6,10 +6,14 @@ import IsLoading from "../../components/shared/isLoading";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
+import useCrud from "../../hooks/useCrud";
 
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const PATH_VARIABLES = "/variables";
+  const [variables, getVariables] = useCrud();
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
   const [hidePassword, setHidePassword] = useState(true);
   const [hidePasswordVerify, setHidePasswordVerify] = useState(true);
   const [
@@ -33,6 +37,10 @@ const Register = () => {
     setError,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    getVariables(PATH_VARIABLES);
+  }, []);
 
   useEffect(() => {
     if (error) {
@@ -194,31 +202,80 @@ const Register = () => {
 
               <label className="label__form__register">
                 <span className="span__form__register">Departamento: </span>
-                <input
+                <select
                   required
-                  {...register("departamento")}
+                  {...register("departamento", {
+                    onChange: (e) => {
+                      setDepartamentoSeleccionado(e.target.value);
+                      setValue("seccion", "");
+                    },
+                  })}
                   className="input__form__register"
-                  type="text"
-                />
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    -- Seleccione un departamento --
+                  </option>
+                  {Array.from(
+                    new Set(
+                      variables.map((v) => v.departamento).filter(Boolean)
+                    )
+                  ).map((dep, i) => (
+                    <option key={i} value={dep}>
+                      {dep}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="label__form__register">
                 <span className="span__form__register">Sección: </span>
-                <input
+                <select
                   required
                   {...register("seccion")}
                   className="input__form__register"
-                  type="text"
-                />
+                  disabled={!departamentoSeleccionado}
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    -- Seleccione una sección --
+                  </option>
+                  {Array.from(
+                    new Set(
+                      variables
+                        .filter(
+                          (v) => v.departamento === departamentoSeleccionado
+                        )
+                        .map((v) => v.seccion)
+                        .filter(Boolean)
+                    )
+                  ).map((sec, i) => (
+                    <option key={i} value={sec}>
+                      {sec}
+                    </option>
+                  ))}
+                </select>
               </label>
+
               <label className="label__form__register">
                 <span className="span__form__register">Grado: </span>
-                <input
+                <select
                   required
                   {...register("grado")}
                   className="input__form__register"
-                  type="text"
-                />
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    -- Seleccione un grado --
+                  </option>
+                  {Array.from(
+                    new Set(variables.map((v) => v.grado).filter(Boolean))
+                  ).map((grado, index) => (
+                    <option key={index} value={grado}>
+                      {grado}
+                    </option>
+                  ))}
+                </select>
               </label>
             </section>
           </article>

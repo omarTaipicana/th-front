@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "./styles/TablaResumenParteGeneral.css";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
+import { generarPdfGeneral } from "../../services/generaPdfGeneral";
 
 import useCrud from "../../hooks/useCrud";
 
@@ -113,52 +112,69 @@ const TablaResumenParteGeneral = ({
         detalle: registro.detalle,
       });
     });
-
   if (fechaFormacion) {
+    // Crear un mapa para almacenar la última novedad por servidorPolicialId
+    const ultimasNovedades = new Map();
+
+    // Iterar las novedades y almacenar solo la más reciente para cada servidorPolicialId
     novedades.forEach((n) => {
       const fechaInicio = new Date(n.fechaInicio);
       const fechaFin = new Date(n.fechaFin);
+
       if (fechaFormacion >= fechaInicio && fechaFormacion <= fechaFin) {
-        const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
-        if (!servidor) return;
+        const servidorId = n.servidorPolicialId;
 
-        const grupo = getGrupo(servidor.grado);
-        const clave = `Novedad-${n.novedad}`;
-        const seccion = n.seccion || "Sin sección";
-
-        let entry = datosUnificados.find((e) => e.clave === clave);
-        if (!entry) {
-          entry = {
-            clave,
-            novedad: n.novedad,
-            secciones: {},
-          };
-          datosUnificados.push(entry);
+        if (
+          !ultimasNovedades.has(servidorId) ||
+          new Date(n.createdAt) >
+            new Date(ultimasNovedades.get(servidorId).createdAt)
+        ) {
+          ultimasNovedades.set(servidorId, n);
         }
-
-        if (!entry.secciones[seccion]) {
-          entry.secciones[seccion] = {
-            resumen: {
-              "Directivos Superiores": 0,
-              "Directivos Subalternos": 0,
-              "Técnico Operativos": 0,
-              Total: 0,
-            },
-            detalles: [],
-          };
-        }
-
-        const resumenSeccion = entry.secciones[seccion].resumen;
-        resumenSeccion[grupo]++;
-        resumenSeccion.Total++;
-
-        entry.secciones[seccion].detalles.push({
-          nombre: `${servidor.nombres} ${servidor.apellidos}`,
-          grado: servidor.grado,
-          ci: servidor.cI,
-          detalle: n.descripcion,
-        });
       }
+    });
+
+    // Procesar solo las últimas novedades
+    ultimasNovedades.forEach((n) => {
+      const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
+      if (!servidor) return;
+
+      const grupo = getGrupo(servidor.grado);
+      const clave = `Novedad-${n.novedad}`;
+      const seccion = n.seccion || "Sin sección";
+
+      let entry = datosUnificados.find((e) => e.clave === clave);
+      if (!entry) {
+        entry = {
+          clave,
+          novedad: n.novedad,
+          secciones: {},
+        };
+        datosUnificados.push(entry);
+      }
+
+      if (!entry.secciones[seccion]) {
+        entry.secciones[seccion] = {
+          resumen: {
+            "Directivos Superiores": 0,
+            "Directivos Subalternos": 0,
+            "Técnico Operativos": 0,
+            Total: 0,
+          },
+          detalles: [],
+        };
+      }
+
+      const resumenSeccion = entry.secciones[seccion].resumen;
+      resumenSeccion[grupo]++;
+      resumenSeccion.Total++;
+
+      entry.secciones[seccion].detalles.push({
+        nombre: `${servidor.nombres} ${servidor.apellidos}`,
+        grado: servidor.grado,
+        ci: servidor.cI,
+        detalle: n.descripcion,
+      });
     });
   }
 
@@ -191,193 +207,6 @@ const TablaResumenParteGeneral = ({
   });
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
-
-  const generarPDFPrimeraHoja = (datos) => {
-  const doc = new jsPDF({ orientation: "landscape" });
-  const margenX = 10;
-  const margenY = 10;
-
-  if (!Array.isArray(datos)) {
-    console.error("Error: 'datos' no es un arreglo.", datos);
-    return;
-  }
-
-  // Encabezado de la hoja
-  const fechaTexto = formacionActualFecha
-    ? dayjs(formacionActualFecha.fecha).format("DD [de] MMMM [de] YYYY")
-    : "";
-  const horaTexto = formacionActualFecha?.hora
-    ? new Date(`1970-01-01T${formacionActualFecha.hora}`).toLocaleTimeString(
-        "es-EC",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }
-      )
-    : "";
-
-  doc.setFontSize(10);
-  doc.text("DIRECCIÓN GENERAL DE INVESTIGACIÓN", 148, margenY, {
-    align: "center",
-  });
-  doc.text(
-    "PARTE ELEVADO A LA UNIDAD DE ADMINISTRACION DEL TALENTO HUMANO",
-    148,
-    margenY + 6,
-    { align: "center" }
-  );
-  doc.text("SECCIÓN DE TALENTO HUMANO DE LA DGIN", 148, margenY + 12, {
-    align: "center",
-  });
-  doc.text(`Quito, ${fechaTexto} - hora ${horaTexto}`, 148, margenY + 18, {
-    align: "center",
-  });
-
-  const grupos = [
-    "Directivos Superiores",
-    "Directivos Subalternos",
-    "Técnico Operativos",
-  ];
-
-  // Crear el encabezado jerárquico
-  const head = [
-    [
-      { content: "SECCIONES", rowSpan: 2, styles: { halign: "center" } },
-      ...grupos.flatMap((grupo) => [
-        {
-          content: grupo.toUpperCase(),
-          colSpan: datos.length + 1, // +1 para incluir subtotales
-          styles: { halign: "center" },
-        },
-      ]),
-      { content: "TOTAL", rowSpan: 2, styles: { halign: "center" } },
-    ],
-    [
-      ...grupos.flatMap(() => [
-        ...datos.map((item) => ({
-          content: item.novedad,
-          styles: {
-            halign: "center",
-            valign: "middle",
-            // texto vertical se aplicará en didParseCell para mejor compatibilidad
-          },
-        })),
-        { content: "Subtotal", styles: { halign: "center" } }, // Subtotal columna
-      ]),
-    ],
-  ];
-
-  // Construir cuerpo de la tabla
-  const body = [];
-  const totalesPorColumna = Array(
-    datos.length * grupos.length + grupos.length + 1
-  ).fill(0);
-
-  const secciones = Array.from(
-    new Set(
-      datos.flatMap((item) => Object.keys(item.secciones))
-    )
-  ).sort();
-
-  secciones.forEach((seccion) => {
-    const fila = [seccion];
-    let totalFila = 0;
-
-    grupos.forEach((grupo, grupoIndex) => {
-      let subtotalGrupo = 0;
-
-      datos.forEach((item, idx) => {
-        const dataSeccion = item.secciones[seccion] || {
-          resumen: { [grupo]: 0 },
-        };
-        const count = dataSeccion.resumen[grupo] || 0;
-        fila.push(count);
-        subtotalGrupo += count;
-
-        // Índice correcto en array totales
-        const totalIndex = idx + grupoIndex * datos.length;
-        totalesPorColumna[totalIndex] += count;
-
-        totalFila += count;
-      });
-
-      fila.push(subtotalGrupo);
-
-      const subtotalIndex = datos.length * grupos.length + grupoIndex;
-      totalesPorColumna[subtotalIndex] += subtotalGrupo;
-    });
-
-    fila.push(totalFila);
-    totalesPorColumna[totalesPorColumna.length - 1] += totalFila;
-    body.push(fila);
-  });
-
-  // Fila de totales
-  const filaTotales = ["Totales"];
-  totalesPorColumna.forEach((total) => filaTotales.push(total));
-  body.push(filaTotales);
-
-  // Generar la tabla con estilos y texto vertical encabezados menos fila 0 de grupos
-  autoTable(doc, {
-    head,
-    body,
-    startY: margenY + 30,
-    margin: { left: margenX },
-    styles: {
-      fontSize: 7,
-      cellPadding: 2,
-      textColor: [0, 0, 0],
-      lineWidth: 0.3,
-      lineColor: [150, 150, 150],
-    },
-    headStyles: {
-      fillColor: [0, 51, 102],
-      textColor: [255, 255, 255],
-      halign: "center",
-      fontStyle: "bold",
-    },
-    columnStyles: {
-      0: { cellWidth: 50 },
-    },
-    didParseCell: (data) => {
-      const { cell, row, column, section } = data;
-
-      if (section === "head") {
-        // Segunda fila (index 1) poner texto vertical excepto columna 0 (SECCIONES)
-        if (row.index === 1 && column.index !== 0) {
-          cell.styles.textOrientation = "up";
-          cell.styles.valign = "middle";
-          cell.styles.halign = "center";
-        }
-      }
-
-      if (section === "body") {
-        const isTotalRow = row.index === body.length - 1;
-        // Columna subtotal: cada (datos.length + 1) en base a columnas (excepto columna 0)
-        const isSubtotalCol = (column.index - 1) % (datos.length + 1) === datos.length;
-
-        if (isTotalRow) {
-          cell.styles.fillColor = [204, 229, 255]; // azul claro para totaes
-          cell.styles.fontStyle = "bold";
-        } else if (isSubtotalCol) {
-          cell.styles.fillColor = [255, 229, 204]; // naranja claro para subtotales
-        }
-      }
-    },
-  });
-
-  // Guardar el archivo
-  const fileName = `Parte_General_${fechaTexto}_${horaTexto}.pdf`;
-  doc.save(fileName);
-};
-
-
-
-
-
-
-
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
 
@@ -439,13 +268,7 @@ const TablaResumenParteGeneral = ({
                 <React.Fragment key={item.clave}>
                   <tr
                     onClick={() => toggleNovedad(item.clave)}
-                    style={{
-                      backgroundColor:
-                        novedadActiva === item.clave
-                          ? "#f2f2f2"
-                          : "transparent",
-                      cursor: "pointer",
-                    }}
+                    className="novedades_list"
                   >
                     <td>{item.novedad}</td>
                     <td>{totalDirectivosSuperiores}</td>
@@ -458,12 +281,7 @@ const TablaResumenParteGeneral = ({
                       <React.Fragment key={seccion}>
                         <tr
                           onClick={() => toggleSeccion(seccion)}
-                          style={{
-                            fontWeight: "bold",
-                            backgroundColor:
-                              seccionActiva === seccion ? "#f8f8f8" : "#e8e8e8",
-                            cursor: "pointer",
-                          }}
+                          className="seccion_list"
                         >
                           <td>{seccion}</td>
                           <td>{data.resumen["Directivos Superiores"]}</td>
@@ -472,14 +290,45 @@ const TablaResumenParteGeneral = ({
                           <td>{data.resumen.Total}</td>
                         </tr>
                         {seccionActiva === seccion &&
-                          data.detalles.map((detalle, idx) => (
-                            <tr key={idx}>
-                              <td colSpan="5">
-                                {detalle.grado} - {detalle.nombre} ({detalle.ci}
-                                ) - {detalle.detalle}
-                              </td>
-                            </tr>
-                          ))}
+                          (() => {
+                            // Agrupar detalles por grupo
+                            const detallesAgrupados = {
+                              "Directivos Superiores": [],
+                              "Directivos Subalternos": [],
+                              "Técnico Operativos": [],
+                            };
+
+                            data.detalles.forEach((detalle) => {
+                              // Asumiendo getGrupo está disponible en este contexto o importa
+                              const grupo = getGrupo(detalle.grado); // "Directivos Superiores", etc.
+                              if (detallesAgrupados[grupo]) {
+                                detallesAgrupados[grupo].push(detalle);
+                              }
+                            });
+
+                            // Ahora mapeamos por grupo con su lista de detalles
+                            return Object.entries(detallesAgrupados).map(
+                              ([grupo, servidores]) =>
+                                servidores.length > 0 ? (
+                                  <tr key={`${item.clave}-${seccion}-${grupo}`}>
+                                    <td
+                                      colSpan="5"
+                                      style={{ paddingLeft: "2rem" }}
+                                    >
+                                      <strong>{grupo}</strong>
+                                      <ul style={{ marginTop: "0.5rem" }}>
+                                        {servidores.map((s, i) => (
+                                          <li key={i}>
+                                            {s.grado} - {s.nombre} ({s.ci}) -{" "}
+                                            {s.detalle}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </td>
+                                  </tr>
+                                ) : null
+                            );
+                          })()}
                       </React.Fragment>
                     ))}
                 </React.Fragment>
@@ -531,12 +380,7 @@ const TablaResumenParteGeneral = ({
                     <React.Fragment key={seccion}>
                       <tr
                         onClick={() => toggleSeccion(seccion)}
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor:
-                            seccionActiva === seccion ? "#f8f8f8" : "#e8e8e8",
-                          cursor: "pointer",
-                        }}
+                        className="seccion_list"
                       >
                         <td>{seccion}</td>
                         <td>{datos.resumen["Directivos Superiores"]}</td>
@@ -551,14 +395,7 @@ const TablaResumenParteGeneral = ({
                             <React.Fragment key={claveNovedad}>
                               <tr
                                 onClick={() => toggleNovedad(claveNovedad)}
-                                style={{
-                                  fontWeight: "normal",
-                                  backgroundColor:
-                                    novedadActiva === claveNovedad
-                                      ? "#f2f2f2"
-                                      : "transparent",
-                                  cursor: "pointer",
-                                }}
+                                className="novedades_list"
                               >
                                 <td style={{ paddingLeft: "1.5rem" }}>
                                   {novedad.novedad}
@@ -574,17 +411,42 @@ const TablaResumenParteGeneral = ({
                               </tr>
 
                               {novedadActiva === claveNovedad &&
-                                novedad.detalles.map((detalle, idx) => (
-                                  <tr key={idx}>
-                                    <td
-                                      colSpan="5"
-                                      style={{ paddingLeft: "3rem" }}
-                                    >
-                                      {detalle.grado} - {detalle.nombre} (
-                                      {detalle.ci}) - {detalle.detalle}
-                                    </td>
-                                  </tr>
-                                ))}
+                                (() => {
+                                  const detallesAgrupados = {
+                                    "Directivos Superiores": [],
+                                    "Directivos Subalternos": [],
+                                    "Técnico Operativos": [],
+                                  };
+
+                                  novedad.detalles.forEach((detalle) => {
+                                    const grupo = getGrupo(detalle.grado); // Usa tu función getGrupo
+                                    if (detallesAgrupados[grupo]) {
+                                      detallesAgrupados[grupo].push(detalle);
+                                    }
+                                  });
+
+                                  return Object.entries(detallesAgrupados).map(
+                                    ([grupo, servidores]) =>
+                                      servidores.length > 0 ? (
+                                        <tr key={`${claveNovedad}-${grupo}`}>
+                                          <td
+                                            colSpan="5"
+                                            style={{ paddingLeft: "3rem" }}
+                                          >
+                                            <strong>{grupo}</strong>
+                                            <ul style={{ marginTop: "0.5rem" }}>
+                                              {servidores.map((s, i) => (
+                                                <li key={i}>
+                                                  {s.grado} - {s.nombre} ({s.ci}
+                                                  ) - {s.detalle}
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </td>
+                                        </tr>
+                                      ) : null
+                                  );
+                                })()}
                             </React.Fragment>
                           )
                         )}
@@ -609,7 +471,11 @@ const TablaResumenParteGeneral = ({
           </tr>
         </tbody>
       </table>
-      <button onClick={() => generarPDFPrimeraHoja(datosUnificados)}>
+      <button
+        onClick={() =>
+          generarPdfGeneral(datosUnificados, formacionActualFecha, user)
+        }
+      >
         Generar
       </button>
     </div>

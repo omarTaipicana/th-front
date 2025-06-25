@@ -1,4 +1,3 @@
-
 .title_table_reporte {
   color: rgb(58, 52, 16);
   width: 100%;
@@ -62,14 +61,16 @@
   border-bottom: none;
 }
 
-.novedades_list:hover {
-  background-color: #f1f511ac !important;
-  transition: background-color 0.2s ease-in-out;
+.novedades_list {
+  background-color: #adadab7d;
 }
 
+.seccion_list {
+  background-color: #c4c9ed;
+}
 
 .servidores_table_reporte tbody tr:hover {
-  background-color: #fdab40bd;
+  background-color: #fdfd40bd !important;
   transition: background-color 0.2s ease-in-out;
 }
 

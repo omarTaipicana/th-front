@@ -20,6 +20,7 @@ const ParteDiario = () => {
   const [editandoId, setEditandoId] = useState(null);
   const [newPdf, setNewPdf] = useState();
   const [edictionActiva, setEdictionActiva] = useState(false);
+  const [filter, setFilter] = useState("");
 
   const PATH_SERVIDORES = "/servidores";
   const PATH_NOVEDADES = "/novedades";
@@ -162,6 +163,19 @@ const ParteDiario = () => {
     setFormacionActual();
     setEdictionActiva();
   };
+
+  const filteredData = pdfData
+    .filter((formPdf) => formPdf?.seccion === user?.seccion)
+    .filter((formPdf) => {
+      if (filter === "morning") {
+        const hour = parseInt(formPdf?.formacion?.hora.slice(0, 2), 10);
+        return hour >= 7 && hour < 9;
+      } else if (filter === "others") {
+        const hour = parseInt(formPdf?.formacion?.hora.slice(0, 2), 10);
+        return hour < 7 || hour >= 9;
+      }
+      return true; // Mostrar todos si no hay filtro seleccionado
+    });
 
   return (
     <div className="partediario_content">
@@ -367,64 +381,77 @@ const ParteDiario = () => {
 
         <section className="registros_content">
           <h2 className="registros_title">Registro de Partes</h2>
+          <div className="registros_filter">
+            <select
+              id="filterSelect"
+              className="registros_select"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="morning">De las 08H00</option>
+              <option value="others">Otros</option>
+            </select>
+          </div>
           <article className="registros_list">
-            {pdfData
-              .filter((formPdf) => formPdf?.seccion === user?.seccion)
-              .map((formPdf) => (
-                <section className="registros_card" key={formPdf.id}>
-                  <div className="registros_card_body">
-                    <span className="registros_date">
-                      {formPdf?.formacion?.fecha}
-                    </span>
-                    <span className="registros_date"> / </span>
-                    <span className="registros_time">
-                      {formPdf?.formacion?.hora.slice(0, 5)}
-                    </span>
-                  </div>
-                  <div className="registros_card_actions">
-                    {formPdf.pdf ? (
-                      <a
-                        className="registros_btn"
-                        href={formPdf.pdf} // URL del PDF
-                        target="_blank" // Abrir en una nueva pestaña
-                        rel="noopener noreferrer" // Seguridad adicional
-                      >
-                        <img
-                          className="registros_icon"
-                          src="../../../vista.png" // Ícono para visualizar
-                          alt="Vista"
-                        />
-                      </a>
-                    ) : (
-                      <button
-                        className="registros_btn"
-                        onClick={() => {
-                          setShowInputPdf(true);
-                          setIdUploadPdf(formPdf.id);
-                        }}
-                      >
-                        <img
-                          className="registros_icon"
-                          src="../../../subir.png" // Ícono para subir
-                          alt="Subir"
-                        />
-                      </button>
-                    )}
-                    <button className="registros_btn">
+            {filteredData.map((formPdf) => (
+              <section
+                className={`registros_card ${!formPdf.pdf && "sin_pdf_color"}`}
+                key={formPdf.id}
+              >
+                <div className="registros_card_body">
+                  <span className="registros_date">
+                    {formPdf?.formacion?.fecha}
+                  </span>
+                  <span className="registros_date"> / </span>
+                  <span className="registros_time">
+                    {formPdf?.formacion?.hora.slice(0, 5)}
+                  </span>
+                </div>
+                <div className="registros_card_actions">
+                  {formPdf.pdf ? (
+                    <a
+                      className="registros_btn"
+                      href={formPdf.pdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <img
                         className="registros_icon"
-                        src="../../../cargar.png"
-                        alt="Eliminar"
-                        onClick={() => {
-                          setIdFormacion(formPdf.formacionId);
-                          setFormacionActual(formPdf.formacion);
-                          setEdictionActiva(false);
-                        }}
+                        src="../../../vista.png"
+                        alt="Vista"
+                      />
+                    </a>
+                  ) : (
+                    <button
+                      className="registros_btn"
+                      onClick={() => {
+                        setShowInputPdf(true);
+                        setIdUploadPdf(formPdf.id);
+                      }}
+                    >
+                      <img
+                        className="registros_icon"
+                        src="../../../subir.png"
+                        alt="Subir"
                       />
                     </button>
-                  </div>
-                </section>
-              ))}
+                  )}
+                  <button className="registros_btn">
+                    <img
+                      className="registros_icon"
+                      src="../../../cargar.png"
+                      alt="Eliminar"
+                      onClick={() => {
+                        setIdFormacion(formPdf.formacionId);
+                        setFormacionActual(formPdf.formacion);
+                        setEdictionActiva(false);
+                      }}
+                    />
+                  </button>
+                </div>
+              </section>
+            ))}
           </article>
           {showInputPdf && (
             <InputPdf
