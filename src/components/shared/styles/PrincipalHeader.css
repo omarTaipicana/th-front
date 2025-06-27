@@ -1,12 +1,8 @@
-.logo_navbar {
-  height: 4.5rem;
-  margin: 0;
-}
-
+/* Estilos para escritorio */
 .header_nav {
   top: 0;
   width: 100%;
-  height: 5em;
+  height: 5em; /* Altura fija para escritorio */
   background: linear-gradient(180deg, #011b5ecc, #016da3cc);
   display: flex;
   justify-content: space-between;
@@ -14,6 +10,7 @@
   padding: 1rem 2rem;
   z-index: 1000;
   backdrop-filter: blur(5px);
+  position: relative; /* Asegura que el header tenga prioridad */
 }
 
 .principal__header__section {
@@ -21,42 +18,27 @@
   align-items: center;
   gap: 1.5em;
   width: 100%;
+  justify-content: space-between;
 }
+
+.logo_navbar {
+  height: 4.5rem;
+  margin: 0;
+}
+
 .link_content {
-  width: 90%;
   display: flex;
   gap: 2rem;
   align-items: center;
-  justify-content: left;
-}
-
-.login_content {
-  width: 10%;
-  display: flex;
-  gap: 0.5em;
 }
 
 .link_content a {
   text-decoration: none;
-  background: none;
-  border: none;
   color: white;
   font-size: 1rem;
   padding: 8px 12px;
-  cursor: pointer;
   position: relative;
   transition: color 0.3s ease;
-}
-
-.link_content a::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: #00a8ff;
-  transition: width 0.3s ease;
 }
 
 .link_content a:hover {
@@ -64,51 +46,104 @@
   font-weight: bold;
 }
 
-.link_content a:hover::after {
-  width: 100%;
-}
-
-.principal__header__section .user__icon {
-  width: 2m;
-  height: 3em;
+.user__icon {
+  width: 2.5rem; /* Ajuste del tamaño */
+  height: 2.5rem; /* Ajuste del tamaño */
   border-radius: 50%;
-  border: 0.125em solid #c3e6cb;
+  border: 0.125rem solid #c3e6cb;
   transition: transform 0.3s ease;
 }
 
-.principal__header__section .user__icon:hover {
+.user__icon:hover {
   transform: scale(1.1);
 }
 
-.principal__header__section button {
-  height: 30%;
-  margin: auto;
+.logout__button {
+  height: 2.5rem;
   background-color: #dc3545;
   color: white;
   border: none;
-  border-radius: 0.3125em;
-  padding: 0.5em 1em;
-  font-size: 1em;
+  border-radius: 0.3125rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.principal__header__section button:hover {
+.logout__button:hover {
   background-color: #c82333;
 }
 
-@media (max-width: 48em) {
-  header {
-    padding: 1em;
+/* Estilos para dispositivos móviles */
+.hamburger {
+  display: none; /* Oculto en escritorio */
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.menu_open {
+  display: flex !important;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1100; /* Asegura que el menú esté delante de otros componentes */
+  position: fixed; /* Mantiene el menú visible al desplazarse */
+  background: rgba(0, 0, 0, 0.9); /* Fondo más oscuro para destacar el menú */
+  width: 100%; /* Ocupa todo el ancho */
+  top: 5em; /* Debajo del header */
+  left: 0;
+  padding: 1rem;
+}
+
+.login_content {
+  left: 0;
+  display: flex;
+}
+.logout__button {
+  height: 2rem;
+  margin-left: 1em;
+}
+@media (max-width: 768px) {
+  .link_content {
+    display: none;
   }
 
-  .principal__header__section {
-    flex-direction: column;
-    gap: 1em;
+  .hamburger {
+    display: flex;
   }
 
-  .principal__header__section button {
-    width: 100%;
+  .login_content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logout__button {
+    height: 2rem;
+    margin-left: 1em;
   }
 }

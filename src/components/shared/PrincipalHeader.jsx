@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./styles/PrincipalHeader.css";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
-import Alert from "./Alert";
 import useAuth from "../../hooks/useAuth";
 
 const PrincipalHeader = () => {
@@ -16,12 +15,16 @@ const PrincipalHeader = () => {
   const rolAdmin = import.meta.env.VITE_ROL_ADMIN;
   const rolTalentoHumano = import.meta.env.VITE_ROL_TALENTO_HUMANO;
   const rolEncargado = import.meta.env.VITE_ROL_SUB_ENCARGADO;
+
   const [grados, setGrados] = useState({
     grado1: false,
     grado2: false,
     grado3: false,
     grado4: false,
   });
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
 
   useEffect(() => {
     if (!user?.role) return;
@@ -41,7 +44,7 @@ const PrincipalHeader = () => {
         roles.includes(rolEncargado),
       grado4: !!user,
     });
-  }, [user]);
+  }, [user, token]);
 
   useEffect(() => {
     const checkToken = async () => {
@@ -72,6 +75,20 @@ const PrincipalHeader = () => {
     navigate("/");
   };
 
+  // Cierra el menú si se hace clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="header_nav">
       <section className="principal__header__section">
@@ -83,35 +100,44 @@ const PrincipalHeader = () => {
           />
         </Link>
 
-        <article className="link_content">
-          {" "}
+        <button
+          className={`hamburger ${menuOpen ? "open" : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav
+          className={`link_content ${menuOpen ? "menu_open" : ""}`}
+          ref={menuRef}
+        >
           {grados.grado2 && <Link to="/">Home</Link>}
           {grados.grado1 && <Link to="/parte_diario">Parte Diario</Link>}
-          {grados.grado2 && (
-            <Link to="/servidores">Registro de Servidores</Link>
-          )}
+          {grados.grado2 && <Link to="/servidores">Registro de Servidores</Link>}
           {grados.grado1 && <Link to="/usuarios">Usuarios</Link>}
           {grados.grado1 && <Link to="/orden">Orden</Link>}
           {!token && <Link to="/register">Registrarse</Link>}
           {!token && <Link to="/login">Login</Link>}
-        </article>
-        <article className="login_content">
-          <Link to="/login">
-            {token && (
-              <img
-                className="user__icon"
-                src="../../../user.png"
-                alt="User Icon"
-              />
-            )}
-          </Link>
+        </nav>
 
+        <div className="login_content">
           {token && (
-            <button onClick={handleLogout} className="logout__button">
-              Salir
-            </button>
+            <>
+              <Link to="/login">
+                <img
+                  className="user__icon"
+                  src="../../../user.png"
+                  alt="User Icon"
+                />
+              </Link>
+              <button onClick={handleLogout} className="logout__button">
+                Salir
+              </button>
+            </>
           )}
-        </article>
+        </div>
       </section>
     </header>
   );

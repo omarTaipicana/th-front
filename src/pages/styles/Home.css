@@ -1,4 +1,4 @@
-
+/* Estilos base */
 .home-container {
   display: flex;
   flex-direction: column;
@@ -8,6 +8,7 @@
   text-align: center;
   background: linear-gradient(135deg, var(--cyan), var(--gray-dark));
   color: rgb(2, 2, 83);
+  padding: 1rem; /* Añadido para evitar que el contenido toque los bordes en móviles */
 }
 
 .home-title {
@@ -22,4 +23,32 @@
   line-height: 1.5;
   color: var(--white);
   opacity: 0.9;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .home-container {
+    height: auto; /* Ajusta la altura para contenido dinámico */
+    padding: 2rem; /* Más espacio alrededor en dispositivos pequeños */
+  }
+
+  .home-title {
+    font-size: 2rem; /* Reduce tamaño del título */
+  }
+
+  .home-description {
+    font-size: 1rem; /* Reduce el tamaño de la descripción */
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 1.8rem; /* Ajuste más pequeño para pantallas muy pequeñas */
+  }
+
+  .home-description {
+    font-size: 0.9rem; /* Reduce aún más el tamaño del texto */
+    line-height: 1.3;
+  }
 }
