@@ -122,8 +122,14 @@
   transition: background-color 0.2s ease-in-out;
 }
 
+
+
 .formacion_inactiva {
-  background-color: #bad8f6d2;
+  background-color: #97dc6f91;
+}
+
+.sin_pdf_color {
+  background-color: #e0320791;
 }
 
 .formacion_item div,

@@ -73,6 +73,32 @@
   border-color: #26c6da;
   outline: none;
 }
+.input_error {
+  border-color: red;
+  outline-color: red;
+}
+
+.error_message {
+  font-size: 0.9rem;
+  color: red;
+  margin-top: 0.3rem;
+  margin-bottom: -0.8rem;
+}
+.archivo_faltante {
+  background-color: rgba(255, 0, 0, 0.637); /* Fondo rojo claro */
+  border: 2px dashed rgba(255, 0, 0, 0.6); /* Borde rojo con estilo dashed */
+  text-align: center; /* Centra contenido */
+  padding: 5px; /* Espaciado interno */
+}
+
+.archivo_faltante:hover {
+  background-color: rgba(
+    255,
+    0,
+    0,
+    0.4
+  ); /* Fondo más notorio al pasar el mouse */
+}
 
 .user_novedades_content button[type="submit"],
 .user_novedades_content form button {
@@ -166,8 +192,7 @@
   padding: 0.8em 1em;
   border-bottom: 1px solid #e0e0e0;
   color: #333;
-    font-size: 0.6em;
-
+  font-size: 0.6em;
 }
 
 /* .table_wrapper tbody tr:nth-child(even) {

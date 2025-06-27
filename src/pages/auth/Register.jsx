@@ -65,33 +65,63 @@ const Register = () => {
     }
   }, [userRegister]);
 
-  const submit = (data) => {
-    const frontBaseUrl = `${location.protocol}//${location.host}/#/verify`;
+const submit = (data) => {
+  const frontBaseUrl = `${location.protocol}//${location.host}/#/verify`;
 
-    const body = {
-      ...data,
-      frontBaseUrl,
-    };
+  // Expresión regular para validar la contraseña
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
 
-    if (data.password === data.confirmPassword) {
-      registerUser(body);
-      reset({
-        email: "",
-        grado: "",
-        firstName: "",
-        lastName: "",
-        password: "",
-        confirmPassword: "",
-      });
-    } else {
-      dispatch(
-        showAlert({
-          message: "   ⚠️Las contraseñas no coinciden",
-          alertType: 1,
-        })
-      );
-    }
+  // Validar contraseña
+  if (!passwordRegex.test(data.password)) {
+    return dispatch(
+      showAlert({
+        message:
+          "⚠️ La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
+        alertType: 1,
+      })
+    );
+  }
+
+  // Transformar nombres y apellidos
+  const formatName = (name) => {
+    return name
+      .trim() // Eliminar espacios al inicio y al final
+      .replace(/\s+/g, " ") // Reemplazar múltiples espacios internos con uno solo
+      .split(" ") // Dividir por palabras
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalizar la primera letra
+      .join(" "); // Unir las palabras nuevamente
   };
+
+  const formattedData = {
+    ...data,
+    firstName: formatName(data.firstName), // Formatear primer nombre
+    lastName: formatName(data.lastName), // Formatear apellidos
+    email: data.email.trim().toLowerCase(), // Convertir email a minúsculas y eliminar espacios
+    frontBaseUrl,
+  };
+
+  // Verificar si las contraseñas coinciden
+  if (data.password === data.confirmPassword) {
+    registerUser(formattedData); // Registrar usuario con los datos formateados
+    reset({
+      email: "",
+      grado: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPassword: "",
+    });
+  } else {
+    dispatch(
+      showAlert({
+        message: "⚠️ Las contraseñas no coinciden",
+        alertType: 1,
+      })
+    );
+  }
+};
+
 
   return (
     <div>

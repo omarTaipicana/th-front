@@ -39,6 +39,7 @@ const Usuarios = () => {
     formState: { errors },
   } = useForm();
 
+  const superAdmin = import.meta.env.VITE_CI_SUPERADMIN;
   const [show, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [userEdit, setUserEdit] = useState();
@@ -307,9 +308,11 @@ const Usuarios = () => {
                     {...register("role")}
                     className="input_edit_user"
                   >
-                    <option value="Talento Humano">Talento Humano</option>
-                    <option value="Administrador">Administrador</option>
+                    <option value="Talento-Humano">Talento-Humano</option>
                     <option value="Encargado">Encargado</option>
+                    {userLogged.cI === superAdmin && (
+                      <option value="Administrador">Administrador</option>
+                    )}{" "}
                   </select>
                 </label>
                 <label className="label_edit_user">

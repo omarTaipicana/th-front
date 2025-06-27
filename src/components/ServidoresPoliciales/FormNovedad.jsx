@@ -30,7 +30,12 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
     newReg,
     deleteReg,
     updateReg,
+    postApiFile,
+    newRegFile,
+    updateApiFile,
+    updateRegFile,
   ] = useCrud();
+
   const {
     register,
     handleSubmit,
@@ -47,7 +52,6 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
     getApi(PATH_NOVEDADES);
     getVariables(PATH_VARIABLES);
   }, []);
-
 
   useEffect(() => {
     if (novedadEdit && variables.length > 0) {
@@ -67,32 +71,32 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
   }, [error]);
 
   useEffect(() => {
-    if (newReg) {
+    if (newRegFile) {
       dispatch(
         showAlert({
           message:
-            `⚠️ Se creo correctamente la novedad  ${newReg.novedad}` ||
+            `⚠️ Se creo correctamente la novedad  ${newRegFile.novedad}` ||
             "Error inesperado",
 
           alertType: 2,
         })
       );
     }
-  }, [newReg]);
+  }, [newRegFile]);
 
   useEffect(() => {
-    if (updateReg) {
+    if (updateRegFile) {
       dispatch(
         showAlert({
           message:
-            `⚠️ Se actualizó correctamente la novedad  ${updateReg.novedad}` ||
+            `⚠️ Se actualizó correctamente la novedad  ${updateRegFile.novedad}` ||
             "Error inesperado",
 
           alertType: 3,
         })
       );
     }
-  }, [updateReg]);
+  }, [updateRegFile]);
 
   useEffect(() => {
     if (deleteReg) {
@@ -109,20 +113,24 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
   }, [deleteReg]);
 
   const submitNovedad = (data) => {
+    const file = data?.urlDoc?.[0] || null;
+
     if (!novedadEdit) {
-      postApi(PATH_NOVEDADES, {
-        ...data,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-        seccion: servidorPolicialEditNovedad.seccion,
-        servidorPolicialId: servidorPolicialEditNovedad.id,
-      });
+      postApiFile(
+        PATH_NOVEDADES,
+        {
+          ...data,
+          usuarioRegistro: user.cI,
+          usuarioEdicion: user.cI,
+          seccion: servidorPolicialEditNovedad.seccion,
+          servidorPolicialId: servidorPolicialEditNovedad.id,
+        },
+        file
+      );
     } else {
-      updateApi(PATH_NOVEDADES, novedadEdit.id, {
+      updateApiFile(PATH_NOVEDADES, novedadEdit.id, file, {
         ...data,
         usuarioEdicion: user.cI,
-        seccion: servidorPolicialEditNovedad.seccion,
-        servidorPolicialId: servidorPolicialEditNovedad.id,
       });
     }
     reset({
@@ -258,33 +266,79 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
                 required
               />
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">Fecha del Documento: </span>
               <input
                 type="date"
-                className="input_novedades_user"
-                {...register("fechaDocumento")}
-                required
+                className={`input_novedades_user ${
+                  errors.fechaDocumento ? "input_error" : ""
+                }`}
+                {...register("fechaDocumento", {
+                  required: "La fecha del documento es obligatoria",
+                  validate: (value) =>
+                    !watch("fechaInicio") ||
+                    new Date(value) <= new Date(watch("fechaInicio")) ||
+                    "La Fecha del Documento no puede ser mayor a la Fecha de Inicio",
+                })}
               />
+              {errors.fechaDocumento && (
+                <p className="error_message">{errors.fechaDocumento.message}</p>
+              )}
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">Fecha de Inicio: </span>
               <input
                 type="date"
-                className="input_novedades_user"
-                {...register("fechaInicio")}
-                required
+                className={`input_novedades_user ${
+                  errors.fechaInicio ? "input_error" : ""
+                }`}
+                {...register("fechaInicio", {
+                  required: "La fecha de inicio es obligatoria",
+                  validate: (value) =>
+                    ((!watch("fechaFin") ||
+                      new Date(value) <= new Date(watch("fechaFin"))) &&
+                      (!watch("fechaDocumento") ||
+                        new Date(value) >=
+                          new Date(watch("fechaDocumento")))) ||
+                    "La Fecha de Inicio debe estar entre la Fecha del Documento y la Fecha de Finalización",
+                })}
               />
+              {errors.fechaInicio && (
+                <p className="error_message">{errors.fechaInicio.message}</p>
+              )}
             </label>
+
             <label className="label_novedades_user">
               <span className="span_novedades_user">
                 Fecha de Finalización:{" "}
               </span>
               <input
                 type="date"
+                className={`input_novedades_user ${
+                  errors.fechaFin ? "input_error" : ""
+                }`}
+                {...register("fechaFin", {
+                  required: "La fecha de finalización es obligatoria",
+                  validate: (value) =>
+                    !watch("fechaInicio") ||
+                    new Date(value) >= new Date(watch("fechaInicio")) ||
+                    "La Fecha de Finalización no puede ser menor a la Fecha de Inicio",
+                })}
+              />
+              {errors.fechaFin && (
+                <p className="error_message">{errors.fechaFin.message}</p>
+              )}
+            </label>
+
+            <label className="label_novedades_user">
+              <span className="span_novedades_user">Documento: </span>
+              <input
+                type="file"
+                accept="application/pdf"
                 className="input_novedades_user"
-                {...register("fechaFin")}
-                required
+                {...register("urlDoc")}
               />
             </label>
           </div>
@@ -322,6 +376,7 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
                 <th>Fecha de Documento</th>
                 <th>Fecha de Inicio</th>
                 <th>Fecha de Finalización</th>
+                <th>Documento</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
               </tr>
@@ -357,6 +412,30 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
                     </td>
                     <td data-label="Fecha de Inicio">{nov.fechaInicio}</td>
                     <td data-label="Fecha de Finalización">{nov.fechaFin}</td>
+                    <td
+                      className={nov.urlDoc ? "" : "archivo_faltante"} // Clase condicional
+                    >
+                      <a
+                        href={nov.urlDoc || "#"} // Si no hay URL, desactiva el enlace
+                        target={nov.urlDoc ? "_blank" : undefined} // Solo abre en una nueva pestaña si hay archivo
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          if (!nov.urlDoc) {
+                            e.preventDefault(); // Previene la acción si no hay URL
+                            alert(
+                              "Debe subir el archivo para habilitar esta opción."
+                            );
+                          }
+                        }}
+                      >
+                        <img
+                          className="user_icon_btn"
+                          src={`../../../${nov.urlDoc ? "vista" : "up"}.png`}
+                          alt={nov.urlDoc ? "Abrir Documento" : "Subir Archivo"}
+                        />
+                      </a>
+                    </td>
+
                     <td>
                       <img
                         className="user_icon_btn"

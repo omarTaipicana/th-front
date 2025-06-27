@@ -6,12 +6,14 @@ import IsLoading from "../components/shared/isLoading";
 import TablaResumenParte from "../components/ParteDiario/TablaResumenParte";
 import InputPdf from "../components/ParteDiario/InputPdf";
 import ResumenGeneral from "../components/ParteDiario/ResumenGeneral";
+import SelectTurno from "../components/ParteDiario/SelectTurno";
 
 const ParteDiario = () => {
   const [formState, setFormState] = useState({});
   const [showInputPdf, setShowInputPdf] = useState(false);
   const [showEncargado, setShowEncargado] = useState(false);
   const [showFormFormacion, setShowFormFormacion] = useState(false);
+  const [showFormTurno, setShowFormTurno] = useState(false);
   const [showDeleteFormacion, setShowDeleteFormacion] = useState(false);
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [formacionActual, setFormacionActual] = useState();
@@ -33,6 +35,7 @@ const ParteDiario = () => {
   const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
   const resApiFilter = resApi.filter((item) => item.enLaDireccion === "Si");
   const [pdfData, getPdf] = useCrud();
+  const token = localStorage.getItem("token");
 
   const [
     formacion,
@@ -60,7 +63,21 @@ const ParteDiario = () => {
   ] = useCrud();
 
   useEffect(() => {
-    loggedUser();
+    const checkToken = async () => {
+      if (!token) return;
+
+      const success = await loggedUser();
+
+      if (!success) {
+        console.log("❌ Token inválido, removido");
+        localStorage.removeItem("token");
+        setUserLogged(null);
+      }
+    };
+    checkToken();
+  }, [token]);
+
+  useEffect(() => {
     getApi(PATH_SERVIDORES);
     getParte(PATH_PARTE);
     getNovedades(PATH_NOVEDADES);
@@ -177,13 +194,16 @@ const ParteDiario = () => {
       >
         ENCARGADO GENERAL
       </button>
-      <button className="btn_show turno">PERSONAL DE TURNO</button>
+      <button onClick={() => setShowFormTurno(true)} className="btn_show turno">
+        PERSONAL DE TURNO
+      </button>
 
       <h2 className="parte_diario_title">
         Parte Diario de Novedades de Planta Central de la Dirección General de
         Investigaciones
       </h2>
 
+      {showFormTurno && <SelectTurno setShowFormTurno={setShowFormTurno} />}
       {formacionActiva && (
         <article className="formacion_activa_container">
           {[...formacion]

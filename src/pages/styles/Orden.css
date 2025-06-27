@@ -1,0 +1,22 @@
+.orden_content{
+    color: black;
+}
+
+.servidores-dropdown {
+  list-style: none;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+}
+
+.servidores-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.servidores-dropdown li:hover {
+  background: #f0f0f0;
+}

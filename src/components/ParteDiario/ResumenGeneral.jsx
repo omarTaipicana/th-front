@@ -5,6 +5,7 @@ import FormFormacion from "../../components/ParteDiario/FormFormacion";
 import "./styles/ResumenGeneral.css";
 import useCrud from "../../hooks/useCrud";
 import TablaResumenParteGeneral from "./TablaResumenParteGeneral";
+import InputPdf from "./InputPdf";
 
 const ResumenGeneral = ({
   setShowEncargado,
@@ -28,6 +29,11 @@ const ResumenGeneral = ({
   const [formacionActiva, setFormacionActiva] = useState(false);
   const [idFormacion, setIdFormacion] = useState();
   const [formacionActualFecha, setFormacionActualFecha] = useState();
+  const [recargar, setRecargar] = useState(false);
+  const [verActivo, setVerActivo] = useState(false);
+  const [showInputPdf, setShowInputPdf] = useState(false);
+  const [idUploadPdf, setIdUploadPdf] = useState();
+
   const [faltante, setFaltante] = useState();
   const [filter, setFilter] = useState("");
 
@@ -46,6 +52,7 @@ const ResumenGeneral = ({
     ,
     newFormacion,
     ,
+    updateFormReg,
   ] = useCrud();
 
   useEffect(() => {
@@ -54,7 +61,7 @@ const ResumenGeneral = ({
     getApi(PATH_SERVIDORES);
     getVariables(PATH_VARIABLES);
     getPdf(PATH_PDF);
-  }, [showFormFormacion]);
+  }, [showFormFormacion, updateFormReg, idUploadPdf, showInputPdf, recargar]);
 
   useEffect(() => {
     const hayFormacionActiva = formacion.some((form) => form.isAvailable);
@@ -155,6 +162,7 @@ const ResumenGeneral = ({
                     onClick={() => {
                       setIdFormacion(form.id);
                       setFormacionActualFecha(form);
+                      setRecargar(!recargar);
                     }}
                     className="formacion_item"
                     key={form.id}
@@ -193,42 +201,101 @@ const ResumenGeneral = ({
               </select>
             </div>
             <article className="formacion_list">
-              {filteredFormacion.map((form) => (
-                <section
-                  className={`formacion_item ${
-                    !form.isAvailable ? "formacion_inactiva" : ""
-                  } ${form.id === idFormacion ? "formacion_resaltada" : ""}`} // Clase adicional
-                  key={form.id}
-                >
-                  <div>
-                    Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
-                    <strong>{form.hora}</strong>
-                  </div>
-                  {form.isAvailable && (
+              {filteredFormacion.map((form) => {
+                const matchedPdf = pdfData.find(
+                  (pdf) => pdf.formacionId === form.id
+                );
+
+                return (
+                  <section
+                    className={`formacion_item ${
+                      !form.isAvailable ? "formacion_inactiva" : ""
+                    } ${
+                      form.id === idFormacion ? "formacion_resaltada" : ""
+                    }   ${!matchedPdf?.pdf && !form.isAvailable && "sin_pdf_color"}`} 
+                    key={form.id}
+                  >
                     <div>
-                      <img
-                        className="user_icon_btn"
-                        src="../../../edit.png"
-                        alt="Editar"
-                        onClick={() => {
-                          setFormacionEdit(form);
-                          setShowFormFormacion(true);
-                        }}
-                      />
-                      <img
-                        className="user_icon_btn"
-                        src="../../../delete_3.png"
-                        alt="Eliminar"
-                        onClick={() => {
-                          setFormacionDelete(form);
-                          setShowDeleteFormacion(true);
-                        }}
-                      />
+                      Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
+                      <strong>{form.hora}</strong>
                     </div>
-                  )}
-                </section>
-              ))}
+                    {form.isAvailable && (
+                      <div>
+                        <img
+                          className="user_icon_btn"
+                          src="../../../edit.png"
+                          alt="Editar"
+                          onClick={() => {
+                            setFormacionEdit(form);
+                            setShowFormFormacion(true);
+                          }}
+                        />
+                        <img
+                          className="user_icon_btn"
+                          src="../../../delete_3.png"
+                          alt="Eliminar"
+                          onClick={() => {
+                            setFormacionDelete(form);
+                            setShowDeleteFormacion(true);
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {!form.isAvailable && matchedPdf && (
+                      <div>
+                        {matchedPdf?.pdf ? (
+                          <a
+                            className="registros_btn"
+                            href={matchedPdf.pdf}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              className="registros_icon"
+                              src="../../../vista.png"
+                              alt="Vista"
+                            />
+                          </a>
+                        ) : (
+                          <button
+                            className="registros_btn"
+                            onClick={() => {
+                              setShowInputPdf(true);
+                              setIdUploadPdf(matchedPdf.id);
+                            }}
+                          >
+                            <img
+                              className="registros_icon"
+                              src="../../../subir.png"
+                              alt="Subir"
+                            />
+                          </button>
+                        )}
+                        <button className="registros_btn">
+                          <img
+                            className="registros_icon"
+                            src="../../../cargar.png"
+                            alt="Ver"
+                            onClick={() => {
+                              setIdFormacion(form.id);
+                              setFormacionActualFecha(form);
+                              setVerActivo(true);
+                            }}
+                          />
+                        </button>
+                      </div>
+                    )}
+                  </section>
+                );
+              })}
             </article>
+            {showInputPdf && (
+              <InputPdf
+                setShowInputPdf={setShowInputPdf}
+                idUploadPdf={idUploadPdf}
+              />
+            )}
           </section>
 
           <article className="tabla_general">
@@ -237,10 +304,14 @@ const ResumenGeneral = ({
               parte={parte}
               servidores={servidores}
               idFormacion={idFormacion}
+              setIdFormacion={setIdFormacion}
               novedades={novedades}
               formacionActualFecha={formacionActualFecha}
+              setFormacionActualFecha={setFormacionActualFecha}
               setNewPdf={setNewPdf}
               faltante={faltante}
+              updateFormacion={updateFormacion}
+              verActivo={verActivo}
             />
           </article>
 

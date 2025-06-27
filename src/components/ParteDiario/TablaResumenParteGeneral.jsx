@@ -13,9 +13,13 @@ const TablaResumenParteGeneral = ({
   parte,
   servidores,
   idFormacion,
+  setIdFormacion,
   novedades,
   formacionActualFecha,
+  setFormacionActualFecha,
   faltante,
+  updateFormacion,
+  verActivo,
 }) => {
   dayjs.locale("es");
   const dispatch = useDispatch();
@@ -38,17 +42,9 @@ const TablaResumenParteGeneral = ({
     updateReg,
   ] = useCrud();
 
-  const [
-    formacion,
-    getFormacion,
-    postFormacion,
-    deleteFormacion,
-    updateFormacion,
-    ,
-    ,
-    newFormacion,
-    ,
-  ] = useCrud();
+  useEffect(() => {
+    getPdf(PATH_PDF);
+  }, []);
 
   const gruposOcupacionales = {
     directivosSuperiores: ["GRAD", "CRNL", "TCNL", "MAYR"],
@@ -234,15 +230,36 @@ const TablaResumenParteGeneral = ({
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
   const submitRegPdf = () => {
-    // const body = {
-    //   seccion: "encargado",
-    //   generado: true,
-    //   usuarioRegistro: user.cI,
-    //   usuarioEdicion: user.cI,
-    //   formacionId: idFormacion,
-    // };
-    // postPdf(PATH_PDF, body);
-    console.log(body);
+    const existeRegistro = response.some(
+      (registro) =>
+        registro?.seccion === "encargado" &&
+        registro.formacionId === idFormacion
+    );
+
+    if (existeRegistro) {
+      dispatch(
+        showAlert({
+          message:
+            "⚠️ Ya se encuentra registrado el parte para esta formación.",
+          alertType: 1,
+        })
+      );
+      return;
+    }
+
+    const body = {
+      seccion: "encargado",
+      generado: true,
+      usuarioRegistro: user.cI,
+      usuarioEdicion: user.cI,
+      formacionId: idFormacion,
+    };
+    postPdf(PATH_PDF, body);
+    updateFormacion(PATH_FORMACION, idFormacion, {
+      isAvailable: false,
+    });
+    setIdFormacion();
+    setFormacionActualFecha();
   };
 
   // genera pdf  ------------------------------------------------------------------------------------------------------------------------------
@@ -512,18 +529,19 @@ const TablaResumenParteGeneral = ({
       {idFormacion && (
         <article className="btn_content">
           <button
-            className="btn_generar_pdf"
             onClick={() =>
               generarPdfGeneral(datosUnificados, formacionActualFecha, user)
             }
-            disabled={faltante !== 0}
+            className="btn_generar_pdf"
           >
-            {faltante === 0 ? "generar PDF" : "Completar Secciones"}
+            Generar PDF
           </button>
 
-          <button onClick={submitRegPdf} className="btn_generar_pdf">
-            Registrar Parte
-          </button>
+          {!verActivo && faltante === 0 && (
+            <button className="btn_generar_pdf" onClick={submitRegPdf}>
+              Registrar Formación
+            </button>
+          )}
         </article>
       )}
     </div>

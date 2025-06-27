@@ -6,9 +6,10 @@ const useCrud = () => {
   const BASEURL = import.meta.env.VITE_API_URL;
   const [response, setResponse] = useState([]);
   const [newReg, setNewReg] = useState();
-  const [newPdf, setNewPdf] = useState()
+  const [newRegFile, setNewRegFile] = useState();
   const [deleteReg, setDeleteReg] = useState();
   const [updateReg, setUpdateReg] = useState();
+  const [updateRegFile, setUpdateRegFile] = useState();
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,7 +56,7 @@ const useCrud = () => {
       .finally(() => setIsLoading(false))
       .catch((err) => {
         setError(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 
@@ -75,33 +76,63 @@ const useCrud = () => {
       });
   };
 
-  const uploadPdf = (path, id, file) => {
-  setIsLoading(true);
+  const postApiFile = (path, data, file) => {
+    setIsLoading(true);
+    // Crear un objeto FormData y agregar el archivo
+    const formData = new FormData();
+    formData.append("file", file);
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
 
-  // Crear un objeto FormData y agregar el archivo
-  const formData = new FormData();
-  formData.append("pdf", file);
+    const url = `${BASEURL}${path}`;
 
-  const url = `${BASEURL}${path}/${id}`;
+    axios
+      .post(url, formData, {
+        headers: {
+          ...getConfigToken().headers,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setResponse([...response, res.data]);
+        setNewRegFile(res.data);
+      })
+      .finally(() => setIsLoading(false))
+      .catch((err) => {
+        setError(err);
+        // console.log(err);
+      });
+  };
 
-  axios
-    .put(url, formData, {
-      headers: {
-        ...getConfigToken().headers,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-      setResponse(response.map((e) => (e.id === id ? res.data : e)));
-      setNewPdf(res.data.pdf)
-    })
-    .finally(() => setIsLoading(false))
-    .catch((err) => {
-      setError(err);
-      console.error(err);
-    });
-};
+  const updateApiFile = (path, id, file, data) => {
+    setIsLoading(true);
 
+    const formData = new FormData();
+    formData.append("file", file);
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    const url = `${BASEURL}${path}/${id}`;
+
+    axios
+      .put(url, formData, {
+        headers: {
+          ...getConfigToken().headers,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setResponse(response.map((e) => (e.id === id ? res.data : e)));
+        setUpdateRegFile(res.data);
+      })
+      .finally(() => setIsLoading(false))
+      .catch((err) => {
+        setError(err);
+        console.error(err);
+      });
+  };
 
   return [
     response,
@@ -114,8 +145,10 @@ const useCrud = () => {
     newReg,
     deleteReg,
     updateReg,
-    uploadPdf,
-    newPdf,
+    postApiFile,
+    newRegFile,
+    updateApiFile,
+    updateRegFile,
   ];
 };
 

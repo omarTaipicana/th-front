@@ -29,14 +29,18 @@ const InputPdf = ({ setShowInputPdf, idUploadPdf }) => {
     newReg,
     deleteReg,
     updateReg,
-    uploadPdf,
-    newPdf,
+    postApiFile,
+    newRegFile,
+    updateApiFile,
+    updateRegFile,
   ] = useCrud();
 
   const submit = (data) => {
+
     const file = data.pdf[0];
 
-    // uploadPdf(PATH_PDF, idUploadPdf, file);
+    updateApiFile(PATH_PDF, idUploadPdf, file);
+    
 
     reset();
     setShowInputPdf(false);

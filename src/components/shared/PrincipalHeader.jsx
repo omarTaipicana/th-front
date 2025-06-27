@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./styles/PrincipalHeader.css";
 import { useDispatch } from "react-redux";
@@ -12,10 +12,50 @@ const PrincipalHeader = () => {
   const dispatch = useDispatch();
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
 
+  const superAdmin = import.meta.env.VITE_CI_SUPERADMIN;
+  const rolAdmin = import.meta.env.VITE_ROL_ADMIN;
+  const rolTalentoHumano = import.meta.env.VITE_ROL_TALENTO_HUMANO;
+  const rolEncargado = import.meta.env.VITE_ROL_SUB_ENCARGADO;
+  const [grados, setGrados] = useState({
+    grado1: false,
+    grado2: false,
+    grado3: false,
+    grado4: false,
+  });
+
   useEffect(() => {
-    if (token) {
-      loggedUser();
-    }
+    if (!user?.role) return;
+
+    const roles = [user.role];
+
+    setGrados({
+      grado1: roles.includes(rolAdmin) || user.cI === superAdmin,
+      grado2:
+        roles.includes(rolAdmin) ||
+        user.cI === superAdmin ||
+        roles.includes(rolTalentoHumano),
+      grado3:
+        roles.includes(rolAdmin) ||
+        user.cI === superAdmin ||
+        roles.includes(rolTalentoHumano) ||
+        roles.includes(rolEncargado),
+      grado4: !!user,
+    });
+  }, [user]);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      if (!token) return;
+
+      const success = await loggedUser();
+
+      if (!success) {
+        console.log("❌ Token inválido, removido");
+        localStorage.removeItem("token");
+        setUserLogged(null);
+      }
+    };
+    checkToken();
   }, [token]);
 
   const handleLogout = () => {
@@ -45,9 +85,13 @@ const PrincipalHeader = () => {
 
         <article className="link_content">
           {" "}
-          {token && <Link to="/parte_diario">Parte Diario</Link>}
-          {token && <Link to="/servidores">Registro de Servidores</Link>}
-          {token && <Link to="/usuarios">Usuarios</Link>}
+          {grados.grado2 && <Link to="/">Home</Link>}
+          {grados.grado1 && <Link to="/parte_diario">Parte Diario</Link>}
+          {grados.grado2 && (
+            <Link to="/servidores">Registro de Servidores</Link>
+          )}
+          {grados.grado1 && <Link to="/usuarios">Usuarios</Link>}
+          {grados.grado1 && <Link to="/orden">Orden</Link>}
           {!token && <Link to="/register">Registrarse</Link>}
           {!token && <Link to="/login">Login</Link>}
         </article>
