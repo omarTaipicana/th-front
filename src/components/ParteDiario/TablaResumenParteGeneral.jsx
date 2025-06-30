@@ -283,7 +283,7 @@ const TablaResumenParteGeneral = ({
       )}
 
       <table className="servidores_table_reporte">
-        <thead>
+        <thead className="theader_desktop">
           <tr>
             <th>{viewBy === "novedades" ? "Novedad" : "Sección"}</th>
             <th>Directivos Superiores</th>
@@ -292,6 +292,17 @@ const TablaResumenParteGeneral = ({
             <th>Total</th>
           </tr>
         </thead>
+
+        <thead className="theader_mobile">
+          <tr>
+            <th>{viewBy === "novedades" ? "Novedad" : "Sección"}</th>
+            <th>D. Superiores</th>
+            <th>D. Subalternos</th>
+            <th>Téc. Operativos</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
         <tbody>
           {viewBy === "novedades" &&
             datosUnificados.map((item) => {

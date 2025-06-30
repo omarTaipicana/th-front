@@ -1,3 +1,4 @@
+/* General Styling */
 .users_content {
   padding-bottom: 5em;
 }
@@ -12,13 +13,7 @@
   border-radius: 8px;
 }
 
-.filter_input {
-  flex: 2;
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
+.filter_input,
 .filter_select {
   flex: 1;
   padding: 0.5rem;
@@ -40,10 +35,11 @@
   background-color: #083fa5;
 }
 
+/* Title */
 .users_list_title {
   color: #04366e;
   text-align: center;
-  margin: 0.5em auto 0 auto;
+  margin: 0.5em auto;
   font-size: 2em;
   font-weight: bold;
   text-transform: uppercase;
@@ -52,6 +48,7 @@
   text-shadow: 4px 4px 4px rgba(33, 33, 34, 0.3);
 }
 
+/* List Content */
 .users_list_content {
   padding: 0.5em;
   display: flex;
@@ -61,19 +58,18 @@
 
 .users_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5em;
   list-style: none;
   padding: 0;
-  margin: 0 auto; 
-  width: 98%;
-  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
 }
 
-
+/* User Cards */
 .user_card {
+  width: 20%;
   background: linear-gradient(to bottom right, #9f9f9f, #189de083);
-  max-width: 20em;
   border-radius: 1em;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   padding: 2em 1.5em;
@@ -95,37 +91,6 @@
   text-align: center;
 }
 
-.btn_list_content {
-  position: absolute;
-  top: 0.5em;
-  right: 1em;
-  display: flex;
-  gap: 0.5em;
-}
-
-.val_verificado {
-  width: 1.2em;
-  height: 1.2em;
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
-.verified {
-  background-color: #4caf50; /* verde */
-}
-
-.not_verified {
-  background-color: #f44336; /* rojo */
-}
-
-.user_icon_btn {
-  transition: transform 0.3s ease;
-}
-
-.user_icon_btn:hover {
-  transform: translateY(-4px);
-}
-
 .user_details {
   display: flex;
   justify-content: space-between;
@@ -143,6 +108,39 @@
   color: #263238;
 }
 
+/* Action Buttons */
+.btn_list_content {
+  position: absolute;
+  top: 0.5em;
+  right: 1em;
+  display: flex;
+  gap: 0.5em;
+}
+
+.user_icon_btn {
+  transition: transform 0.3s ease;
+}
+
+.user_icon_btn:hover {
+  transform: translateY(-4px);
+}
+
+.val_verificado {
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.verified {
+  background-color: #4caf50; /* Green */
+}
+
+.not_verified {
+  background-color: #f44336; /* Red */
+}
+
+/* Delete Modal */
 .user_delet_content {
   position: fixed;
   top: 50%;
@@ -190,6 +188,7 @@
   transform: scale(1.05);
 }
 
+/* Edit Modal */
 .user_edit_content {
   position: fixed;
   top: 50%;
@@ -205,14 +204,6 @@
   text-align: center;
   font-size: 1.1em;
   color: #333;
-}
-
-.user_edit_content h3 {
-  margin-bottom: 1.5em;
-  font-size: 1.3em;
-  text-align: center;
-  color: #37474f;
-  width: 90%;
 }
 
 .form_input_content {
@@ -249,8 +240,7 @@
   outline: none;
 }
 
-.user_edit_content button[type="submit"],
-.user_edit_content form button {
+.user_edit_content button {
   background-color: #052a9a;
   border: none;
   padding: 0.8em 1.5em;
@@ -262,11 +252,11 @@
   transition: background-color 0.3s ease;
 }
 
-.user_edit_content button[type="submit"]:hover,
-.user_edit_content form button:hover {
+.user_edit_content button:hover {
   background-color: #081588b9;
 }
 
+/* Close Button */
 .close_btn {
   position: absolute;
   top: 0.5em;
@@ -277,8 +267,134 @@
   cursor: pointer;
   color: #f44336;
   transition: transform 0.2s;
+  background-color: transparent !important;
 }
 
 .close_btn:hover {
   transform: scale(1.2);
+}
+
+/* General Table Styles */
+.users_table_section {
+  width: 100%;
+  max-height: 70vh;
+  overflow-x: auto;
+  overflow-y: auto;
+  margin: 1.5em 0 2em;
+  border-radius: 1em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  position: relative;
+}
+
+.users_table {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  color: #333;
+}
+
+.users_table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(to right, #0056b3, #189de0);
+  color: white;
+}
+
+.users_table th {
+  text-align: left;
+  padding: 1em;
+  font-weight: 600;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
+.users_table td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.85em;
+  vertical-align: top;
+  color: #333;
+}
+
+.users_table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.users_table tbody tr:hover {
+  background-color: #f1f8e9;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Icon Styles */
+.user_icon_btn {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user_icon_btn:hover {
+  transform: scale(1.1);
+}
+
+/* Verification Status Styles */
+.val_verificado {
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  margin-left: 0.5em;
+}
+
+.verified {
+  background-color: #4caf50;
+}
+
+.not_verified {
+  background-color: #f44336;
+}
+
+.user_mobile {
+  display: none;
+}
+
+.user_desktop {
+  display: block;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .user_desktop {
+    display: none;
+  }
+
+  .user_mobile {
+    display: block;
+  }
+  .filters_container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .filter_input,
+  .filter_select {
+    flex: unset;
+    width: 100%;
+  }
+
+  .form_input_content {
+    flex-direction: column;
+  }
+
+  .label_edit_user {
+    width: 100%;
+  }
+
+  .user_card {
+    width: 80%;
+    margin: 0 auto;
+  }
 }

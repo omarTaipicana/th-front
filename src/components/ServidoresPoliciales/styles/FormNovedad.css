@@ -28,6 +28,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .user_novedades_content h3 {
@@ -215,40 +219,25 @@
 
 /* Responsive con formato de tarjetas en móviles */
 @media (max-width: 768px) {
-  .table_wrapper table {
-    min-width: unset;
-  }
 
-  .table_wrapper thead {
-    display: none;
+  .user_novedades_content{
+    width: 100%;
+    padding: 0.5em;
   }
-
-  .table_wrapper table,
-  .table_wrapper tbody,
-  .table_wrapper tr,
-  .table_wrapper td {
-    display: block;
+  .user_novedades_content h3 {
+    margin: 1em auto;
+    font-size: 1em;
+    width: 80%;
+  }
+  .form_novedades_content{
+    width: 90%;
+    margin: 0 auto;
+  }
+  .label_novedades_user{
     width: 100%;
   }
 
-  .table_wrapper tr {
-    margin-bottom: 1em;
-    border-radius: 0.8em;
-    background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    padding: 1em;
-  }
-
-  .table_wrapper td {
-    padding: 0.5em 1em;
-    position: relative;
-  }
-
-  .table_wrapper td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    display: block;
-    color: #555;
-    margin-bottom: 0.4em;
+  .table_wrapper{
+    width: 100%;
   }
 }

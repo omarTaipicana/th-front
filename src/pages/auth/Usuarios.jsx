@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
 import { useForm } from "react-hook-form";
 import IsLoading from "../../components/shared/isLoading";
+import useCrud from "../../hooks/useCrud";
 
 const Usuarios = () => {
   const [
@@ -40,6 +41,9 @@ const Usuarios = () => {
   } = useForm();
 
   const superAdmin = import.meta.env.VITE_CI_SUPERADMIN;
+  const PATH_VARIABLES = "/variables";
+  const [variables, getVariables] = useCrud();
+  const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState("");
   const [show, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [userEdit, setUserEdit] = useState();
@@ -52,6 +56,7 @@ const Usuarios = () => {
 
   useEffect(() => {
     getUsers();
+    getVariables(PATH_VARIABLES);
     loggedUser();
   }, [show, showEdit]);
 
@@ -104,6 +109,7 @@ const Usuarios = () => {
     const body = {
       isAvailable: data.isAvailable === "Sí" ? true : false,
       role: data.role,
+      departamento: data.departamento,
       seccion: data.seccion,
     };
     updateUser(body, userEdit.id);
@@ -176,7 +182,7 @@ const Usuarios = () => {
         </button>
       </section>
 
-      <section className="users_list_content">
+      <section className="users_list_content user_mobile">
         <ul className="users_grid">
           {users
             ?.filter((user) => user?.id !== userLogged?.id)
@@ -203,9 +209,11 @@ const Usuarios = () => {
                     onClick={() => {
                       setShowEdit(true);
                       setUserEdit(user);
+                      setDepartamentoSeleccionado(user.departamento);
                       reset({
                         isAvailable: user.isAvailable ? "Sí" : "No",
                         role: user.role,
+                        departamento: user.departamento,
                         seccion: user.seccion,
                       });
                     }}
@@ -265,6 +273,91 @@ const Usuarios = () => {
         </ul>
       </section>
 
+      <section className="users_list_content user_desktop">
+        <table className="users_table">
+          <thead className="table_header">
+            <tr>
+              <th className="table_cell_header">Acciones</th>
+              <th className="table_cell_header">Nombre</th>
+              <th className="table_cell_header">Cédula</th>
+              <th className="table_cell_header">Correo</th>
+              <th className="table_cell_header">Departamento</th>
+              <th className="table_cell_header">Sección</th>
+              <th className="table_cell_header">Celular</th>
+              <th className="table_cell_header">Rol de Usuario</th>
+              <th className="table_cell_header">Verificado</th>
+              <th className="table_cell_header">Habilitado</th>
+            </tr>
+          </thead>
+          <tbody className="table_body">
+            {users
+              ?.filter((user) => user?.id !== userLogged?.id)
+              .filter((user) =>
+                `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              )
+              .filter((user) =>
+                filterDepto ? user.departamento === filterDepto : true
+              )
+              .filter((user) =>
+                filterSeccion ? user.seccion === filterSeccion : true
+              )
+              .filter((user) => (filterRol ? user.role === filterRol : true))
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((user) => (
+                <tr key={user.cI} className="table_row">
+                  <td className="table_cell actions_column">
+                    <img
+                      className="user_icon_btn"
+                      src="../../../edit.png"
+                      alt="Edit Icon"
+                      onClick={() => {
+                        setShowEdit(true);
+                        setUserEdit(user);
+                        setDepartamentoSeleccionado(user.departamento);
+                        reset({
+                          isAvailable: user.isAvailable ? "Sí" : "No",
+                          role: user.role,
+                          departamento: user.departamento,
+                          seccion: user.seccion,
+                        });
+                      }}
+                    />
+                    <img
+                      className="user_icon_btn"
+                      src="../../../delete_3.png"
+                      alt="Delete Icon"
+                      onClick={() => {
+                        setShow(true);
+                        setUserDelete(user);
+                      }}
+                    />
+                    <div
+                      className={`val_verificado ${
+                        user.isVerified ? "verified" : "not_verified"
+                      }`}
+                    ></div>
+                  </td>
+                  <td className="table_cell">{`${user.firstName} ${user.lastName}`}</td>
+                  <td className="table_cell">{user.cI}</td>
+                  <td className="table_cell">{user.email}</td>
+                  <td className="table_cell">{user.departamento}</td>
+                  <td className="table_cell">{user.seccion}</td>
+                  <td className="table_cell">{user.cellular}</td>
+                  <td className="table_cell">{user.role}</td>
+                  <td className="table_cell">
+                    {user.isVerified ? "Sí" : "No"}
+                  </td>
+                  <td className="table_cell">
+                    {user.isAvailable ? "Habilitado" : "Deshabilitado"}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </section>
+
       {show && (
         <article className="user_delet_content">
           <span>
@@ -315,16 +408,63 @@ const Usuarios = () => {
                     )}{" "}
                   </select>
                 </label>
+
+                <label className="label_edit_user">
+                  <span className="span_edit_user">Departamento: </span>
+                  <select
+                    required
+                    {...register("departamento", {
+                      onChange: (e) => {
+                        setDepartamentoSeleccionado(e.target.value);
+                        setValue("seccion", "");
+                      },
+                    })}
+                    className="input_edit_user"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      -- Seleccione un departamento --
+                    </option>
+                    {Array.from(
+                      new Set(
+                        variables.map((v) => v.departamento).filter(Boolean)
+                      )
+                    ).map((dep, i) => (
+                      <option key={i} value={dep}>
+                        {dep}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <label className="label_edit_user">
                   <span className="span_edit_user">Sección: </span>
-                  <input
-                    type="text"
-                    name=""
+                  <select
                     required
                     {...register("seccion")}
                     className="input_edit_user"
-                  />
+                    disabled={!departamentoSeleccionado}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      -- Seleccione una sección --
+                    </option>
+                    {Array.from(
+                      new Set(
+                        variables
+                          .filter(
+                            (v) => v.departamento === departamentoSeleccionado
+                          )
+                          .map((v) => v.seccion)
+                          .filter(Boolean)
+                      )
+                    ).map((sec, i) => (
+                      <option key={i} value={sec}>
+                        {sec}
+                      </option>
+                    ))}
+                  </select>
                 </label>
+
                 <label className="label_edit_user">
                   <span className="span_edit_user">Habilitado: </span>
                   <select

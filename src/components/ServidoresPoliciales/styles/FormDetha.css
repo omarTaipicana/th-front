@@ -96,20 +96,14 @@ select {
   background-color: var(--blue-color);
 }
 
-@media (max-width: 1024px) {
-  .form_servidores label {
-    flex: 1 1 calc(50% - 2rem);
-  }
-}
-
 @media (max-width: 768px) {
   .form_servidores {
     flex-direction: column;
     padding: 1rem;
   }
 
-  .form_servidores label {
-    flex: 1 1 100%;
+  .form_servidores label, input {
+    width: 100%;
   }
 
   .servidores_title {

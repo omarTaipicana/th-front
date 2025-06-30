@@ -19,7 +19,7 @@
   border: solid 0.1em black;
   width: 90%;
   height: 90vh;
-  border-radius: 2em;
+  border-radius: 1em;
 }
 .formacion_encargado_info_content {
   display: flex;
@@ -246,6 +246,7 @@ strong {
   /* Mejor visibilidad en móvil */
   .tabla_general {
     height: 250px;
+    width: 100%;
   }
 
   /* Layout vertical */

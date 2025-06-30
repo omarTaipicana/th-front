@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import useCrud from "../../hooks/useCrud";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
+import IsLoading from "../shared/isLoading";
 
 const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
   const [novedadDelete, setNovedadDelete] = useState();
@@ -161,6 +162,7 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
 
   return (
     <div>
+      {isLoading && <IsLoading />}
       <article className="user_novedades_content">
         <div className="number_novedad_content">
           <div className="number_novedad">
@@ -204,7 +206,6 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
           onSubmit={handleSubmit(submitNovedad)}
           className="form_novedades_content"
         >
-          <div className="form_input_content">
             <label className="label_novedades_user">
               <span className="span_novedades_user">Novedad: </span>
               <select
@@ -341,7 +342,7 @@ const FormNovedad = ({ servidorPolicialEditNovedad, setShowNovedad }) => {
                 {...register("urlDoc")}
               />
             </label>
-          </div>
+      
           <button>{novedadEdit ? "Editar" : "Guardar"}</button>
         </form>
 

@@ -64,8 +64,8 @@ body {
 
 /* Filter Section */
 .filter_section {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1em;
   align-items: center;
   justify-content: center;
@@ -82,7 +82,6 @@ body {
   border: 1px solid #ccc;
   border-radius: 0.5em;
   font-size: 1em;
-  min-width: 180px;
   background-color: white;
   transition: border-color 0.3s;
 }
@@ -104,11 +103,22 @@ body {
   transition: background-color 0.3s;
 }
 
+.filter_btn {
+  grid-column: span 2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter_section button {
+  width: 30%;
+  font-size: 0.8em;
+}
+
 .filter_section button:hover {
   background-color: #127cbf;
 }
 
-.number_sp{
+.number_sp {
   color: #050236;
   font-weight: 600;
   text-align: center;
@@ -132,6 +142,11 @@ body {
   min-width: 1200px;
   border-collapse: collapse;
   font-size: 0.95em;
+}
+
+.vigente {
+  background-color: #ea293674;
+  font-weight: 600;
 }
 
 .servidores_table thead {
@@ -185,24 +200,31 @@ body {
   .servidores_title {
     display: none;
   }
+
   .cards_container {
     grid-template-columns: 1fr;
     gap: 1em;
-  
   }
 
   .filter_section {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+    gap: 0.5em;
   }
 
   .filter_section input,
-  .filter_section select,
-  .filter_section button {
+  .filter_section select {
     width: 100%;
   }
 
-  .table_section{
+  .filter_section button {
+    width: 32%;
+  }
+
+  .filter_btn {
+    grid-column: span 1;
+  }
+
+  .table_section {
     margin-bottom: 5em;
   }
 

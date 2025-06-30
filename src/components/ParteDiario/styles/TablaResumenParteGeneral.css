@@ -1,3 +1,4 @@
+/* Título de la tabla */
 .title_table_reporte {
   color: rgb(58, 52, 16);
   width: 100%;
@@ -10,8 +11,9 @@
   text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
 }
 
+/* Contenedor general de la tabla */
 .table_section_reporte_general {
-  width: 80%;
+  width: 90%;
   max-height: 75vh;
   overflow: auto;
   margin: 1em auto;
@@ -21,12 +23,14 @@
   position: relative;
 }
 
+/* Tabla principal */
 .servidores_table_reporte {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95em;
 }
 
+/* Encabezado de la tabla */
 .servidores_table_reporte thead {
   position: sticky;
   top: 0;
@@ -43,6 +47,7 @@
   background: inherit;
 }
 
+/* Celdas del cuerpo de la tabla */
 .servidores_table_reporte td {
   padding: 0.8em 1em;
   border-bottom: 1px solid #e0e0e0;
@@ -61,6 +66,7 @@
   border-bottom: none;
 }
 
+/* Filas de las listas */
 .novedades_list {
   background-color: #adadab7d;
 }
@@ -69,11 +75,13 @@
   background-color: #c4c9ed;
 }
 
+/* Hover en filas */
 .servidores_table_reporte tbody tr:hover {
   background-color: #fdfd40bd !important;
   transition: background-color 0.2s ease-in-out;
 }
 
+/* Botón Generar PDF */
 .btn_generar_pdf {
   display: block;
   margin: 1rem auto; /* Centra el botón horizontalmente */
@@ -90,4 +98,31 @@
 
 .btn_generar_pdf:hover {
   background-color: #374cce; /* Color más claro al hacer hover */
+}
+
+/* Media Queries para Responsivo */
+
+/* Pantallas medianas (hasta 1024px) */
+@media (max-width: 768px) {
+  .title_table_reporte {
+    font-size: 0.9em;
+    letter-spacing: 0.8px;
+  }
+
+  .table_section_reporte_general {
+    width: 100%;
+    max-height: 60vh;
+    margin: 0.5em auto;
+  }
+
+  .servidores_table_reporte th,
+  .servidores_table_reporte td {
+    font-size: 0.55em;
+    padding: 0.5em;
+  }
+
+  .btn_generar_pdf {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+  }
 }

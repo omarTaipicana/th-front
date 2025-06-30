@@ -1,31 +1,50 @@
 .alert-message {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    color: white;
-    font-style: italic;
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    pointer-events: none;
-    animation: fadeInOut 3s forwards;
-    height: 6vh;
-    z-index: 99999999;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  font-style: italic;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  animation: fadeInOut 3s forwards;
+  height: 6vh;
+  z-index: 99999999;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro para mejor visibilidad */
+  font-size: 1em; /* Tamaño de fuente predeterminado */
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
   }
-  
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
+  10% {
+    opacity: 1;
   }
-  
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .alert-message {
+    font-size: 0.9em; /* Ajusta el tamaño de la fuente en pantallas medianas */
+    padding: 8px; /* Reduce el padding */
+    height: 7vh; /* Aumenta un poco la altura para dispositivos móviles */
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-message {
+    font-size: 0.8em; /* Reduce aún más el tamaño de la fuente en pantallas pequeñas */
+    padding: 6px; /* Reduce el padding adicional */
+    height: auto; /* Ajusta automáticamente la altura */
+    word-wrap: break-word; /* Ajusta el texto si es muy largo */
+  }
+}

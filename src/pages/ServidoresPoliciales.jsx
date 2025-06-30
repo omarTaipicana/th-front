@@ -131,6 +131,7 @@ const ServidoresPoliciales = () => {
     cargo: "",
     figuraLegal: "",
     grupo: "",
+    novedad: "",
     vigencia: "",
     enLaDireccion: "",
   });
@@ -157,6 +158,7 @@ const ServidoresPoliciales = () => {
       cargo: "",
       figuraLegal: "",
       grupo: "",
+      novedad: "",
       vigencia: "",
       enLaDireccion: "",
     });
@@ -176,6 +178,10 @@ const ServidoresPoliciales = () => {
       serv.figuraLegal?.toLowerCase().includes(search.toLowerCase());
 
     const matchesFilters =
+      (filters.novedad === "" ||
+        serv.novedads?.some((novedad) =>
+          novedad.novedad?.toLowerCase().includes(filters.novedad.toLowerCase())
+        )) &&
       (filters.sexo === "" || serv.sexo === filters.sexo) &&
       (filters.departamento === "" ||
         serv.departamento === filters.departamento) &&
@@ -335,6 +341,25 @@ const ServidoresPoliciales = () => {
           </select>
 
           <select
+            name="novedad"
+            value={filters.novedad}
+            onChange={handleChange}
+          >
+            <option value="">Todas las Novedades</option>
+            {[
+              ...new Set(
+                resApi
+                  .flatMap((serv) => serv.novedads?.map((n) => n.novedad))
+                  .filter(Boolean)
+              ),
+            ].map((novedad, index) => (
+              <option key={index} value={novedad}>
+                {novedad}
+              </option>
+            ))}
+          </select>
+
+          <select
             name="enLaDireccion"
             value={filters.enLaDireccion}
             onChange={handleChange}
@@ -344,11 +369,13 @@ const ServidoresPoliciales = () => {
             <option value="No">No</option>
           </select>
 
-          <button onClick={handleClearFilters}>Limpiar</button>
-          <button onClick={() => setShow(!show)}>+</button>
-          <button onClick={() => setTable(!table)}>{`${
-            table ? "Tabla" : "Tarjeta"
-          }`}</button>
+          <div className="filter_btn">
+            <button onClick={handleClearFilters}>Limpiar</button>
+            <button onClick={() => setShow(!show)}>+</button>
+            <button onClick={() => setTable(!table)}>{`${
+              table ? "Tabla" : "Tarjeta"
+            }`}</button>
+          </div>
           <div className="number_sp">
             {
               filteredServidores
@@ -365,6 +392,7 @@ const ServidoresPoliciales = () => {
               <thead>
                 <tr>
                   <th>Acciones</th>
+                  <th>Novedad</th>
                   <th>Cédula</th>
                   <th>Grado</th>
                   <th>Nombres</th>
@@ -454,7 +482,7 @@ const ServidoresPoliciales = () => {
                           }}
                         />
                       </td>
-
+                      <td>{serv.novedads?.map((n) => n.novedad).join(", ")}</td>
                       <td>{serv.cI}</td>
                       <td>{serv.grado}</td>
                       <td>{serv.nombres}</td>
