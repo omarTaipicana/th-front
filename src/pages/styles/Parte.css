@@ -31,6 +31,7 @@
   font-size: 0.9em;
   max-height: 65vh;
   overflow-y: auto;
+  z-index: 10;
 }
 
 .partediario_seccion_content {
@@ -60,7 +61,7 @@
   font-family: "Segoe UI", sans-serif;
   box-shadow: 10px 14px 12px rgba(8, 13, 28, 0.2);
   transition: all 0.3s ease;
-  z-index: 10;
+  z-index: 2;
 }
 
 .btn_show:hover {

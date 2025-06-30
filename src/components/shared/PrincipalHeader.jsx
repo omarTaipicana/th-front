@@ -76,23 +76,23 @@ const PrincipalHeader = () => {
   };
 
   // Cierra el menú si se hace clic fuera de él
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (menuRef.current && !menuRef.current.contains(event.target)) {
+  //       setMenuOpen(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   return (
     <header className="header_nav">
       <section className="principal__header__section">
-        <Link to="/">
+        <Link className="logo_home" to="/">
           <img
             src="/images/digin.png"
             alt="Logo DIGIN"
@@ -113,13 +113,41 @@ const PrincipalHeader = () => {
           className={`link_content ${menuOpen ? "menu_open" : ""}`}
           ref={menuRef}
         >
-          {grados.grado2 && <Link to="/">Home</Link>}
-          {grados.grado1 && <Link to="/parte_diario">Parte Diario</Link>}
-          {grados.grado2 && <Link to="/servidores">Registro de Servidores</Link>}
-          {grados.grado1 && <Link to="/usuarios">Usuarios</Link>}
-          {grados.grado1 && <Link to="/orden">Orden</Link>}
-          {!token && <Link to="/register">Registrarse</Link>}
-          {!token && <Link to="/login">Login</Link>}
+          {grados.grado2 && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/">
+              Home
+            </Link>
+          )}
+          {grados.grado1 && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/parte_diario">
+              Parte Diario
+            </Link>
+          )}
+          {grados.grado2 && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/servidores">
+              Registro de Servidores
+            </Link>
+          )}
+          {grados.grado1 && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/usuarios">
+              Usuarios
+            </Link>
+          )}
+          {grados.grado1 && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/orden">
+              Orden
+            </Link>
+          )}
+          {!token && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/register">
+              Registrarse
+            </Link>
+          )}
+          {!token && (
+            <Link onClick={() => setMenuOpen(!menuOpen)} to="/login">
+              Login
+            </Link>
+          )}
         </nav>
 
         <div className="login_content">
@@ -127,6 +155,7 @@ const PrincipalHeader = () => {
             <>
               <Link to="/login">
                 <img
+           
                   className="user__icon"
                   src="../../../user.png"
                   alt="User Icon"

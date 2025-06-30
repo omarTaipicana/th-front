@@ -5,10 +5,9 @@
   height: 5em; /* Altura fija para escritorio */
   background: linear-gradient(180deg, #011b5ecc, #016da3cc);
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  z-index: 1000;
+  z-index: 10;
   backdrop-filter: blur(5px);
   position: relative; /* Asegura que el header tenga prioridad */
 }
@@ -21,6 +20,10 @@
   justify-content: space-between;
 }
 
+.logo_home {
+  width: 10%;
+}
+
 .logo_navbar {
   height: 4.5rem;
   margin: 0;
@@ -30,6 +33,7 @@
   display: flex;
   gap: 2rem;
   align-items: center;
+  width: 80%;
 }
 
 .link_content a {
@@ -87,7 +91,7 @@
 }
 
 .hamburger span {
-  width: 25px;
+  width: 35px;
   height: 3px;
   background: white;
   border-radius: 2px;
@@ -95,7 +99,7 @@
 }
 
 .hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(13px, 13px);
 }
 
 .hamburger.open span:nth-child(2) {
@@ -122,28 +126,35 @@
 .login_content {
   left: 0;
   display: flex;
+  width: 10%;
 }
 .logout__button {
   height: 2rem;
   margin-left: 1em;
 }
 @media (max-width: 768px) {
+  .logo_home {
+    width: 20%;
+  }
   .link_content {
     display: none;
   }
 
   .hamburger {
     display: flex;
+    width: 10%;
   }
 
   .login_content {
     display: flex;
     justify-content: center;
     align-items: center;
+
   }
 
   .logout__button {
     height: 2rem;
-    margin-left: 1em;
+    margin: 0 0.5em ;
+    font-size: 0.8em;
   }
 }
