@@ -1,6 +1,11 @@
+.input_pdf_content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+}
 
-
-
+/* Contenedor principal del modal */
 .user_input_pdf_content {
   position: fixed;
   top: 50%;
@@ -14,13 +19,19 @@
   width: 35%;
   max-width: 60em;
   max-height: 90vh; /* Evita que se desborde verticalmente */
-  overflow-y: auto; /* Agrega scroll si es necesario */
+  overflow-y: auto; /* Scroll si el contenido excede la altura */
   text-align: center;
   font-size: 1.1em;
   color: #333;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.user_input_pdf_content:hover {
+  transform: translate(-50%, -50%) scale(1.01);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón de cierre */
 .close_btn_input_pdf {
   position: absolute;
   top: 0.4em;
@@ -37,15 +48,7 @@
   transform: scale(1.2);
 }
 
-.user_input_pdf_content:hover {
-  transform: translate(-50%, -50%) scale(1.01);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.form_input_pdf_content {
-  width: 100%;
-}
-
+/* Encabezado */
 .user_input_pdf_content h3 {
   margin-top: 0.5em;
   margin-bottom: 1.5em;
@@ -55,19 +58,25 @@
   width: 90%;
 }
 
+/* Formulario */
+.form_input_pdf_content {
+  width: 100%;
+}
+
 .form_input_content {
   display: flex;
   gap: 1em;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 1em;
-  }
+}
 
+/* Etiquetas y campos de entrada */
 .label_input_pdf_user {
   width: 70%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 0em;
+  margin-bottom: 0;
 }
 
 .span_input_pdf_user {
@@ -75,7 +84,6 @@
   font-weight: bold;
   font-size: 1.2em;
   color: #263238;
-
 }
 
 .input_input_pdf_user {
@@ -92,6 +100,7 @@
   outline: none;
 }
 
+/* Botones */
 .user_input_pdf_content button[type="submit"],
 .user_input_pdf_content form button {
   background-color: #052a9abf;
@@ -109,4 +118,56 @@
 .user_input_pdf_content button[type="submit"]:hover,
 .user_input_pdf_content form button:hover {
   background-color: #081588b9;
+}
+
+/* Responsividad */
+@media (max-width: 1024px) {
+  .user_input_pdf_content {
+    width: 50%; /* Más ancho en pantallas medianas */
+    padding: 1em;
+  }
+
+  .span_input_pdf_user {
+    font-size: 1.1em; /* Reducir tamaño del texto */
+  }
+
+  .input_input_pdf_user {
+    font-size: 0.9em; /* Ajustar tamaño de entrada */
+  }
+}
+
+@media (max-width: 768px) {
+  .user_input_pdf_content {
+    width: 70%; /* Más ancho en pantallas pequeñas */
+  }
+
+  .label_input_pdf_user {
+    width: 90%; /* Ajustar ancho de los inputs */
+  }
+}
+
+@media (max-width: 480px) {
+  .user_input_pdf_content {
+    width: 90%; /* Ocupa casi todo el ancho */
+    padding: 0.8em; /* Reducir padding */
+  }
+
+  .user_input_pdf_content h3 {
+    font-size: 1.1em; /* Ajustar encabezado */
+  }
+
+  .span_input_pdf_user {
+    font-size: 1em; /* Reducir texto */
+  }
+
+  .input_input_pdf_user {
+    font-size: 0.8em; /* Reducir tamaño de entrada */
+    padding: 0.5em;
+  }
+
+  .user_input_pdf_content button[type="submit"],
+  .user_input_pdf_content form button {
+    padding: 0.6em 1em; /* Botones más compactos */
+    font-size: 0.9em;
+  }
 }

@@ -331,7 +331,7 @@ const TablaResumenParte = ({
     <div className="table_section_reporte">
       <div className="title_table_reporte">Resumen Unificado de Novedades</div>
       <table className="servidores_table_reporte">
-        <thead>
+        <thead className="theader_desktop">
           <tr>
             <th>Novedad</th>
             <th>Directivos Superiores</th>
@@ -340,6 +340,17 @@ const TablaResumenParte = ({
             <th>Total</th>
           </tr>
         </thead>
+
+        <thead className="theader_mobile">
+          <tr>
+            <th>Novedad</th>
+            <th>D. Superiores</th>
+            <th>D. Subalternos</th>
+            <th>Téc. Operativos</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
         <tbody>
           {datosOrdenados.map((item) => (
             <React.Fragment key={item.clave}>

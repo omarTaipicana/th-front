@@ -346,7 +346,10 @@ const ServidoresPoliciales = () => {
 
           <button onClick={handleClearFilters}>Limpiar</button>
           <button onClick={() => setShow(!show)}>+</button>
-          <div>
+          <button onClick={() => setTable(!table)}>{`${
+            table ? "Tabla" : "Tarjeta"
+          }`}</button>
+          <div className="number_sp">
             {
               filteredServidores
                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -354,9 +357,6 @@ const ServidoresPoliciales = () => {
             }{" "}
             Servidores Policiales
           </div>
-          <button onClick={() => setTable(!table)}>{`${
-            table ? "Tabla" : "Tarjeta"
-          }`}</button>
         </section>
 
         {!table ? (

@@ -113,38 +113,38 @@ const PrincipalHeader = () => {
           className={`link_content ${menuOpen ? "menu_open" : ""}`}
           ref={menuRef}
         >
-          {grados.grado2 && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/">
+          {grados.grado2 && token && (
+            <Link onClick={() => setMenuOpen(false)} to="/">
               Home
             </Link>
           )}
-          {grados.grado1 && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/parte_diario">
+          {grados.grado1 && token && (
+            <Link onClick={() => setMenuOpen(false)} to="/parte_diario">
               Parte Diario
             </Link>
           )}
-          {grados.grado2 && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/servidores">
+          {grados.grado2 && token && (
+            <Link onClick={() => setMenuOpen(false)} to="/servidores">
               Registro de Servidores
             </Link>
           )}
-          {grados.grado1 && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/usuarios">
+          {grados.grado1 && token && (
+            <Link onClick={() => setMenuOpen(false)} to="/usuarios">
               Usuarios
             </Link>
           )}
-          {grados.grado1 && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/orden">
+          {grados.grado1 && token && (
+            <Link onClick={() => setMenuOpen(false)} to="/orden">
               Orden
             </Link>
           )}
           {!token && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/register">
+            <Link onClick={() => setMenuOpen(false)} to="/register">
               Registrarse
             </Link>
           )}
           {!token && (
-            <Link onClick={() => setMenuOpen(!menuOpen)} to="/login">
+            <Link onClick={() => setMenuOpen(false)} to="/login">
               Login
             </Link>
           )}
@@ -155,7 +155,6 @@ const PrincipalHeader = () => {
             <>
               <Link to="/login">
                 <img
-           
                   className="user__icon"
                   src="../../../user.png"
                   alt="User Icon"

@@ -1,3 +1,4 @@
+/* ================== TÍTULO REPORTE ================== */
 .title_table_reporte {
   color: rgb(58, 52, 16);
   width: 100%;
@@ -10,6 +11,7 @@
   text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
 }
 
+/* ================== CONTENEDOR TABLA ================== */
 .table_section_reporte {
   width: 100%;
   max-height: 65vh;
@@ -21,10 +23,12 @@
   position: relative;
 }
 
+/* ================== TABLA ================== */
 .servidores_table_reporte {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95em;
+  table-layout: auto;
 }
 
 .servidores_table_reporte thead {
@@ -36,11 +40,11 @@
 }
 
 .servidores_table_reporte th {
-  padding: 1em;
-  font-weight: 600;
-  white-space: nowrap;
-  font-size: 0.6em;
-  background: inherit;
+  white-space: normal; /* Permite salto de línea */
+  word-break: break-word; /* Rompe palabras largas si es necesario */
+  text-align: center;
+  padding: 0.8em 0.5em;
+  font-size: 0.65em; /* Ajusta según necesidad */
 }
 
 .servidores_table_reporte td {
@@ -61,19 +65,20 @@
   border-bottom: none;
 }
 
-.novedades_list {
-  background-color: #adadab7d !important;
-}
-
-
 .servidores_table_reporte tbody tr:hover {
   background-color: #f1f511ac !important;
   transition: background-color 0.2s ease-in-out;
 }
 
+/* ================== FILA NOVEDADES ================== */
+.novedades_list {
+  background-color: #adadab7d !important;
+}
+
+/* ================== BOTÓN GENERAR PDF ================== */
 .btn_generar_pdf {
   display: block;
-  margin: 1rem auto; /* Centra el botón horizontalmente */
+  margin: 1rem auto;
   padding: 0.5rem 1rem;
   background-color: #1e3a8a;
   color: #fff;
@@ -81,10 +86,41 @@
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
-  font-size: 1rem; /* Ajusta el tamaño de la fuente */
-  transition: background-color 0.3s ease; /* Transición suave para hover */
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .btn_generar_pdf:hover {
-  background-color: #374cce; /* Color más claro al hacer hover */
+  background-color: #374cce;
+}
+.theader_mobile {
+  display: none;
+}
+
+.theader_desktop {
+  display: table-header-group;
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 768px) {
+  .theader_desktop {
+    display: none;
+  }
+
+  .theader_mobile {
+  display: table-header-group;
+  }
+  .servidores_table_reporte {
+    font-size: 0.8em;
+    table-layout: fixed;
+  }
+
+  .servidores_table_reporte th,
+  .servidores_table_reporte td {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 0.6em;
+    padding: 0.5em;
+    text-align: center;
+  }
 }

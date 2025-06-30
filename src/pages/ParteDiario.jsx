@@ -56,7 +56,7 @@ const ParteDiario = () => {
     deleteParte,
     updateParte,
     error,
-    ,
+    isLoading2,
     newReg,
     deleteReg,
     updateReg,
@@ -129,6 +129,7 @@ const ParteDiario = () => {
   };
 
   const handleEditParte = (serv, parteId) => {
+    
     const parteExistente = parte.find(
       (p) => p.formacionId === idFormacion && p.servidorPolicialId === serv.id
     );
@@ -145,6 +146,8 @@ const ParteDiario = () => {
 
     setEditandoId(serv.id); // <--- Activamos la edición
   };
+
+  
 
   const handleGuardarEdicion = (serv, parteId) => {
     const datos = formState[serv.id];
@@ -239,8 +242,9 @@ const ParteDiario = () => {
             })}
         </article>
       )}
-
       <article className="partediario_seccion_content">
+        {isLoading2 && <IsLoading />}
+
         <section className="table_section_parte">
           <h3 className="title_table_parte">
             {

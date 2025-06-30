@@ -177,44 +177,44 @@ a:hover {
 }
 
 .user_loggued {
-  background-color: #f0f4fa; 
-  border: 1px solid #d1dce5; 
-  border-radius: 1rem; 
-  padding: 2rem; 
-  max-width: 90%; 
-  margin: 0rem auto; 
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); 
-  font-family: Arial, sans-serif; 
+  background-color: #f0f4fa;
+  border: 1px solid #d1dce5;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 90%;
+  margin: 0rem auto;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
 
 .user_loggued_title {
   color: #003366;
-  font-size: 1rem; 
-  margin-bottom: 1.5rem; 
-  font-weight: bold; 
-  text-align: center; 
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-align: center;
 }
 
 .user_loggued_li {
-  display: flex; 
-  justify-content: space-between; 
-  padding: 1rem 0; 
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
   border-bottom: 1px solid #d1dce5;
-  font-size: 1.2rem; 
+  font-size: 1.2rem;
 }
 
 .user_loggued_li:last-child {
-  border-bottom: none; 
+  border-bottom: none;
 }
 
 .user_loggued_span {
-  color: #00509e; 
+  color: #00509e;
   font-weight: 600;
 }
 
 .user_loggued_span:nth-child(2) {
-  color: #333; 
-  font-weight: normal; 
+  color: #333;
+  font-weight: normal;
 }
 
 .user_loggued {
@@ -264,16 +264,9 @@ a:hover {
   background-color: #a71d2a;
 }
 
-@media (min-width: 768px) {
-  .user_loggued {
-    max-width: 50%; /* Más ancho en pantallas grandes */
-  }
-
-  .user_loggued_title {
-    font-size: 2rem; /* Texto más grande en pantallas grandes */
-  }
-
-  .user_loggued_li {
-    font-size: 1.4rem; /* Texto más grande en pantallas grandes */
+@media (max-width: 768px) {
+  .content_background {
+    width: 90%;
+    margin: 0 auto;
   }
 }

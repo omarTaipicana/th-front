@@ -180,6 +180,22 @@ const ResumenGeneral = ({
         )}
 
         <section className="formacion_encargado_info_content">
+          <article className="tabla_general">
+            <TablaResumenParteGeneral
+              user={user}
+              parte={parte}
+              servidores={servidores}
+              idFormacion={idFormacion}
+              setIdFormacion={setIdFormacion}
+              novedades={novedades}
+              formacionActualFecha={formacionActualFecha}
+              setFormacionActualFecha={setFormacionActualFecha}
+              setNewPdf={setNewPdf}
+              faltante={faltante}
+              updateFormacion={updateFormacion}
+              verActivo={verActivo}
+            />
+          </article>
           <section className="formacion_list_content">
             <button
               className="btn_encargado_opcion"
@@ -212,7 +228,9 @@ const ResumenGeneral = ({
                       !form.isAvailable ? "formacion_inactiva" : ""
                     } ${
                       form.id === idFormacion ? "formacion_resaltada" : ""
-                    }   ${!matchedPdf?.pdf && !form.isAvailable && "sin_pdf_color"}`} 
+                    }   ${
+                      !matchedPdf?.pdf && !form.isAvailable && "sin_pdf_color"
+                    }`}
                     key={form.id}
                   >
                     <div>
@@ -297,23 +315,6 @@ const ResumenGeneral = ({
               />
             )}
           </section>
-
-          <article className="tabla_general">
-            <TablaResumenParteGeneral
-              user={user}
-              parte={parte}
-              servidores={servidores}
-              idFormacion={idFormacion}
-              setIdFormacion={setIdFormacion}
-              novedades={novedades}
-              formacionActualFecha={formacionActualFecha}
-              setFormacionActualFecha={setFormacionActualFecha}
-              setNewPdf={setNewPdf}
-              faltante={faltante}
-              updateFormacion={updateFormacion}
-              verActivo={verActivo}
-            />
-          </article>
 
           <article className="lista_completos">
             <h2>SECCIONES REGISTRADAS</h2>

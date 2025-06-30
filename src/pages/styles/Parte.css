@@ -1,3 +1,4 @@
+/* ================== PARTE DIARIO - GENERAL ================== */
 .partediario_content {
   position: relative;
 }
@@ -6,8 +7,8 @@
   color: #03376e;
   text-align: center;
   width: 90%;
-  margin: 0.5em auto 0.5em auto;
-  font-size: 1.25em;
+  margin: 0.5em auto;
+  font-size: 1em;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -15,9 +16,16 @@
   text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
 }
 
+.partediario_seccion_content {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+/* ================== FORMACIÓN ACTIVA ================== */
 .formacion_activa_container {
   position: fixed;
-  font-size: 0.75em !important;
   right: 1em;
   top: 3.3em;
   width: 20em;
@@ -34,11 +42,7 @@
   z-index: 10;
 }
 
-.partediario_seccion_content {
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-}
+/* ================== BOTÓN MOSTRAR ================== */
 
 .encargado {
   top: 0em;
@@ -52,8 +56,8 @@
   width: 14em;
   position: absolute;
   background-color: #de9415;
-  color: #000000;
-  border: solid 0.2em black;
+  color: #000;
+  border: 0.2em solid black;
   padding: 0.6em 1.2em;
   border-radius: 0.5em;
   font-size: 0.5rem;
@@ -65,8 +69,8 @@
 }
 
 .btn_show:hover {
-  background-color: #012b6e; /* azul más claro */
-  color: #ffffff;
+  background-color: #012b6e;
+  color: #fff;
   box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
   transform: translateY(-2px);
   cursor: pointer;
@@ -77,8 +81,7 @@
   box-shadow: 0 3px 8px rgba(30, 58, 138, 0.3);
 }
 
-/* Tabla Parte Diario --------------------------------------------------------------------------------------- */
-
+/* ================== TABLA PARTE DIARIO ================== */
 .title_table_parte {
   color: rgb(58, 52, 16);
   width: 100%;
@@ -91,26 +94,23 @@
   text-shadow: 4px 4px 4px rgba(100, 101, 102, 0.3);
 }
 
-/* Contenedor de tabla con scroll */
 .table_section_parte {
   width: 45%;
   max-height: 65vh;
   overflow: auto;
-  margin: 1em 0.5em 0 0.5em;
+  margin: 1em 0.5em;
   border-radius: 1em;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   background-color: #ffffff75;
   position: relative;
 }
 
-/* Tabla */
 .servidores_table_parte {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95em;
 }
 
-/* Encabezado */
 .servidores_table_parte thead {
   position: sticky;
   top: 0;
@@ -119,17 +119,14 @@
   color: #fff;
 }
 
-/* Celdas encabezado */
 .servidores_table_parte th {
   text-align: left;
   padding: 1em;
   font-weight: 600;
   white-space: nowrap;
   font-size: 0.7em;
-  background: inherit;
 }
 
-/* Celdas cuerpo */
 .servidores_table_parte td {
   padding: 0.8em 1em;
   border-bottom: 1px solid #e0e0e0;
@@ -139,21 +136,20 @@
   font-weight: 300;
 }
 
-/* Última fila sin borde */
 .servidores_table_parte tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Hover */
 .servidores_table_parte tbody tr:hover {
   background-color: #caec09bd;
   transition: background-color 0.2s ease-in-out;
 }
 
-.servidores_table_parte input {
+.servidores_table_parte input,
+.servidores_table_parte select {
   width: 100%;
   padding: 0.4em;
-  font-size: 1.3em;
+  font-size: 1em;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -178,33 +174,24 @@
 }
 
 .btn_blank {
-  background-color: rgba(255, 255, 255, 0);
+  background-color: transparent;
 }
 
-.servidores_table_parte select {
-  width: 100%;
-  padding: 0.4em;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-/* Reporte Parte Diario --------------------------------------------------------------------------------------- */
-
+/* ================== REPORTE PARTE DIARIO ================== */
 .reporte_content {
   width: 40%;
 }
 
-/* Registros Parte Diario --------------------------------------------------------------------------------------- */
-
+/* ================== REGISTROS ================== */
 .registros_content {
-  width: 12%; /* Restringe el ancho al 10% */
+  width: 12%;
   padding: 0.5rem;
   background-color: #f9f9f94c;
   border-radius: 8px;
   display: flex;
-  flex-direction: column; /* Asegura que los elementos internos se alineen en columna */
-  gap: 0.5rem; /* Espaciado entre elementos internos */
-  align-items: center; /* Centra las tarjetas dentro del contenedor */
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
   overflow-y: auto;
 }
 
@@ -245,10 +232,10 @@
 }
 
 .registros_list {
-  width: 100%; /* Las tarjetas ocupan el ancho total del contenedor */
+  width: 100%;
   display: flex;
-  flex-direction: column; /* Las tarjetas se apilan verticalmente */
-  gap: 0.5rem; /* Espaciado entre tarjetas */
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .registros_card {
@@ -260,7 +247,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  font-size: 0.7rem; /* Reduce el tamaño de texto para compactar */
+  font-size: 0.7rem;
 }
 
 .sin_pdf_color {
@@ -273,8 +260,8 @@
 
 .registros_date,
 .registros_time {
-  color: #333333;
-  white-space: nowrap; /* Evita cortes de texto */
+  color: #333;
+  white-space: nowrap;
 }
 
 .registros_card_actions {
@@ -297,4 +284,53 @@
 .registros_icon {
   width: 20px;
   height: 20px;
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 768px) {
+  .partediario_content {
+    position: relative;
+  }
+  .encargado {
+    top: 0em;
+  }
+
+  .turno {
+    top: 0em;
+  }
+  .partediario_seccion_content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .table_section_parte,
+  .reporte_content {
+    width: 93%;
+  }
+
+  .formacion_activa_container {
+    position: relative;
+    width: 100%;
+    top: auto;
+    right: auto;
+    margin-top: 1em;
+    z-index: 1;
+  }
+
+  .registros_content {
+    width: 90%;
+    padding: 1rem;
+    margin-bottom: 5em;
+  }
+
+  .registros_card {
+    width: 48%;
+  }
+
+  .btn_show {
+    position: relative;
+    width: 44%;
+    margin: 1em;
+    font-size: 0.6rem;
+  }
 }

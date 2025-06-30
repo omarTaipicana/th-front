@@ -1,10 +1,13 @@
+/* Contenedor principal */
 .turnos_content {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 40%;
+  max-width: 600px; /* Limita el ancho máximo */
   height: auto;
+  max-height: 90vh; /* Evita que se desborde en pantallas pequeñas */
   z-index: 999;
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
@@ -15,19 +18,22 @@
   justify-content: center;
   align-items: center;
   color: black;
+  overflow-y: auto; /* Agrega scroll si es necesario */
 }
 
+/* Lista de elementos */
 .orden_list {
   list-style: none;
   padding: 0;
   margin: 1rem 0;
   width: 100%;
-  max-height: 30vh;
-  overflow-y: auto; /* Habilitar scroll vertical */
-  border: 1px solid #d1d5db; /* Opcional: borde para distinguir la lista */
+  max-height: 30vh; /* Altura máxima para evitar desbordamiento */
+  overflow-y: auto; /* Scroll vertical */
+  border: 1px solid #d1d5db; /* Borde visible */
   border-radius: 0.5rem;
 }
 
+/* Estilos de los elementos individuales */
 .orden_item {
   padding: 0.5rem;
   margin: 0.5rem 0;
@@ -43,6 +49,7 @@
   background-color: #e5e7eb;
 }
 
+/* Formulario */
 .form_turno {
   display: flex;
   flex-direction: column;
@@ -73,6 +80,7 @@
   background-color: #1e3a8a;
 }
 
+/* Estilos adicionales para items de colores */
 .item_verde {
   background-color: #d4edda;
   color: #155724;
@@ -81,4 +89,31 @@
 .item_rojo {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .turnos_content {
+    width: 80%; /* Más ancho en pantallas pequeñas */
+    padding: 1rem; /* Reduce el espacio interno */
+  }
+
+  .orden_item {
+    font-size: 0.9rem; /* Reduce el tamaño del texto */
+  }
+
+  .form_turno button {
+    font-size: 0.9rem; /* Botones más pequeños */
+    padding: 0.4rem; /* Menor espacio interno */
+  }
+}
+
+@media (max-width: 480px) {
+  .turnos_content {
+    width: 95%; /* Ocupa casi todo el ancho */
+  }
+
+  .orden_item {
+    font-size: 0.8rem; /* Texto más pequeño */
+  }
 }

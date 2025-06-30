@@ -35,19 +35,21 @@ const InputPdf = ({ setShowInputPdf, idUploadPdf }) => {
     updateRegFile,
   ] = useCrud();
 
+  useEffect(() => {
+    if (updateRegFile) {
+      setShowInputPdf(false);
+    }
+  }, [updateRegFile]);
+
   const submit = (data) => {
-
     const file = data.pdf[0];
-
     updateApiFile(PATH_PDF, idUploadPdf, file);
-    
 
     reset();
-    setShowInputPdf(false);
   };
 
   return (
-    <div>
+    <div className="input_pdf_content">
       {isLoading && <IsLoading />}
 
       <article className="user_input_pdf_content">

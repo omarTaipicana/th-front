@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
+import IsLoading from "../shared/isLoading";
 
 const SelectTurno = ({ setShowFormTurno }) => {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const SelectTurno = ({ setShowFormTurno }) => {
     getServidor(PATH_SERVIDORES);
     getTurno(PATH_TURNO);
     getNovedad(PATH_NOVEDADES);
-  }, []);
+  }, [newReg]);
 
   const onSubmit = (data) => {
     const body = {
@@ -96,92 +97,129 @@ const SelectTurno = ({ setShowFormTurno }) => {
     }
   }, [newReg, error]); // Escuchar cambios en 'newReg' y 'error'
 
+  const formatFecha = (fechaString) => {
+    const date = new Date(fechaString); // Convierte el string en una fecha
+    const utcDate = new Date(date.getTime() + 5 * 60 * 60 * 1000); // Resta 5 horas para ajustar a UTC-5
+
+    const meses = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    const dia = utcDate.getUTCDate();
+    const mes = meses[utcDate.getUTCMonth()];
+    const anio = utcDate.getUTCFullYear();
+
+    return `${dia} de ${mes} de ${anio}`;
+  };
+
   return (
-    <div className="turnos_content">
-      <button
-        className="close_btn_formacion"
-        onClick={() => {
-          setShowFormTurno(false);
-          reset();
-        }}
-      >
-        ❌
-      </button>
-      <h2>Personal de turno</h2>
-      {selectedOrden ? (
-        <form className="form_turno" onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor="servidor">Seleccionar Servidor</label>
-          <select id="servidor" {...register("servidorId", { required: true })}>
-            <option value="">Seleccione un servidor</option>
-            {servidores
-              .filter((servidor) => {
-                // Filtrar servidores que pertenecen a la misma sección
-                if (servidor.seccion !== user.seccion) return false;
+    <div>
+      {isLoading && <IsLoading />}
 
-                // Comprobar si el servidor tiene novedades que coincidan con la fecha de la orden seleccionada
-                const tieneNovedad = novedades.some((novedad) => {
-                  return (
-                    novedad.servidorPolicialId === servidor.id &&
-                    selectedOrden &&
-                    new Date(
-                      orden.find((ord) => ord.id === selectedOrden).fecha
-                    ) >= new Date(novedad.fechaInicio) &&
-                    new Date(
-                      orden.find((ord) => ord.id === selectedOrden).fecha
-                    ) <= new Date(novedad.fechaFin)
-                  );
-                });
+      <div className="turnos_content">
+        <button
+          className="close_btn_formacion"
+          onClick={() => {
+            setShowFormTurno(false);
+            reset();
+          }}
+        >
+          ❌
+        </button>
+        <h2>Personal de turno</h2>
+        {selectedOrden ? (
+          <form className="form_turno" onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="servidor">Seleccionar Servidor</label>
+            <select
+              id="servidor"
+              {...register("servidorId", { required: true })}
+            >
+              <option value="">Seleccione un servidor</option>
+              {servidores
+                .filter((servidor) => {
+                  // Filtrar servidores que pertenecen a la misma sección
+                  if (servidor.seccion !== user.seccion) return false;
 
-                // Incluir solo servidores sin novedades en conflicto
-                return !tieneNovedad;
-              })
-              .map((servidor) => (
-                <option key={servidor.id} value={servidor.id}>
-                  {`${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`}
-                </option>
-              ))}
-          </select>
-          {errors.servidorId && <span>Seleccione un servidor</span>}
-          <button type="submit">Asignar Turno</button>
-        </form>
-      ) : (
-        <ul className="orden_list">
-          {orden
-            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // Ordenar por fecha
-            .map((ord) => {
-              // Buscar el turno relacionado con la orden actual
-              const turnoRelacionado = turno.find((t) => t.OrdenId === ord.id);
+                  // Comprobar si el servidor tiene novedades que coincidan con la fecha de la orden seleccionada
+                  const tieneNovedad = novedades.some((novedad) => {
+                    return (
+                      novedad.servidorPolicialId === servidor.id &&
+                      selectedOrden &&
+                      new Date(
+                        orden.find((ord) => ord.id === selectedOrden).fecha
+                      ) >= new Date(novedad.fechaInicio) &&
+                      new Date(
+                        orden.find((ord) => ord.id === selectedOrden).fecha
+                      ) <= new Date(novedad.fechaFin)
+                    );
+                  });
 
-              // Buscar el servidor relacionado con el turno (si existe)
-              const servidorRelacionado = servidores.find(
-                (s) => turnoRelacionado?.ServidorPolicialId === s.id
-              );
+                  // Incluir solo servidores sin novedades en conflicto
+                  return !tieneNovedad;
+                })
+                .map((servidor) => (
+                  <option key={servidor.id} value={servidor.id}>
+                    {`${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`}
+                  </option>
+                ))}
+            </select>
+            {errors.servidorId && <span>Seleccione un servidor</span>}
+            <button type="submit">Asignar Turno</button>
+          </form>
+        ) : (
+          <ul className="orden_list">
+            {orden
+              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // Ordenar por fecha
+              .map((ord) => {
+                // Buscar el turno relacionado con la orden actual
+                const turnoRelacionado = turno.find(
+                  (t) => t.OrdenId === ord.id && t?.seccion === user?.seccion
+                );
 
-              return (
-                <li
-                  key={ord.id}
-                  className={`orden_item ${
-                    turnoRelacionado ? "item_verde" : "item_rojo"
-                  }`} // Aplicar clase según exista turno
-                  onClick={() => setSelectedOrden(ord.id)}
-                >
-                  <div>{new Date(ord.fecha).toLocaleDateString()}</div>
-                  <div>
-                    {turnoRelacionado && servidorRelacionado ? (
-                      <span>
-                        {servidorRelacionado.grado}{" "}
-                        {servidorRelacionado.nombres}{" "}
-                        {servidorRelacionado.apellidos}
-                      </span>
-                    ) : (
-                      <span>No hay servidor de turno</span>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-        </ul>
-      )}
+                // Buscar el servidor relacionado con el turno (si existe)
+                const servidorRelacionado = servidores.find(
+                  (s) =>
+                    turnoRelacionado?.ServidorPolicialId === s.id &&
+                    user?.seccion === s.seccion
+                );
+
+                return (
+                  <li
+                    key={ord.id}
+                    className={`orden_item ${
+                      servidorRelacionado ? "item_verde" : "item_rojo"
+                    }`} // Aplicar clase según exista turno
+                    onClick={() => setSelectedOrden(ord.id)}
+                  >
+                    <div>{formatFecha(ord.fecha)}</div>
+                    <div>
+                      {turnoRelacionado && servidorRelacionado ? (
+                        <span>
+                          {servidorRelacionado.grado}{" "}
+                          {servidorRelacionado.nombres}{" "}
+                          {servidorRelacionado.apellidos}
+                        </span>
+                      ) : (
+                        <span>No hay servidor de turno</span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };

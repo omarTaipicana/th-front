@@ -1,6 +1,4 @@
-
-
-
+/* General Styles -------------------------------------------------------- */
 .user_formacion_content {
   position: fixed;
   top: 50%;
@@ -13,12 +11,17 @@
   z-index: 999;
   width: 35%;
   max-width: 60em;
-  max-height: 90vh; /* Evita que se desborde verticalmente */
-  overflow-y: auto; /* Agrega scroll si es necesario */
+  max-height: 90vh; /* Avoid vertical overflow */
+  overflow-y: auto; /* Add scroll if needed */
   text-align: center;
   font-size: 1.1em;
   color: #333;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user_formacion_content:hover {
+  transform: translate(-50%, -50%) scale(1.01);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .close_btn_formacion {
@@ -31,22 +34,14 @@
   font-size: 1.5em;
   cursor: pointer;
   color: #f44336;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
 }
 
 .close_btn_formacion:hover {
   transform: scale(1.2);
 }
 
-.user_formacion_content:hover {
-  transform: translate(-50%, -50%) scale(1.01);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.form_formacion_content {
-  width: 100%;
-}
-
+/* Header ---------------------------------------------------------------- */
 .user_formacion_content h3 {
   margin-top: 0.5em;
   margin-bottom: 1.5em;
@@ -54,6 +49,11 @@
   text-align: center;
   color: #37474f;
   width: 90%;
+}
+
+/* Form Content ---------------------------------------------------------- */
+.form_formacion_content {
+  width: 100%;
 }
 
 .form_input_content {
@@ -92,6 +92,7 @@
   outline: none;
 }
 
+/* Buttons --------------------------------------------------------------- */
 .user_formacion_content button[type="submit"],
 .user_formacion_content form button {
   background-color: #052a9a;
@@ -109,4 +110,87 @@
 .user_formacion_content button[type="submit"]:hover,
 .user_formacion_content form button:hover {
   background-color: #081588b9;
+}
+
+/* Responsiveness -------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .close_btn_formacion {
+    top: 0.4em;
+    right: 0;
+  }
+  .user_formacion_content {
+    width: 50%;
+    padding: 1em;
+  }
+
+  .label_formacion_user {
+    width: 100%; /* Full width for labels */
+  }
+
+  .span_formacion_user {
+    font-size: 1.2em;
+  }
+
+  .input_formacion_user {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 768px) {
+  .user_formacion_content {
+    width: 70%;
+  }
+
+  .span_formacion_user {
+    font-size: 1.1em;
+  }
+
+  .input_formacion_user {
+    padding: 0.6em;
+    font-size: 0.9em;
+  }
+
+  .user_formacion_content h3 {
+    font-size: 1.2em;
+  }
+
+  button[type="submit"] {
+    padding: 0.6em 1.2em;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  .user_formacion_content {
+    width: 90%;
+  }
+
+  .form_input_content {
+    flex-direction: column; /* Stack inputs on small screens */
+    gap: 0.5em;
+  }
+
+  .label_formacion_user {
+    display: flex;
+  }
+
+  .span_formacion_user {
+    font-size: 1em;
+  }
+
+  .input_formacion_user {
+    font-size: 0.8em;
+    padding: 0.5em;
+    width: 60%;
+    margin: 0 auto;
+  }
+
+  .user_formacion_content h3 {
+    font-size: 1em;
+  }
+
+  button[type="submit"] {
+    padding: 0.5em 1em;
+    font-size: 0.8em;
+  }
 }

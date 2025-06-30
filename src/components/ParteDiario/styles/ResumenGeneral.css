@@ -32,9 +32,8 @@
 }
 
 .formacion_list {
-  margin: 1em;
   width: 100%;
-  height: 60vh;
+  height: 62vh;
   margin-top: 1em;
   padding: 1em;
   background-color: rgba(13, 63, 191, 0.223);
@@ -122,8 +121,6 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-
-
 .formacion_inactiva {
   background-color: #97dc6f91;
 }
@@ -152,8 +149,9 @@ strong {
 
 .lista_completos {
   width: 20%;
+  height: 71vh;
   margin-top: 4em !important;
-  background-color: rgba(2, 33, 113, 0.248);
+  background-color: rgba(188, 189, 192, 0.248);
   margin: 20px 0;
   padding: 20px;
   border: 1px solid #ccc;
@@ -222,4 +220,65 @@ strong {
   background-color: #fdecea;
   color: #c62828;
   border: 1px solid #c62828;
+}
+
+
+@media (max-width: 768px) {
+  .btn_encargado_opcion {
+    font-size: 0.7em;
+    width: 80%;
+  }
+
+  .formacion_select {
+    font-size: 0.8rem;
+  }
+
+  .lista_completos h2 {
+    font-size: 1rem;
+  }
+
+  /* Mejor altura para .formacion_activa_container si lo usas */
+  .formacion_activa_container {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  /* Mejor visibilidad en móvil */
+  .tabla_general {
+    height: 250px;
+  }
+
+  /* Layout vertical */
+  .formacion_encargado_info_content {
+    flex-direction: column;
+    margin-bottom: 2em;
+  }
+
+  /* Aquí el contenedor principal crece con su contenido, sin height fijo */
+  .formacion_encargado_content {
+    width: 95%;      /* un poco más ancho para móvil */
+    height: auto;    /* quitar altura fija */
+    max-height: 95vh; /* limitar máximo para no overflow total */
+    overflow-y: auto; /* scroll si se excede altura */
+    padding: 1em;
+  }
+
+  /* Que cada sección ocupe el 100% y se acomode */
+  .tabla_general,
+  .formacion_list_content,
+  .lista_completos {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1em;
+  }
+
+  /* Ajustar altura para lista y scroll */
+  .formacion_list {
+    height: 40vh;
+  }
+
+  .lista_completos {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
 }
