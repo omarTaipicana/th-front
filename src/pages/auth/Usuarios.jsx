@@ -185,8 +185,15 @@ const Usuarios = () => {
       <section className="users_list_content user_mobile">
         <ul className="users_grid">
           {users
-            ?.filter((user) => user?.id !== userLogged?.id)
-            .filter((user) =>
+            ?.filter((user) => {
+              // Si el usuario actual es "superadmin", no se aplica ningún filtro
+              if (userLogged?.cI === superAdmin) {
+                return true;
+              }
+              // Filtrar para excluir al usuario logueado
+              return user?.id !== userLogged?.id;
+            })
+            ?.filter((user) =>
               `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase())
@@ -291,8 +298,15 @@ const Usuarios = () => {
           </thead>
           <tbody className="table_body">
             {users
-              ?.filter((user) => user?.id !== userLogged?.id)
-              .filter((user) =>
+              ?.filter((user) => {
+                // Si el usuario actual es "superadmin", no se aplica ningún filtro
+                if (userLogged?.cI === superAdmin) {
+                  return true;
+                }
+                // Filtrar para excluir al usuario logueado
+                return user?.id !== userLogged?.id;
+              })
+              ?.filter((user) =>
                 `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase())
