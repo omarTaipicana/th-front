@@ -1,6 +1,8 @@
-.contenedor{
-    width: 100%;
-    height: 100vh;
+.contenedor {
+  width: 100%;
+  min-height: 100vh;
+  padding: 1em;
+  box-sizing: border-box;
 }
 
 .verify_content {
@@ -8,40 +10,41 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 1em;
 }
 
-.h3_verify_false {
-  color: #ff4d4f; 
-  background-color: #fff1f0; 
-  border: 1px solid #ffa39e;
+.h3_verify_false,
+.h3_verify_true {
   padding: 0.75em 1em;
   border-radius: 8px;
-  font-size: 1.5em;
+  font-size: 1.4em;
   font-weight: 600;
   text-align: center;
   margin-top: 1em;
+  max-width: 90%;
   animation: shake 0.3s ease-in-out 1;
+  word-wrap: break-word;
 }
 
+/* Estilo para verificación fallida */
+.h3_verify_false {
+  color: #ff4d4f;
+  background-color: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+/* Estilo para verificación exitosa */
 .h3_verify_true {
-  color: #61fe1e; 
-  background-color: #f7f4e5; 
+  color: #61fe1e;
+  background-color: #f7f4e5;
   border: 1px solid #dfc206;
-  padding: 0.5em 1em;
-  border-radius: 8px;
-  font-size: 1.7em;
-  font-weight: 600;
-  text-align: center;
-  margin-top: 1em;
-  animation: shake 0.3s ease-in-out 1;
 }
-
 
 .btn__form__verify {
   margin-top: 2em;
   background-color: #ff9900;
   color: #ffffff;
-  padding: 0.625em;
+  padding: 0.625em 1.5em;
   border: none;
   border-radius: 0.3125em;
   font-size: 1em;
@@ -56,12 +59,49 @@
   background-color: #cc7a00;
 }
 
-.verify_false {
-  margin-bottom: 2em;
-  width: 50%;
+.verify_false,
+.verify_true {
+  margin: 2em;
+  width: 10em;
 }
 
-.verify_true {
-  margin-bottom: 2em;
-  width: 30%;
+/* ANIMACIÓN opcional */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .h3_verify_false,
+  .h3_verify_true {
+    font-size: 1.2em;
+    padding: 0.5em 0.8em;
+  }
+
+  .btn__form__verify {
+    width: 50%;
+    font-size: 0.95em;
+  }
+
+  .verify_false,
+  .verify_true {
+    width: 70%;
+    margin: 1.5em 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .h3_verify_false,
+  .h3_verify_true {
+    font-size: 1em;
+  }
+
+  .btn__form__verify {
+    font-size: 0.9em;
+    padding: 0.5em 1em;
+  }
 }

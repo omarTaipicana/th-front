@@ -5,6 +5,9 @@ import "./styles/Orden.css";
 import useAuth from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../store/states/alert.slice";
+import FormOrden from "../components/Orden/FormOrden";
+import FormComunicaciones from "../components/Orden/FormComunicaciones";
+import OrdenInputPdf from "../components/Orden/OrdenInputPdf";
 
 const Orden = () => {
   const PATH_ORDEN = "/orden";
@@ -13,13 +16,16 @@ const Orden = () => {
 
   const [servidores, getServidor] = useCrud();
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
-  const [filteredServidores, setFilteredServidores] = useState([]);
-  const [selectedServidor, setSelectedServidor] = useState(null);
-
+  const [showFormOrden, setShowFormOrden] = useState(false);
+  const [showFormDelete, setShowFormDelete] = useState(false);
+  const [showInputPdf, setShowInputPdf] = useState(false);
+  const [idUploadPdf, setIdUploadPdf] = useState();
+  const [ordenEdit, setOrdenEdit] = useState();
+  const [ordenDelete, setOrdenDelete] = useState();
   const [
-    response,
-    getApi,
-    postApi,
+    orden,
+    getOrden,
+    postOrden,
     deleteApi,
     updateApi,
     error,
@@ -27,9 +33,9 @@ const Orden = () => {
     newReg,
     deleteReg,
     updateReg,
-    postApiFile,
+    postOrdenFile,
     newRegFile,
-    updateApiFile,
+    updateOrdenFile,
     updateRegFile,
   ] = useCrud();
 
@@ -44,141 +50,163 @@ const Orden = () => {
 
   useEffect(() => {
     loggedUser();
-    getApi(PATH_ORDEN);
+    getOrden(PATH_ORDEN);
     getServidor(PATH_SERVIDORES);
-  }, []);
+  }, [showFormOrden, showFormDelete, showInputPdf]);
 
-  const calculateDayOfYear = (dateString) => {
-    const date = new Date(dateString);
-    const startOfYear = new Date(date.getFullYear(), 0, 0);
-    const diff =
-      date -
-      startOfYear +
-      (startOfYear.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
-    return Math.floor(diff / (1000 * 60 * 60 * 24));
+  const handleDelete = () => {
+    deleteApi(PATH_ORDEN, ordenDelete.id);
+    setShowFormDelete(false);
+    setOrdenDelete();
   };
 
-  const handleSearchChange = (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    const filtered = servidores.filter(
-      (servidor) =>
-        servidor.nombres.toLowerCase().includes(searchValue) ||
-        servidor.apellidos.toLowerCase().includes(searchValue) ||
-        servidor.grado.toLowerCase().includes(searchValue)
-    );
-    setFilteredServidores(filtered);
-  };
-
-  const handleServidorSelect = (servidor) => {
-    setSelectedServidor(servidor);
-    setValue(
-      "jefeControl",
-      `${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`
-    );
-    setFilteredServidores([]); // Cierra el desplegable
-  };
-
-  const onSubmit = (data) => {
-    const numOrden = calculateDayOfYear(data.fecha);
-
-    // Validar si ya existe una orden con la misma fecha
-    const ordenExistente = response?.find(
-      (orden) => orden.fecha === data.fecha
-    );
-    if (ordenExistente) {
+  useEffect(() => {
+    if (deleteReg) {
       dispatch(
         showAlert({
-          message: `⚠️ Ya existe una orden registrada para la fecha ${data.fecha}.`,
-          alertType: 1,
+          message:
+            `⚠️ Se eliminó correctamente la orden número ${deleteReg.orden} ` ||
+            "Error inesperado",
+
+          alertType: 3,
         })
       );
-      return; // Detener la ejecución si ya existe una orden con esa fecha
     }
-
-    const body = {
-      ...data,
-      usuarioRegistro: user.cI,
-      usuarioEdicion: user.cI,
-      jefeControl: selectedServidor?.cI,
-      numOrden,
-    };
-
-    postApi(PATH_ORDEN, body);
-
-    reset();
-  };
+  }, [deleteReg]);
 
   return (
-    <div className="orden_content">
-      <h2>Orden</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="fecha">Fecha</label>
-          <input
-            type="date"
-            id="fecha"
-            {...register("fecha", { required: "La fecha es obligatoria" })}
+    <div>
+      <article>
+        {showFormDelete && (
+          <article className="user_delet_content">
+            <span>¿Deseas eliminar la orden {ordenDelete.numOrden} ?</span>
+            <section className="btn_content">
+              <button onClick={handleDelete} className="btn yes">
+                Sí
+              </button>
+              <button
+                className="btn no"
+                onClick={() => {
+                  setShowFormDelete(false);
+                  setOrdenDelete();
+                }}
+              >
+                No
+              </button>
+            </section>
+          </article>
+        )}
+      </article>
+      <section>
+        <h2>Orden</h2>
+        <button onClick={() => setShowFormOrden(true)}>
+          Crear nueva Orden
+        </button>
+        {showFormOrden && (
+          <FormOrden
+            servidores={servidores}
+            setShowFormOrden={setShowFormOrden}
+            ordenEdit={ordenEdit}
+            setOrdenEdit={setOrdenEdit}
           />
-          {errors.fecha && <span>{errors.fecha.message}</span>}
-        </div>
-        <div>
-          <label htmlFor="jefeControl">Jefe de Control</label>
-          <input
-            type="text"
-            id="jefeControl"
-            {...register("jefeControl", {
-              required: "El jefe de control es obligatorio",
-            })}
-            onChange={handleSearchChange}
-            autoComplete="off"
-          />
-          {errors.jefeControl && <span>{errors.jefeControl.message}</span>}
-          {filteredServidores.length > 0 && (
-            <ul className="servidores-dropdown">
-              {filteredServidores.map((servidor) => (
-                <li
-                  key={servidor.id}
-                  onClick={() => handleServidorSelect(servidor)}
-                >
-                  {`${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div>
-          <label htmlFor="frase">Frase</label>
-          <input
-            type="text"
-            id="frase"
-            {...register("frase", { required: "La frase es obligatoria" })}
-          />
-          {errors.frase && <span>{errors.frase.message}</span>}
-        </div>
-        <div>
-          <label htmlFor="santoSeña">Santo Seña</label>
-          <input
-            type="text"
-            id="santosenia"
-            {...register("santoSeña", {
-              required: "El santo seña es obligatorio",
-            })}
-          />
-          {errors.santosenia && <span>{errors.santosenia.message}</span>}
-        </div>
-        <div>
-          <label htmlFor="contraseña">Contraseña</label>
-          <input
-            type="number"
-            id="contrasena"
-            {...register("contraseña", {
-              required: "La contraseña es obligatoria",
-            })}
-          />
-          {errors.contrasena && <span>{errors.contrasena.message}</span>}
-        </div>
-        <button type="submit">Registrar</button>
-      </form>
+        )}
+        <article className="table_wrapper table_ord">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha:</th>
+                <th>Numero:</th>
+                <th>Frase:</th>
+                <th>Santo y Seña:</th>
+                <th>Contraseña: </th>
+                <th>Jefe de Control:</th>
+                <th>Pdf</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orden.map((ord) => {
+                const servidor = servidores.find(
+                  (srv) => srv.cI === ord.jefeControl
+                );
+
+                return (
+                  <tr key={ord.id}>
+                    <td>{ord.fecha}</td>
+                    <td>{ord.numOrden}</td>
+                    <td>{ord.frase}</td>
+                    <td>{ord.santoSena}</td>
+                    <td>{ord.contrasena}</td>
+                    <td>
+                      {servidor
+                        ? `${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`
+                        : "No asignado"}
+                    </td>
+                    <td>
+                      {" "}
+                      <a
+                        href={ord.urlOrden || "#"} // Si no hay URL, desactiva el enlace
+                        target={ord.urlOrden ? "_blank" : undefined} // Solo abre en una nueva pestaña si hay archivo
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          if (!ord.urlOrden) {
+                            e.preventDefault();
+                            setShowInputPdf(true);
+                            setIdUploadPdf(ord.id);
+                          }
+                        }}
+                      >
+                        <img
+                          className="user_icon_btn"
+                          src={`../../../${ord.urlOrden ? "vista" : "new"}.png`}
+                          alt={
+                            ord.urlOrden ? "Abrir Documento" : "Subir Archivo"
+                          }
+                        />
+                      </a>
+                    </td>
+
+                    <td>
+                      <img
+                        className="user_icon_btn"
+                        src="../../../edit.png"
+                        alt="Editar"
+                        onClick={() => {
+                          setOrdenEdit(ord);
+                          setShowFormOrden(true);
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <img
+                        className="user_icon_btn"
+                        src="../../../delete_3.png"
+                        alt="Eliminar"
+                        onClick={() => {
+                          setShowFormDelete(true);
+                          setOrdenDelete(ord);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </article>
+      </section>
+
+      {showInputPdf && (
+        <OrdenInputPdf
+          setShowInputPdf={setShowInputPdf}
+          idUploadPdf={idUploadPdf}
+        />
+      )}
+
+      <section>
+        <FormComunicaciones />
+      </section>
     </div>
   );
 };

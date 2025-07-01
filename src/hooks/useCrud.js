@@ -84,7 +84,7 @@ const useCrud = () => {
     for (const key in data) {
       formData.append(key, data[key]);
     }
-
+    
     const url = `${BASEURL}${path}`;
 
     axios
@@ -101,7 +101,7 @@ const useCrud = () => {
       .finally(() => setIsLoading(false))
       .catch((err) => {
         setError(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 

@@ -1,0 +1,116 @@
+.orden_content {
+  width: 50%;
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  position: fixed;
+  padding: 0.5em;
+  overflow-y: auto;
+  top: 7em;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: auto;
+  border-radius: 0.5em;
+  border: solid 0.05em black;
+  z-index: 999;
+}
+
+.orden_content h2 {
+  text-align: center;
+  color: rgb(19, 3, 67);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.orden_content .close_btn {
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+  border: none;
+  background: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: red;
+  transition: transform 0.2s ease-in-out;
+}
+
+.orden_content .close_btn:hover {
+  transform: scale(1.2);
+}
+
+.orden_content form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0 auto;
+  color: black;
+}
+
+.orden_content form label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 0.3rem;
+}
+
+.orden_content form input {
+  border: none;
+  outline: none;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  border-radius: 0.3rem;
+  background-color: #ffffff;
+  border: 0.05rem solid #ccc;
+  width: 100%;
+}
+
+.orden_content form button {
+  background-color: var(--blue2-color);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.orden_content form button:hover {
+  background-color: var(--blue-color);
+}
+
+.servidores-dropdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 0.05rem solid #ccc;
+  border-radius: 0.3rem;
+  background-color: #fff;
+  position: absolute;
+  max-height: 8rem;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 100%;
+}
+
+.servidores-dropdown li {
+  padding: 0.4rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.servidores-dropdown li:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .orden_content {
+    width: 90%;
+  }
+
+  .orden_content form button {
+    width: 100%;
+  }
+}
