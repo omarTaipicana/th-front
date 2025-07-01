@@ -127,12 +127,12 @@ const TablaResumenParte = ({
             "Técnico Operativos": [],
           },
         };
-        datosUnificados.push(entry);
+        datosUnificados?.push(entry);
       }
 
       entry.resumen[grupo]++;
       entry.resumen.Total++;
-      entry.detalles[grupo].push({
+      entry.detalles[grupo]?.push({
         nombre: `${servidor.nombres} ${servidor.apellidos}`,
         grado: servidor.grado,
         ci: servidor.cI,
@@ -178,12 +178,12 @@ const TablaResumenParte = ({
             "Técnico Operativos": [],
           },
         };
-        datosUnificados.push(entry);
+        datosUnificados?.push(entry);
       }
 
       entry.resumen[grupo]++;
       entry.resumen.Total++;
-      entry.detalles[grupo].push({
+      entry.detalles[grupo]?.push({
         nombre: `${servidor.nombres} ${servidor.apellidos}`,
         grado: servidor.grado,
         ci: servidor.cI,
