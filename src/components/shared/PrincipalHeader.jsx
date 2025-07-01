@@ -118,7 +118,7 @@ const PrincipalHeader = () => {
               Home
             </Link>
           )}
-          {grados.grado1 && token && (
+          {grados.grado3 && token && (
             <Link onClick={() => setMenuOpen(false)} to="/parte_diario">
               Parte Diario
             </Link>
