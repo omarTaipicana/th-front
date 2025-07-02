@@ -1,3 +1,4 @@
+// (Todo el import permanece igual)
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./styles/Usuarios.css";
@@ -52,13 +53,14 @@ const Usuarios = () => {
   const [filterDepto, setFilterDepto] = useState("");
   const [filterSeccion, setFilterSeccion] = useState("");
   const [filterRol, setFilterRol] = useState("");
+  const [filterDisponible, setFilterDisponible] = useState(""); // NUEVO filtro por disponibilidad
   const dispatch = useDispatch();
 
   useEffect(() => {
     getUsers();
     getVariables(PATH_VARIABLES);
     loggedUser();
-  }, [show, showEdit]);
+  }, [show, showEdit, userEdit, userUpdate, deleteReg]);
 
   useEffect(() => {
     if (userEdit) {
@@ -112,7 +114,6 @@ const Usuarios = () => {
 
   const handleDeleteUser = () => {
     deleteUser(userDelete.id);
-
     setShow(false);
   };
 
@@ -125,13 +126,33 @@ const Usuarios = () => {
     };
     updateUser(body, userEdit.id);
     setShowEdit(false);
+    setUserEdit();
   };
+
+  // APLICAR FILTROS COMUNES A UNA VARIABLE PARA USAR EN AMBAS VISTAS
+  const filteredUsers = users
+    ?.filter((user) => {
+      if (userLogged?.cI === superAdmin) return true;
+      return user?.id !== userLogged?.id;
+    })
+    .filter((user) =>
+      `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+    .filter((user) => (filterDepto ? user.departamento === filterDepto : true))
+    .filter((user) => (filterSeccion ? user.seccion === filterSeccion : true))
+    .filter((user) => (filterRol ? user.role === filterRol : true))
+    .filter((user) =>
+      filterDisponible ? user.isAvailable === (filterDisponible === "Sí") : true
+    )
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
     <div className="users_content">
       {isLoading && <IsLoading />}
+      <h2 className="users_list_title mobile_hide">Usuarios Registrados</h2>
 
-      <h2 className="users_list_title"> Usuarios Registrados</h2>
       <section className="filters_container">
         <input
           type="text"
@@ -180,6 +201,16 @@ const Usuarios = () => {
           ))}
         </select>
 
+        <select
+          className="filter_select"
+          value={filterDisponible}
+          onChange={(e) => setFilterDisponible(e.target.value)}
+        >
+          <option value="">Habilitado</option>
+          <option value="Sí">Sí</option>
+          <option value="No">No</option>
+        </select>
+
         <button
           className="filter_clear_btn"
           onClick={() => {
@@ -187,43 +218,114 @@ const Usuarios = () => {
             setFilterDepto("");
             setFilterSeccion("");
             setFilterRol("");
+            setFilterDisponible("");
           }}
         >
           Limpiar
         </button>
       </section>
 
+      {/* CONTADOR DE USUARIOS MOSTRADOS */}
+      <div className="contador_usuarios">
+        Mostrando: <strong>{filteredUsers?.length}</strong> usuario(s)
+      </div>
+
+      {/* VISTA MÓVIL */}
       <section className="users_list_content user_mobile">
         <ul className="users_grid">
-          {users
-            ?.filter((user) => {
-              // Si el usuario actual es "superadmin", no se aplica ningún filtro
-              if (userLogged?.cI === superAdmin) {
-                return true;
-              }
-              // Filtrar para excluir al usuario logueado
-              return user?.id !== userLogged?.id;
-            })
-            ?.filter((user) =>
-              `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            )
-            .filter((user) =>
-              filterDepto ? user.departamento === filterDepto : true
-            )
-            .filter((user) =>
-              filterSeccion ? user.seccion === filterSeccion : true
-            )
-            .filter((user) => (filterRol ? user.role === filterRol : true))
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .map((user) => (
-              <li key={user.cI} className="user_card">
-                <div className="btn_list_content">
+          {filteredUsers?.map((user) => (
+            <li key={user.cI} className="user_card">
+              <div className="btn_list_content">
+                <img
+                  className="user_icon_btn"
+                  src="../../../edit.png"
+                  alt="Edit Icon"
+                  onClick={() => {
+                    setShowEdit(true);
+                    setUserEdit(user);
+                    setDepartamentoSeleccionado(user.departamento);
+                    reset({
+                      isAvailable: user.isAvailable ? "Sí" : "No",
+                      role: user.role,
+                      departamento: user.departamento,
+                      seccion: user.seccion,
+                    });
+                  }}
+                />
+                <img
+                  className="user_icon_btn"
+                  src="../../../delete_3.png"
+                  alt="Delete Icon"
+                  onClick={() => {
+                    setShow(true);
+                    setUserDelete(user);
+                  }}
+                />
+                <div
+                  className={`val_verificado ${
+                    user.isVerified ? "verified" : "not_verified"
+                  }`}
+                ></div>
+              </div>
+              <h3 className="user_name">
+                {user.firstName} {user.lastName}
+              </h3>
+              <div className="user_details">
+                <div className="col">
+                  <p>
+                    <span className="label">Cédula:</span> {user.cI}
+                  </p>
+                  <p>
+                    <span className="label">Correo:</span> {user.email}
+                  </p>
+                  <p>
+                    <span className="label">Departamento:</span>{" "}
+                    {user.departamento}
+                  </p>
+                  <p>
+                    <span className="label">Sección:</span> {user.seccion}
+                  </p>
+                  <p>
+                    <span className="label">Celular:</span> {user.cellular}
+                  </p>
+                  <p>
+                    <span className="label">Rol de Usuario:</span> {user.role}
+                  </p>
+                  <p>
+                    <span className="label">Habilitado:</span>{" "}
+                    {user.isAvailable ? "Habilitado" : "Deshabilitado"}
+                  </p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* VISTA DESKTOP */}
+      <section className="users_list_content user_desktop">
+        <table className="users_table">
+          <thead className="table_header">
+            <tr>
+              <th className="table_cell_header">Acciones</th>
+              <th className="table_cell_header">Nombre</th>
+              <th className="table_cell_header">Cédula</th>
+              <th className="table_cell_header">Correo</th>
+              <th className="table_cell_header">Departamento</th>
+              <th className="table_cell_header">Sección</th>
+              <th className="table_cell_header">Celular</th>
+              <th className="table_cell_header">Rol de Usuario</th>
+              <th className="table_cell_header">Habilitado</th>
+            </tr>
+          </thead>
+          <tbody className="table_body">
+            {filteredUsers?.map((user) => (
+              <tr key={user.cI} className="table_row">
+                <td className="table_cell actions_column">
                   <img
                     className="user_icon_btn"
                     src="../../../edit.png"
-                    alt="User Icon"
+                    alt="Edit Icon"
                     onClick={() => {
                       setShowEdit(true);
                       setUserEdit(user);
@@ -239,7 +341,7 @@ const Usuarios = () => {
                   <img
                     className="user_icon_btn"
                     src="../../../delete_3.png"
-                    alt="User Icon"
+                    alt="Delete Icon"
                     onClick={() => {
                       setShow(true);
                       setUserDelete(user);
@@ -250,133 +352,30 @@ const Usuarios = () => {
                       user.isVerified ? "verified" : "not_verified"
                     }`}
                   ></div>
-                </div>
-                <h3 className="user_name">
-                  {user.firstName} {user.lastName}
-                </h3>
-                <div className="user_details">
-                  <div className="col">
-                    <p>
-                      <span className="label">Cédula:</span> {user.cI}
-                    </p>
-                    <p>
-                      <span className="label">Correo:</span> {user.email}
-                    </p>
-                    <p>
-                      <span className="label">Departamento:</span>{" "}
-                      {user.departamento}
-                    </p>
-                    <p>
-                      <span className="label">Sección:</span> {user.seccion}
-                    </p>
-
-                    <p>
-                      <span className="label">Celular:</span> {user.cellular}
-                    </p>
-                    <p>
-                      <span className="label">Rol de Usuario:</span> {user.role}
-                    </p>
-                    <p>
-                      <span className="label">Verificado:</span>{" "}
-                      {user.isAvailable ? "Sí" : "No"}
-                    </p>
-                    <p>
-                      <span className="label">Habilitado:</span>{" "}
-                      {user.isAvailable ? "Habilitado" : "Deshabilitado"}
-                    </p>
-                  </div>
-                </div>
-              </li>
+                </td>
+                <td className="table_cell">{`${user.firstName} ${user.lastName}`}</td>
+                <td className="table_cell">{user.cI}</td>
+                <td className="table_cell">{user.email}</td>
+                <td className="table_cell">{user.departamento}</td>
+                <td className="table_cell">{user.seccion}</td>
+                <td className="table_cell">{user.cellular}</td>
+                <td className="table_cell">{user.role}</td>
+                <td
+                  className="table_cell"
+                  style={{
+                    color: user.isAvailable ? "#28a745" : "#dc3545",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {user.isAvailable ? "Habilitado" : "Deshabilitado"}
+                </td>
+              </tr>
             ))}
-        </ul>
-      </section>
-
-      <section className="users_list_content user_desktop">
-        <table className="users_table">
-          <thead className="table_header">
-            <tr>
-              <th className="table_cell_header">Acciones</th>
-              <th className="table_cell_header">Nombre</th>
-              <th className="table_cell_header">Cédula</th>
-              <th className="table_cell_header">Correo</th>
-              <th className="table_cell_header">Departamento</th>
-              <th className="table_cell_header">Sección</th>
-              <th className="table_cell_header">Celular</th>
-              <th className="table_cell_header">Rol de Usuario</th>
-              <th className="table_cell_header">Verificado</th>
-              <th className="table_cell_header">Habilitado</th>
-            </tr>
-          </thead>
-          <tbody className="table_body">
-            {users
-              ?.filter((user) => {
-                // Si el usuario actual es "superadmin", no se aplica ningún filtro
-                if (userLogged?.cI === superAdmin) {
-                  return true;
-                }
-                // Filtrar para excluir al usuario logueado
-                return user?.id !== userLogged?.id;
-              })
-              ?.filter((user) =>
-                `${user.firstName} ${user.lastName} ${user.email} ${user.cI} ${user.cellular}`
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              )
-              .filter((user) =>
-                filterDepto ? user.departamento === filterDepto : true
-              )
-              .filter((user) =>
-                filterSeccion ? user.seccion === filterSeccion : true
-              )
-              .filter((user) => (filterRol ? user.role === filterRol : true))
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((user) => (
-                <tr key={user.cI} className="table_row">
-                  <td className="table_cell actions_column">
-                    <img
-                      className="user_icon_btn"
-                      src="../../../edit.png"
-                      alt="Edit Icon"
-                      onClick={() => {
-                        setShowEdit(true);
-                        setUserEdit(user);
-                        setDepartamentoSeleccionado(user.departamento);
-                      }}
-                    />
-                    <img
-                      className="user_icon_btn"
-                      src="../../../delete_3.png"
-                      alt="Delete Icon"
-                      onClick={() => {
-                        setShow(true);
-                        setUserDelete(user);
-                      }}
-                    />
-                    <div
-                      className={`val_verificado ${
-                        user.isVerified ? "verified" : "not_verified"
-                      }`}
-                    ></div>
-                  </td>
-                  <td className="table_cell">{`${user.firstName} ${user.lastName}`}</td>
-                  <td className="table_cell">{user.cI}</td>
-                  <td className="table_cell">{user.email}</td>
-                  <td className="table_cell">{user.departamento}</td>
-                  <td className="table_cell">{user.seccion}</td>
-                  <td className="table_cell">{user.cellular}</td>
-                  <td className="table_cell">{user.role}</td>
-                  <td className="table_cell">
-                    {user.isVerified ? "Sí" : "No"}
-                  </td>
-                  <td className="table_cell">
-                    {user.isAvailable ? "Habilitado" : "Deshabilitado"}
-                  </td>
-                </tr>
-              ))}
           </tbody>
         </table>
       </section>
 
+      {/* Confirmación de eliminación */}
       {show && (
         <article className="user_delet_content">
           <span>
@@ -399,6 +398,8 @@ const Usuarios = () => {
           </section>
         </article>
       )}
+
+      {/* Formulario de edición */}
       {showEdit && (
         <article className="user_edit_content">
           <button className="close_btn" onClick={() => setShowEdit(false)}>
@@ -407,7 +408,7 @@ const Usuarios = () => {
           <span>
             <h3>
               Usted Puede cambiar aqui el Rol del Usuario {userEdit.firstName}{" "}
-              {userEdit.lastName} , asi como Habilitarlo o Deshabilitarlo
+              {userEdit.lastName}, así como Habilitarlo o Deshabilitarlo
             </h3>
           </span>
           <article>
@@ -424,7 +425,7 @@ const Usuarios = () => {
                     <option value="Encargado">Encargado</option>
                     {userLogged.cI === superAdmin && (
                       <option value="Administrador">Administrador</option>
-                    )}{" "}
+                    )}
                   </select>
                 </label>
 
@@ -455,6 +456,7 @@ const Usuarios = () => {
                     ))}
                   </select>
                 </label>
+
                 <label className="label_edit_user">
                   <span className="span_edit_user">Sección: </span>
                   <select

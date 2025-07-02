@@ -117,23 +117,28 @@ const Login = () => {
           <div className="user_loggued">
             <ul>
               <h3 className="user_loggued_title">
-                Sr usuario se encuentra logueado en la siguiente cuenta
+                Usted ha iniciado sesión con la siguiente cuenta:
               </h3>
               <li className="user_loggued_li">
                 <span className="user_loggued_span">Usuario: </span>
-                <span className="user_loggued_span">{userLogged.cI}</span>
-              </li>
-
-              <li className="user_loggued_li">
-                <span className="user_loggued_span">Nombres: </span>
-                <span className="user_loggued_span">
-                  {userLogged.firstName}
-                </span>
+                <span className="user_loggued_span">{userLogged.email}</span>
               </li>
 
               <li className="user_loggued_li">
                 <span className="user_loggued_span">Apellidos: </span>
-                <span className="user_loggued_span">{userLogged.lastName}</span>
+                <span className="user_loggued_span">
+                  {userLogged.firstName} {userLogged.lastName}
+                </span>
+              </li>
+
+              <li className="user_loggued_li">
+                <span className="user_loggued_span">Seccion: </span>
+                <span className="user_loggued_span">{userLogged.seccion}</span>
+              </li>
+
+              <li className="user_loggued_li">
+                <span className="user_loggued_span">Rol: </span>
+                <span className="user_loggued_span">{userLogged.role}</span>
               </li>
             </ul>
             <button onClick={handleLogout} className="logout__button">
@@ -168,9 +173,7 @@ const Login = () => {
                       <img
                         className="img__show"
                         onClick={() => setHidePassword(!hidePassword)}
-                        src={`../../../${
-                          hidePassword ? "show" : "hide"
-                        }.png`}
+                        src={`../../../${hidePassword ? "show" : "hide"}.png`}
                         alt=""
                       />
                     </div>
