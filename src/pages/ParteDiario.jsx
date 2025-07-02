@@ -129,7 +129,6 @@ const ParteDiario = () => {
   };
 
   const handleEditParte = (serv, parteId) => {
-    
     const parteExistente = parte.find(
       (p) => p.formacionId === idFormacion && p.servidorPolicialId === serv.id
     );
@@ -146,8 +145,6 @@ const ParteDiario = () => {
 
     setEditandoId(serv.id); // <--- Activamos la edición
   };
-
-  
 
   const handleGuardarEdicion = (serv, parteId) => {
     const datos = formState[serv.id];
@@ -307,9 +304,12 @@ const ParteDiario = () => {
                           }
                         >
                           <option value="">-- Seleccionar --</option>
+                          <option value="Presente">Presente</option>
                           <option value="Franco">Franco</option>
                           <option value="Servicio">Servicio</option>
-                          <option value="Presente">Presente</option>
+                          <option value="Ausencia Injustificada">
+                            Ausencia Injustificada
+                          </option>
                         </select>
                       </td>
                       <td>
