@@ -31,10 +31,10 @@ const App = () => {
         <Route path="/reset_password/:code" element={<ChangePassword />} />
         <Route path="/login" element={<Login />} />
 
-        <Route element={<UserActiveRoutes />}>
+        <Route element={<ProtectedRoutes />}>
           <Route path="/inactive" element={<InactivePage />} />
 
-          <Route element={<ProtectedRoutes />}>
+          <Route element={<UserActiveRoutes />}>
             <Route path="/parte_diario" element={<ParteDiario />} />
 
             <Route element={<TalentoHumanoProtectedRoutes />}>

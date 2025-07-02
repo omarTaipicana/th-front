@@ -12,6 +12,7 @@ const UserActiveRoutes = () => {
     loggedUser();
   }, []);
 
+
   if (user) {
     if (
       user?.isAvailable === true ||

@@ -61,6 +61,17 @@ const Usuarios = () => {
   }, [show, showEdit]);
 
   useEffect(() => {
+    if (userEdit) {
+      reset({
+        isAvailable: userEdit.isAvailable ? "Sí" : "No",
+        role: userEdit.role,
+        departamento: userEdit.departamento,
+        seccion: userEdit.seccion,
+      });
+    }
+  }, [userEdit]);
+
+  useEffect(() => {
     if (error) {
       dispatch(
         showAlert({
@@ -330,12 +341,6 @@ const Usuarios = () => {
                         setShowEdit(true);
                         setUserEdit(user);
                         setDepartamentoSeleccionado(user.departamento);
-                        reset({
-                          isAvailable: user.isAvailable ? "Sí" : "No",
-                          role: user.role,
-                          departamento: user.departamento,
-                          seccion: user.seccion,
-                        });
                       }}
                     />
                     <img
