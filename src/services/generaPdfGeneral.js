@@ -258,71 +258,82 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
   });
 
   // Segunda hoja con detalles
-  doc.addPage("landscape");
-  const yInicio = 20;
-  const margenX2 = 10;
-  const espacioEntreColumnas = 10;
-  const anchoColumna =
-    (doc.internal.pageSize.getWidth() -
-      margenX2 * 2 -
-      espacioEntreColumnas * 2) /
-    3;
+// Segunda hoja con detalles
+// Segunda hoja con detalles
 
-  const columnasX = [
-    margenX2,
-    margenX2 + anchoColumna + espacioEntreColumnas,
-    margenX2 + (anchoColumna + espacioEntreColumnas) * 2,
-  ];
+const yInicio = 20;
+const margenX2 = 10;
+const espacioEntreColumnas = 10;
+const anchoColumna = 
+  (doc.internal.pageSize.getWidth() - margenX2 * 2 - espacioEntreColumnas * 2) / 3;
 
-  let colIndex = 0;
-  let detalleY = yInicio;
+const columnasX = [
+  margenX2,
+  margenX2 + anchoColumna + espacioEntreColumnas,
+  margenX2 + (anchoColumna + espacioEntreColumnas) * 2,
+];
 
-  datos.forEach((item) => {
-    const columnaX = columnasX[colIndex];
+let alturasColumnas = [yInicio, yInicio, yInicio];
 
-    const alturaTablaEstimacion =
-      8 +
-      (item.secciones
-        ? Object.values(item.secciones).reduce(
-            (acc, s) => acc + (s.detalles.length + 1) * 6,
-            0
-          )
-        : 20);
+// Recorremos cada novedad
+datos.forEach((item) => {
+  const detallesPlanos = Object.entries(item.secciones || {}).flatMap(
+    ([grupo, contenido]) => contenido.detalles
+  );
 
-    if (detalleY + alturaTablaEstimacion > doc.internal.pageSize.height - 10) {
-      colIndex++;
-      detalleY = yInicio;
-
-      if (colIndex > 2) {
-        doc.addPage("landscape");
-        colIndex = 0;
-      }
+  // Saltar si no hay datos
+  if (detallesPlanos.length === 0) {
+    // Buscar columna con espacio para texto vacío
+    let col = alturasColumnas.findIndex(
+      (y) => y + 10 <= doc.internal.pageSize.height - 10
+    );
+    if (col === -1) {
+      doc.addPage("landscape");
+      alturasColumnas = [yInicio, yInicio, yInicio];
+      col = 0;
     }
+    alturasColumnas[col] += 10;
+    return;
+  }
 
-    doc.setFontSize(7);
-    doc.text(item.novedad.toUpperCase(), columnasX[colIndex], detalleY);
-    detalleY += 1;
+  // Fragmentar en bloques de 40
+  const fragmentSize = 40;
+  let ordGlobal = 1;
 
-    const detallesData = Object.entries(item.secciones || {}).flatMap(
-      ([grupo, contenido]) =>
-        contenido.detalles.map((persona, index) => [
-          index + 1,
-          persona.grado,
-          persona.nombre,
-          persona.detalle,
-        ])
+  for (let i = 0; i < detallesPlanos.length; i += fragmentSize) {
+    const fragmento = detallesPlanos.slice(i, i + fragmentSize);
+    const alturaEstim = fragmento.length * 6 + 8;
+
+    // Buscar columna donde quepa
+    let col = alturasColumnas.findIndex(
+      (y) => y + alturaEstim <= doc.internal.pageSize.height - 10
     );
 
-    if (detallesData.length === 0) {
-      detalleY += 5;
-      return;
+    // Si no cabe en ninguna columna, agregar nueva hoja
+    if (col === -1) {
+      doc.addPage("landscape");
+      alturasColumnas = [yInicio, yInicio, yInicio];
+      col = 0;
     }
+
+    const startX = columnasX[col];
+    const startY = alturasColumnas[col];
+
+    doc.setFontSize(7);
+    doc.text(item.novedad.toUpperCase(), startX, startY);
+
+    const body = fragmento.map((persona, idx) => [
+      ordGlobal++, // contador global para la novedad actual
+      persona.grado,
+      persona.nombre,
+      persona.detalle,
+    ]);
 
     autoTable(doc, {
       head: [["ORD.", "GRADO", "NOMBRES", "LUGAR"]],
-      body: detallesData,
-      startY: detalleY,
-      margin: { left: columnasX[colIndex] },
+      body,
+      startY: startY + 2,
+      margin: { left: startX },
       tableWidth: anchoColumna,
       styles: {
         fontSize: 5,
@@ -340,8 +351,12 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       theme: "grid",
     });
 
-    detalleY = doc.lastAutoTable.finalY + 5;
-  });
+    // Actualizar la altura de esa columna
+    alturasColumnas[col] = doc.lastAutoTable.finalY + 5;
+  }
+});
+
+
 
   // Convertir PDF a Blob y mostrar vista previa
   const pdfBlob = doc.output("blob");

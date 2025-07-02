@@ -125,7 +125,7 @@ const Login = () => {
               </li>
 
               <li className="user_loggued_li">
-                <span className="user_loggued_span">Apellidos: </span>
+                <span className="user_loggued_span">Nombres: </span>
                 <span className="user_loggued_span">
                   {userLogged.firstName} {userLogged.lastName}
                 </span>
