@@ -33,9 +33,38 @@ const ParteDiario = () => {
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [novedades, getNovedades, , deleteNovedades, , , , , ,] = useCrud();
   const [servidores, getServidores, , , , , isLoading, , ,] = useCrud();
-  const servidoresFilter = servidores.filter((item) => item.eliminado === "No");
   const [pdfData, getPdf] = useCrud();
   const token = localStorage.getItem("token");
+
+  const grados = [
+    "GRAD",
+    "CRNL",
+    "TCNL",
+    "MAYR",
+    "CPTN",
+    "TNTE",
+    "SBTE",
+    "SBOM",
+    "SBOP",
+    "SBOS",
+    "SGOP",
+    "SGOS",
+    "CBOP",
+    "CBOS",
+    "POLI",
+  ];
+  const servidoresFilter = servidores
+    .filter((item) => item.eliminado === "No")
+    .sort((a, b) => {
+      const indexA = grados.indexOf(a.grado);
+      const indexB = grados.indexOf(b.grado);
+
+      if (indexA === indexB) {
+        return new Date(a.fechaIngreso) - new Date(b.fechaIngreso); // más antiguo primero
+      }
+
+      return indexA - indexB;
+    });
 
   const [
     formacion,
@@ -245,10 +274,8 @@ const ParteDiario = () => {
         <section className="table_section_parte">
           <h3 className="title_table_parte">
             {
-              servidoresFilter.filter(
-                (serv) =>
-                  serv?.seccion === user?.seccion 
-              ).length
+              servidoresFilter.filter((serv) => serv?.seccion === user?.seccion)
+                .length
             }{" "}
             SERVIDORES POLICIALES POR REGISTRAR
           </h3>
@@ -266,22 +293,28 @@ const ParteDiario = () => {
               <tbody>
                 {servidoresFilter
                   .filter((serv) => {
-                    const tieneNovedadActiva = novedades.some((n) => {
-                      const fechaFormacion = new Date(formacionActual?.fecha);
-                      const inicio = new Date(n.fechaInicio);
-                      const fin = new Date(n.fechaFin);
+                    const tieneNovedadActiva =
+                      formacionActual &&
+                      novedades.some((n) => {
+                        const fechaFormacion = new Date(formacionActual.fecha);
+                        const inicio = new Date(n.fechaInicio);
+                        const fin = new Date(n.fechaFin);
 
-                      return (
-                        n.servidorPolicialId === serv.id &&
-                        n.seccion === user?.seccion &&
-                        fechaFormacion >= inicio &&
-                        fechaFormacion <= fin
-                      );
-                    });
+                        const mismoServidor = n.servidorPolicialId === serv.id;
+                        const mismaSeccion = n.seccion === user?.seccion;
+
+                        if (!mismoServidor || !mismaSeccion) return false;
+
+                        if (serv.enLaDireccion === "No") {
+                          return true;
+                        }
+                        return (
+                          fechaFormacion >= inicio && fechaFormacion <= fin
+                        );
+                      });
 
                     return (
-                      serv?.seccion === user?.seccion &&
-                      !tieneNovedadActiva
+                      serv?.seccion === user?.seccion && !tieneNovedadActiva
                     );
                   })
                   .map((serv) => (

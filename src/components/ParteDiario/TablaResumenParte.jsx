@@ -71,23 +71,24 @@ const TablaResumenParte = ({
   // Fecha actual de la formación
   const formacionActual = parte.find((p) => p.formacionId === idFormacion);
   const fechaFormacion = formacionActual
-    ? new Date(formacionActualFecha?.fecha)
+    ? new Date(formacionActualFecha?.fecha + "T12:00:00") // medio día local, evita desfase
     : null;
 
   // Novedades Adicionales
   if (fechaFormacion) {
-    // Crear un mapa para almacenar la última novedad por servidorPolicialId
     const ultimasNovedades = new Map();
 
-    // Iterar las novedades y almacenar solo la más reciente para cada servidorPolicialId
     novedades.forEach((n) => {
-      const fechaInicio = new Date(n.fechaInicio);
-      const fechaFin = new Date(n.fechaFin);
+      const fechaInicio = new Date(n.fechaInicio + "T12:00:00");
+      const fechaFin = new Date(n.fechaFin + "T12:00:00");
+
+      const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
+      if (!servidor) return;
 
       if (
+        n.seccion === user?.seccion &&
         fechaFormacion >= fechaInicio &&
-        fechaFormacion <= fechaFin &&
-        n.seccion === user?.seccion
+        (fechaFormacion <= fechaFin || servidor.enLaDireccion === "No")
       ) {
         const servidorId = n.servidorPolicialId;
         if (
@@ -100,7 +101,6 @@ const TablaResumenParte = ({
       }
     });
 
-    // Procesar solo las últimas novedades
     ultimasNovedades.forEach((n) => {
       const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
       if (!servidor) return;
@@ -127,12 +127,12 @@ const TablaResumenParte = ({
             "Técnico Operativos": [],
           },
         };
-        datosUnificados?.push(entry);
+        datosUnificados.push(entry);
       }
 
       entry.resumen[grupo]++;
       entry.resumen.Total++;
-      entry.detalles[grupo]?.push({
+      entry.detalles[grupo].push({
         nombre: `${servidor.nombres} ${servidor.apellidos}`,
         grado: servidor.grado,
         ci: servidor.cI,
@@ -226,7 +226,7 @@ const TablaResumenParte = ({
 
   useEffect(() => {
     const totalServidores = servidores.filter(
-      (serv) => serv?.seccion === user?.seccion && serv?.enLaDireccion === "Si"
+      (serv) => serv?.seccion === user?.seccion
     ).length;
 
     if (totalGeneral.Total === totalServidores) {

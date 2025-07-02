@@ -74,7 +74,7 @@ const TablaResumenParteGeneral = ({
   const datosUnificados = [];
 
   const fechaFormacion = formacionActualFecha
-    ? new Date(formacionActualFecha?.fecha)
+    ? new Date(formacionActualFecha?.fecha + "T12:00:00") // medio día local, evita desfase
     : null;
 
   const prioridadParte = {
@@ -83,7 +83,6 @@ const TablaResumenParteGeneral = ({
     Franco: 3,
   };
 
-  // Ordenar la lista de "Parte" antes de procesarla
   parte
     .filter((r) => r.formacionId === idFormacion)
     .sort((a, b) => {
@@ -134,16 +133,24 @@ const TablaResumenParteGeneral = ({
         detalle: registro.detalle,
       });
     });
+
   if (fechaFormacion) {
-    // Crear un mapa para almacenar la última novedad por servidorPolicialId
     const ultimasNovedades = new Map();
 
-    // Iterar las novedades y almacenar solo la más reciente para cada servidorPolicialId
     novedades.forEach((n) => {
-      const fechaInicio = new Date(n.fechaInicio);
-      const fechaFin = new Date(n.fechaFin);
+      const fechaInicio = new Date(n.fechaInicio + "T12:00:00");
+      const fechaFin = new Date(n.fechaFin + "T12:00:00");
 
-      if (fechaFormacion >= fechaInicio && fechaFormacion <= fechaFin) {
+      const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
+      if (!servidor) return;
+
+      const enDireccion = servidor.enLaDireccion === "No";
+
+      const dentroDeRango =
+        fechaFormacion >= fechaInicio &&
+        (fechaFormacion <= fechaFin || enDireccion);
+
+      if (dentroDeRango) {
         const servidorId = n.servidorPolicialId;
 
         if (
@@ -156,7 +163,6 @@ const TablaResumenParteGeneral = ({
       }
     });
 
-    // Procesar solo las últimas novedades
     ultimasNovedades.forEach((n) => {
       const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
       if (!servidor) return;
