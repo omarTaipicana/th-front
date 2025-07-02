@@ -32,8 +32,8 @@ const ParteDiario = () => {
 
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [novedades, getNovedades, , deleteNovedades, , , , , ,] = useCrud();
-  const [resApi, getApi, , , , , isLoading, , ,] = useCrud();
-  const resApiFilter = resApi.filter((item) => item.enLaDireccion === "Si");
+  const [servidores, getServidores, , , , , isLoading, , ,] = useCrud();
+  const servidoresFilter = servidores.filter((item) => item.eliminado === "No");
   const [pdfData, getPdf] = useCrud();
   const token = localStorage.getItem("token");
 
@@ -78,7 +78,7 @@ const ParteDiario = () => {
   }, [token]);
 
   useEffect(() => {
-    getApi(PATH_SERVIDORES);
+    getServidores(PATH_SERVIDORES);
     getParte(PATH_PARTE);
     getNovedades(PATH_NOVEDADES);
     getPdf(PATH_PDF);
@@ -198,7 +198,7 @@ const ParteDiario = () => {
         PERSONAL DE TURNO
       </button>
 
-      <h2 className="parte_diario_title">
+      <h2 className="parte_diario_title  mobile_hide">
         Parte Diario de Novedades de Planta Central de la Dirección General de
         Investigaciones
       </h2>
@@ -214,7 +214,7 @@ const ParteDiario = () => {
             })
             .filter((form) => form.isAvailable)
             .map((form) => {
-              const usuario = resApi.find(
+              const usuario = servidores.find(
                 (serv) => serv?.cI === form?.usuarioRegistro
               );
 
@@ -245,10 +245,9 @@ const ParteDiario = () => {
         <section className="table_section_parte">
           <h3 className="title_table_parte">
             {
-              resApi.filter(
+              servidoresFilter.filter(
                 (serv) =>
-                  serv?.seccion === user?.seccion &&
-                  serv?.enLaDireccion === "Si"
+                  serv?.seccion === user?.seccion 
               ).length
             }{" "}
             SERVIDORES POLICIALES POR REGISTRAR
@@ -265,7 +264,7 @@ const ParteDiario = () => {
               </thead>
 
               <tbody>
-                {resApi
+                {servidoresFilter
                   .filter((serv) => {
                     const tieneNovedadActiva = novedades.some((n) => {
                       const fechaFormacion = new Date(formacionActual?.fecha);
@@ -282,7 +281,6 @@ const ParteDiario = () => {
 
                     return (
                       serv?.seccion === user?.seccion &&
-                      serv?.enLaDireccion === "Si" &&
                       !tieneNovedadActiva
                     );
                   })
@@ -384,7 +382,7 @@ const ParteDiario = () => {
           <TablaResumenParte
             user={user}
             parte={parte}
-            servidores={resApiFilter}
+            servidores={servidoresFilter}
             idFormacion={idFormacion}
             novedades={novedades}
             formacionActualFecha={formacionActual}
@@ -483,7 +481,7 @@ const ParteDiario = () => {
             showDeleteFormacion={showDeleteFormacion}
             user={user}
             parte={parte}
-            servidores={resApiFilter}
+            servidores={servidoresFilter}
             novedades={novedades}
             setNewPdf={setNewPdf}
             clouseFormacion={clouseFormacion}
