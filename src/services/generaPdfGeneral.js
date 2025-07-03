@@ -117,9 +117,9 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
   });
 
   const grupos = [
-    "Directivos Superiores",
-    "Directivos Subalternos",
     "Técnico Operativos",
+    "Directivos Subalternos",
+    "Directivos Superiores",
   ];
 
   // Crear el encabezado jerárquico
@@ -178,8 +178,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
           resumen: { [grupo]: 0 },
         };
         const count = dataSeccion.resumen[grupo] || 0;
-        fila.push(count);
-        subtotalGrupo += count;
+        fila.push(count === 0 ? "" : count);
 
         const totalIndex = idx + grupoIndex * datos.length;
         totalesPorColumna[totalIndex] += count;
@@ -230,7 +229,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
     startY: margenY + 18,
     margin: { left: margenX },
     styles: {
-      fontSize: 6,
+      fontSize: 7,
       cellPadding: 1.2,
       textColor: [0, 0, 0],
       lineWidth: 0.3,
@@ -248,7 +247,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       const { cell, row, column, section } = data;
 
       if (section === "head" && row.index === 1) {
-        row.height = 35;
+        row.height = 40;
         if (column.index !== 0) {
           cell.text = [" "];
         }
@@ -333,7 +332,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
 
   // Coordenadas iniciales y ancho de columna
   const startX = margenX + anchoSeccion; // inicio después de primera columna "SECCIONES"
-  const startY = margenY + 50;
+  const startY = margenY + 55;
 
   doc.setFontSize(6);
   doc.setTextColor(255, 255, 255); // texto blanco
@@ -365,7 +364,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
     const y = startY;
 
     doc.saveGraphicsState();
-    doc.setFontSize(6);
+    doc.setFontSize(7);
     doc.setTextColor(255, 255, 255); // blanco
     doc.setFont("helvetica", "normal");
 
@@ -388,6 +387,8 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
   // Segunda hoja con detalles
 
   const yInicio = 20;
+  doc.addPage("landscape");
+
   const margenX2 = 10;
   const espacioEntreColumnas = 10;
   const anchoColumna =
