@@ -241,7 +241,7 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       textColor: [255, 255, 255],
       halign: "center",
       valign: "middle",
-      cellPadding: 1,
+      cellPadding: 2,
     },
     columnStyles,
     didParseCell: (data) => {
@@ -274,132 +274,114 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       }
     },
 
-    didDrawCell: (data) => {
-      const { cell, row, column, section, doc } = data;
+    // didDrawCell: (data) => {
+    //   const { cell, row, column, section, doc } = data;
 
-      if (section === "head" && row.index === 1 && column.index !== 0) {
-        const text = typeof cell.raw === "object" ? cell.raw.content : cell.raw;
+    //   if (section === "head" && row.index === 1 && column.index !== 0) {
+    //     const text = typeof cell.raw === "object" ? cell.raw.content : cell.raw;
 
-        // Limitar texto a máximo 20 caracteres con "..." si es muy largo
-        const maxChars = 20;
-        const displayText =
-          text.length > maxChars ? text.slice(0, maxChars - 3) + "..." : text;
+    //     // Limitar texto a máximo 20 caracteres con "..." si es muy largo
+    //     const maxChars = 20;
+    //     const displayText =
+    //       text.length > maxChars ? text.slice(0, maxChars - 3) + "..." : text;
 
-        // Ajustar tamaño de fuente según longitud
-        const maxFontSize = 6;
-        const minFontSize = 3;
-        const maxLength = 10;
-        let fontSize = maxFontSize;
-        if (displayText.length > maxLength) {
-          fontSize = Math.max(
-            minFontSize,
-            (maxLength * maxFontSize) / displayText.length
-          );
-        }
+    //     // Ajustar tamaño de fuente según longitud
+    //     const maxFontSize = 6;
+    //     const minFontSize = 3;
+    //     const maxLength = 10;
+    //     let fontSize = maxFontSize;
+    //     if (displayText.length > maxLength) {
+    //       fontSize = Math.max(
+    //         minFontSize,
+    //         (maxLength * maxFontSize) / displayText.length
+    //       );
+    //     }
 
-        // Centro de la celda
-        const centerX = cell.x + cell.width / 2 + 2;
-        const centerY = cell.y + cell.height / 2;
+    //     // Centro de la celda
+    //     const centerX = cell.x + cell.width / 2 + 2;
+    //     const centerY = cell.y + cell.height / 2;
 
-        doc.saveGraphicsState();
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(fontSize);
+    //     doc.saveGraphicsState();
+    //     doc.setTextColor(255, 255, 255);
+    //     doc.setFontSize(fontSize);
 
-        // Ajuste fino de posición para que el texto rotado no se salga
-        // Puedes probar con un pequeño desplazamiento en X o Y si es necesario
-        const adjustedX = centerX + fontSize / 2; // ajusta a necesidad
-        const adjustedY = centerY;
+    //     // Ajuste fino de posición para que el texto rotado no se salga
+    //     // Puedes probar con un pequeño desplazamiento en X o Y si es necesario
+    //     const adjustedX = centerX + fontSize / 2; // ajusta a necesidad
+    //     const adjustedY = centerY;
 
-        doc.text(displayText, adjustedX, adjustedY, {
-          angle: 90,
-          align: "center",
-          baseline: "middle",
-        });
+    //     doc.text(displayText, adjustedX, adjustedY, {
+    //       angle: 90,
+    //       align: "center",
+    //       baseline: "middle",
+    //     });
 
-        doc.restoreGraphicsState();
-      }
-    },
+    //     doc.restoreGraphicsState();
+    //   }
+    // },
+  });
+
+  // Obtener solo las celdas del segundo encabezado, quitando primera y última columna
+
+  // Extraer solo los textos del segundo encabezado, sin "SECCIONES" ni "TOTAL"
+  // Extraer los textos del segundo encabezado, omitiendo primera y última columna
+  const textos = head[1].map((cell) => {
+    const content =
+      typeof cell.content === "object" ? cell.content.content : cell.content;
+    return typeof content === "string" ? content : "";
+  });
+
+  // Coordenadas iniciales y ancho de columna
+  const startX = margenX + anchoSeccion; // inicio después de primera columna "SECCIONES"
+  const startY = margenY + 50;
+
+  doc.setFontSize(6);
+  doc.setTextColor(255, 255, 255); // texto blanco
+
+  let acumuladoX = startX;
+
+  textos.forEach((text, index) => {
+    const maxChars = 30;
+    const displayText =
+      text.length > maxChars ? text.slice(0, maxChars - 3) + "..." : text;
+
+    // Tamaño de fuente dinámico (puedes usar fontSize fijo si quieres)
+    const maxFontSize = 6;
+    const minFontSize = 3;
+    const maxLength = 10;
+    let fontSize = maxFontSize;
+    if (displayText.length > maxLength) {
+      fontSize = Math.max(
+        minFontSize,
+        (maxLength * maxFontSize) / displayText.length
+      );
+    }
+
+    // Ancho real de la columna (index + 1 porque omites la primera columna)
+    const cellWidth = columnStyles[index + 1].cellWidth;
+
+    // Posición X centrada en la columna actual
+    const x = acumuladoX + cellWidth / 2;
+    const y = startY;
+
+    doc.saveGraphicsState();
+    doc.setFontSize(6);
+    doc.setTextColor(255, 255, 255); // blanco
+    doc.setFont("helvetica", "normal");
+
+    doc.text(displayText, x + 1, y + 3, {
+      angle: 90,
+      align: "left", // ancla desde arriba del texto rotado
+      baseline: "middle",
+    });
+
+    doc.restoreGraphicsState();
+
+    // Sumar ancho para la próxima columna
+    acumuladoX += cellWidth;
   });
 
   // Después de llamar a autoTable...
-
-  // const posY = margenY + 18 + 40 / 2;
-  // const novedadesPorGrupo = datos.length;
-
-  // grupos.forEach((grupo, grupoIndex) => {
-  //   console.log(`--- GRUPO ${grupo.toUpperCase()} ---`);
-
-  //   for (let i = 0; i < novedadesPorGrupo; i++) {
-  //     const colIndex = 1 + grupoIndex * (novedadesPorGrupo + 1) + i;
-
-  //     // Calcular posX sumando anchos de columnas previas
-  //     let posX = margenX;
-  //     for (let j = 0; j < colIndex; j++) {
-  //       const ancho = columnStyles[j]?.cellWidth || anchoCols;
-  //       posX += ancho;
-  //     }
-
-  //     const anchoCelda = columnStyles[colIndex]?.cellWidth || anchoCols;
-  //     const texto = headerTextsFila2[colIndex - 1];
-
-  //     console.log(
-  //       `Columna Real: ${colIndex}, posX: ${posX.toFixed(
-  //         2
-  //       )}, ancho: ${anchoCelda.toFixed(2)}, texto: ${texto || "⚠️ undefined"}`
-  //     );
-
-  //     // Dibujar rectángulo de depuración
-  //     doc.setDrawColor(0, 255, 0); // verde
-  //     doc.rect(posX, posY - 10, anchoCelda, 20);
-
-  //     if (texto) {
-  //       doc.saveGraphicsState();
-  //       doc.setTextColor(255, 255, 255);
-  //       doc.setFontSize(6);
-
-  //       // Mover el origen al centro de la celda y rotar
-  //       doc.translate(posX + anchoCelda / 2, posY);
-  //       doc.rotate(-90); // -90 grados para vertical (de abajo hacia arriba)
-
-  //       // Escribir en el nuevo origen rotado
-  //       doc.text(texto, 0, 0, {
-  //         align: "center",
-  //         baseline: "middle",
-  //       });
-
-  //       doc.restoreGraphicsState();
-  //     }
-  //   }
-
-  //   // TOTAL al final del grupo
-  //   const totalColIndex = 1 + grupoIndex * (novedadesPorGrupo + 1) + novedadesPorGrupo;
-
-  //   let posXTotal = margenX;
-  //   for (let j = 0; j < totalColIndex; j++) {
-  //     const ancho = columnStyles[j]?.cellWidth || anchoCols;
-  //     posXTotal += ancho;
-  //   }
-
-  //   const anchoTotalCol = columnStyles[totalColIndex]?.cellWidth || anchoTotal;
-
-  //   console.log(
-  //     `Columna Real: ${totalColIndex}, posX: ${posXTotal.toFixed(
-  //       2
-  //     )}, ancho: ${anchoTotalCol.toFixed(2)}, texto: TOTAL`
-  //   );
-
-  //   doc.setDrawColor(255, 0, 0); // rojo
-  //   doc.rect(posXTotal, posY - 10, anchoTotalCol, 20);
-
-  //   doc.saveGraphicsState();
-  //   doc.setTextColor(255, 255, 255);
-  //   doc.setFontSize(6);
-  //   doc.text("TOTAL", posXTotal + anchoTotalCol / 2, posY, {
-  //     align: "center",
-  //     baseline: "middle",
-  //   });
-  //   doc.restoreGraphicsState();
-  // });
 
   // Segunda hoja con detalles
   // Segunda hoja con detalles
