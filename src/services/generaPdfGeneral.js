@@ -9,8 +9,8 @@ export const mostrarVistaPreviaPDF = (pdfUrl, fileName) => {
   modal.style.top = "50%";
   modal.style.left = "50%";
   modal.style.transform = "translate(-50%, -50%)"; // Centramos el modal
-  modal.style.width = "95%";
-  modal.style.height = "95%";
+  modal.style.width = "97%";
+  modal.style.height = "97%";
   modal.style.zIndex = "10000";
   modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
   modal.style.display = "flex";
@@ -110,16 +110,9 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
   doc.text("DIRECCIÓN GENERAL DE INVESTIGACIÓN", 148, margenY, {
     align: "center",
   });
-  doc.text(
-    "PARTE ELEVADO A LA UNIDAD DE ADMINISTRACION DEL TALENTO HUMANO",
-    148,
-    margenY + 6,
-    { align: "center" }
-  );
-  doc.text("SECCIÓN DE TALENTO HUMANO DE LA DGIN", 148, margenY + 12, {
-    align: "center",
-  });
-  doc.text(`Quito, ${fechaTexto} - hora ${horaTexto}`, 148, margenY + 18, {
+  doc.text("PARTE DIARIO DE NOVEDADES", 148, margenY + 6, { align: "center" });
+
+  doc.text(`Quito, ${fechaTexto} - hora ${horaTexto}`, 148, margenY + 12, {
     align: "center",
   });
 
@@ -156,6 +149,12 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       ]),
     ],
   ];
+
+  const headerTextsFila2 = head[1]
+    .map((cell) =>
+      typeof cell.content === "string" ? cell.content : cell.content
+    )
+    .filter((val) => val !== "Total"); // omitir 'Total' si no quieres pintarlo
 
   // Construir cuerpo de la tabla
   const body = [];
@@ -204,14 +203,35 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
   body.push(filaTotales);
 
   // Generar la tabla de la primera hoja
+  // Calcular el total de columnas de la tabla
+  const totalColumnas = 1 + grupos.length * (datos.length + 1) + 1;
+
+  // Definir estilos de columnas
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const usableWidth = pageWidth - margenX * 2;
+
+  const anchoSeccion = 35;
+  const anchoTotal = 15;
+  const anchoCols =
+    (usableWidth - anchoSeccion - anchoTotal) / (totalColumnas - 2);
+
+  const columnStyles = {
+    0: { cellWidth: anchoSeccion },
+    [totalColumnas - 1]: { cellWidth: anchoTotal },
+  };
+
+  for (let i = 1; i < totalColumnas - 1; i++) {
+    columnStyles[i] = { cellWidth: anchoCols };
+  }
+
   autoTable(doc, {
     head,
     body,
-    startY: margenY + 30,
+    startY: margenY + 18,
     margin: { left: margenX },
     styles: {
-      fontSize: 7,
-      cellPadding: 2,
+      fontSize: 6,
+      cellPadding: 1.2,
       textColor: [0, 0, 0],
       lineWidth: 0.3,
       lineColor: [150, 150, 150],
@@ -220,19 +240,17 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
       fillColor: [0, 51, 102],
       textColor: [255, 255, 255],
       halign: "center",
+      valign: "middle",
       cellPadding: 1,
     },
-    columnStyles: {
-      0: { cellWidth: 30 },
-    },
+    columnStyles,
     didParseCell: (data) => {
       const { cell, row, column, section } = data;
 
-      if (section === "head") {
-        if (row.index === 1 && column.index !== 0) {
-          cell.styles.textOrientation = "up";
-          cell.styles.valign = "middle";
-          cell.styles.halign = "center";
+      if (section === "head" && row.index === 1) {
+        row.height = 35;
+        if (column.index !== 0) {
+          cell.text = [" "];
         }
       }
 
@@ -255,108 +273,235 @@ export const generarPdfGeneral = (datos, formacionActualFecha, user) => {
         }
       }
     },
+
+    didDrawCell: (data) => {
+      const { cell, row, column, section, doc } = data;
+
+      if (section === "head" && row.index === 1 && column.index !== 0) {
+        const text = typeof cell.raw === "object" ? cell.raw.content : cell.raw;
+
+        // Limitar texto a máximo 20 caracteres con "..." si es muy largo
+        const maxChars = 20;
+        const displayText =
+          text.length > maxChars ? text.slice(0, maxChars - 3) + "..." : text;
+
+        // Ajustar tamaño de fuente según longitud
+        const maxFontSize = 6;
+        const minFontSize = 3;
+        const maxLength = 10;
+        let fontSize = maxFontSize;
+        if (displayText.length > maxLength) {
+          fontSize = Math.max(
+            minFontSize,
+            (maxLength * maxFontSize) / displayText.length
+          );
+        }
+
+        // Centro de la celda
+        const centerX = cell.x + cell.width / 2 + 2;
+        const centerY = cell.y + cell.height / 2;
+
+        doc.saveGraphicsState();
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(fontSize);
+
+        // Ajuste fino de posición para que el texto rotado no se salga
+        // Puedes probar con un pequeño desplazamiento en X o Y si es necesario
+        const adjustedX = centerX + fontSize / 2; // ajusta a necesidad
+        const adjustedY = centerY;
+
+        doc.text(displayText, adjustedX, adjustedY, {
+          angle: 90,
+          align: "center",
+          baseline: "middle",
+        });
+
+        doc.restoreGraphicsState();
+      }
+    },
   });
 
+  // Después de llamar a autoTable...
+
+  // const posY = margenY + 18 + 40 / 2;
+  // const novedadesPorGrupo = datos.length;
+
+  // grupos.forEach((grupo, grupoIndex) => {
+  //   console.log(`--- GRUPO ${grupo.toUpperCase()} ---`);
+
+  //   for (let i = 0; i < novedadesPorGrupo; i++) {
+  //     const colIndex = 1 + grupoIndex * (novedadesPorGrupo + 1) + i;
+
+  //     // Calcular posX sumando anchos de columnas previas
+  //     let posX = margenX;
+  //     for (let j = 0; j < colIndex; j++) {
+  //       const ancho = columnStyles[j]?.cellWidth || anchoCols;
+  //       posX += ancho;
+  //     }
+
+  //     const anchoCelda = columnStyles[colIndex]?.cellWidth || anchoCols;
+  //     const texto = headerTextsFila2[colIndex - 1];
+
+  //     console.log(
+  //       `Columna Real: ${colIndex}, posX: ${posX.toFixed(
+  //         2
+  //       )}, ancho: ${anchoCelda.toFixed(2)}, texto: ${texto || "⚠️ undefined"}`
+  //     );
+
+  //     // Dibujar rectángulo de depuración
+  //     doc.setDrawColor(0, 255, 0); // verde
+  //     doc.rect(posX, posY - 10, anchoCelda, 20);
+
+  //     if (texto) {
+  //       doc.saveGraphicsState();
+  //       doc.setTextColor(255, 255, 255);
+  //       doc.setFontSize(6);
+
+  //       // Mover el origen al centro de la celda y rotar
+  //       doc.translate(posX + anchoCelda / 2, posY);
+  //       doc.rotate(-90); // -90 grados para vertical (de abajo hacia arriba)
+
+  //       // Escribir en el nuevo origen rotado
+  //       doc.text(texto, 0, 0, {
+  //         align: "center",
+  //         baseline: "middle",
+  //       });
+
+  //       doc.restoreGraphicsState();
+  //     }
+  //   }
+
+  //   // TOTAL al final del grupo
+  //   const totalColIndex = 1 + grupoIndex * (novedadesPorGrupo + 1) + novedadesPorGrupo;
+
+  //   let posXTotal = margenX;
+  //   for (let j = 0; j < totalColIndex; j++) {
+  //     const ancho = columnStyles[j]?.cellWidth || anchoCols;
+  //     posXTotal += ancho;
+  //   }
+
+  //   const anchoTotalCol = columnStyles[totalColIndex]?.cellWidth || anchoTotal;
+
+  //   console.log(
+  //     `Columna Real: ${totalColIndex}, posX: ${posXTotal.toFixed(
+  //       2
+  //     )}, ancho: ${anchoTotalCol.toFixed(2)}, texto: TOTAL`
+  //   );
+
+  //   doc.setDrawColor(255, 0, 0); // rojo
+  //   doc.rect(posXTotal, posY - 10, anchoTotalCol, 20);
+
+  //   doc.saveGraphicsState();
+  //   doc.setTextColor(255, 255, 255);
+  //   doc.setFontSize(6);
+  //   doc.text("TOTAL", posXTotal + anchoTotalCol / 2, posY, {
+  //     align: "center",
+  //     baseline: "middle",
+  //   });
+  //   doc.restoreGraphicsState();
+  // });
+
   // Segunda hoja con detalles
-// Segunda hoja con detalles
-// Segunda hoja con detalles
+  // Segunda hoja con detalles
+  // Segunda hoja con detalles
 
-const yInicio = 20;
-const margenX2 = 10;
-const espacioEntreColumnas = 10;
-const anchoColumna = 
-  (doc.internal.pageSize.getWidth() - margenX2 * 2 - espacioEntreColumnas * 2) / 3;
+  const yInicio = 20;
+  const margenX2 = 10;
+  const espacioEntreColumnas = 10;
+  const anchoColumna =
+    (doc.internal.pageSize.getWidth() -
+      margenX2 * 2 -
+      espacioEntreColumnas * 2) /
+    3;
 
-const columnasX = [
-  margenX2,
-  margenX2 + anchoColumna + espacioEntreColumnas,
-  margenX2 + (anchoColumna + espacioEntreColumnas) * 2,
-];
+  const columnasX = [
+    margenX2,
+    margenX2 + anchoColumna + espacioEntreColumnas,
+    margenX2 + (anchoColumna + espacioEntreColumnas) * 2,
+  ];
 
-let alturasColumnas = [yInicio, yInicio, yInicio];
+  let alturasColumnas = [yInicio, yInicio, yInicio];
 
-// Recorremos cada novedad
-datos.forEach((item) => {
-  const detallesPlanos = Object.entries(item.secciones || {}).flatMap(
-    ([grupo, contenido]) => contenido.detalles
-  );
-
-  // Saltar si no hay datos
-  if (detallesPlanos.length === 0) {
-    // Buscar columna con espacio para texto vacío
-    let col = alturasColumnas.findIndex(
-      (y) => y + 10 <= doc.internal.pageSize.height - 10
-    );
-    if (col === -1) {
-      doc.addPage("landscape");
-      alturasColumnas = [yInicio, yInicio, yInicio];
-      col = 0;
-    }
-    alturasColumnas[col] += 10;
-    return;
-  }
-
-  // Fragmentar en bloques de 40
-  const fragmentSize = 40;
-  let ordGlobal = 1;
-
-  for (let i = 0; i < detallesPlanos.length; i += fragmentSize) {
-    const fragmento = detallesPlanos.slice(i, i + fragmentSize);
-    const alturaEstim = fragmento.length * 6 + 8;
-
-    // Buscar columna donde quepa
-    let col = alturasColumnas.findIndex(
-      (y) => y + alturaEstim <= doc.internal.pageSize.height - 10
+  // Recorremos cada novedad
+  datos.forEach((item) => {
+    const detallesPlanos = Object.entries(item.secciones || {}).flatMap(
+      ([grupo, contenido]) => contenido.detalles
     );
 
-    // Si no cabe en ninguna columna, agregar nueva hoja
-    if (col === -1) {
-      doc.addPage("landscape");
-      alturasColumnas = [yInicio, yInicio, yInicio];
-      col = 0;
+    // Saltar si no hay datos
+    if (detallesPlanos.length === 0) {
+      // Buscar columna con espacio para texto vacío
+      let col = alturasColumnas.findIndex(
+        (y) => y + 10 <= doc.internal.pageSize.height - 10
+      );
+      if (col === -1) {
+        doc.addPage("landscape");
+        alturasColumnas = [yInicio, yInicio, yInicio];
+        col = 0;
+      }
+      alturasColumnas[col] += 10;
+      return;
     }
 
-    const startX = columnasX[col];
-    const startY = alturasColumnas[col];
+    // Fragmentar en bloques de 40
+    const fragmentSize = 40;
+    let ordGlobal = 1;
 
-    doc.setFontSize(7);
-    doc.text(item.novedad.toUpperCase(), startX, startY);
+    for (let i = 0; i < detallesPlanos.length; i += fragmentSize) {
+      const fragmento = detallesPlanos.slice(i, i + fragmentSize);
+      const alturaEstim = fragmento.length * 6 + 8;
 
-    const body = fragmento.map((persona, idx) => [
-      ordGlobal++, // contador global para la novedad actual
-      persona.grado,
-      persona.nombre,
-      persona.detalle,
-    ]);
+      // Buscar columna donde quepa
+      let col = alturasColumnas.findIndex(
+        (y) => y + alturaEstim <= doc.internal.pageSize.height - 10
+      );
 
-    autoTable(doc, {
-      head: [["ORD.", "GRADO", "NOMBRES", "LUGAR"]],
-      body,
-      startY: startY + 2,
-      margin: { left: startX },
-      tableWidth: anchoColumna,
-      styles: {
-        fontSize: 5,
-        cellPadding: 1,
-        textColor: [0, 0, 0],
-      },
-      headStyles: {
-        halign: "center",
-        lineWidth: 0.3,
-        lineColor: [150, 150, 150],
-        fillColor: [0, 51, 102],
-        textColor: [255, 255, 255],
-        fontStyle: "bold",
-      },
-      theme: "grid",
-    });
+      // Si no cabe en ninguna columna, agregar nueva hoja
+      if (col === -1) {
+        doc.addPage("landscape");
+        alturasColumnas = [yInicio, yInicio, yInicio];
+        col = 0;
+      }
 
-    // Actualizar la altura de esa columna
-    alturasColumnas[col] = doc.lastAutoTable.finalY + 5;
-  }
-});
+      const startX = columnasX[col];
+      const startY = alturasColumnas[col];
 
+      doc.setFontSize(7);
+      doc.text(item.novedad.toUpperCase(), startX, startY);
 
+      const body = fragmento.map((persona, idx) => [
+        ordGlobal++, // contador global para la novedad actual
+        persona.grado,
+        persona.nombre,
+        persona.detalle,
+      ]);
+
+      autoTable(doc, {
+        head: [["ORD.", "GRADO", "NOMBRES", "LUGAR"]],
+        body,
+        startY: startY + 2,
+        margin: { left: startX },
+        tableWidth: anchoColumna,
+        styles: {
+          fontSize: 5,
+          cellPadding: 1,
+          textColor: [0, 0, 0],
+        },
+        headStyles: {
+          halign: "center",
+          lineWidth: 0.3,
+          lineColor: [150, 150, 150],
+          fillColor: [0, 51, 102],
+          textColor: [255, 255, 255],
+          fontStyle: "bold",
+        },
+        theme: "grid",
+      });
+
+      // Actualizar la altura de esa columna
+      alturasColumnas[col] = doc.lastAutoTable.finalY + 5;
+    }
+  });
 
   // Convertir PDF a Blob y mostrar vista previa
   const pdfBlob = doc.output("blob");
