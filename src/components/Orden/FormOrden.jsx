@@ -5,6 +5,7 @@ import useCrud from "../../hooks/useCrud";
 import useAuth from "../../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { showAlert } from "../../store/states/alert.slice";
+import IsLoading from "../shared/isLoading";
 
 const FormOrden = ({
   servidores,
@@ -187,7 +188,7 @@ const FormOrden = ({
 
   return (
     <div>
-      {" "}
+      {isLoading && <IsLoading />}{" "}
       <div className="orden_content">
         <h2>Registro de ordenes</h2>
 

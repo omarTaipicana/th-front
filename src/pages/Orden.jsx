@@ -114,84 +114,87 @@ const Orden = () => {
           <table>
             <thead>
               <tr>
+                <th>Editar</th>
+                <th>Pdf</th>
+                <th>Eliminar</th>
                 <th>Fecha:</th>
                 <th>Numero:</th>
                 <th>Frase:</th>
                 <th>Santo y Seña:</th>
                 <th>Contraseña: </th>
                 <th>Jefe de Control:</th>
-                <th>Pdf</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
               </tr>
             </thead>
             <tbody>
-              {orden.map((ord) => {
-                const servidor = servidores.find(
-                  (srv) => srv.cI === ord.jefeControl
-                );
+              {[...orden]
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)) // más reciente primero
+                .map((ord) => {
+                  const servidor = servidores.find(
+                    (srv) => srv.cI === ord.jefeControl
+                  );
 
-                return (
-                  <tr key={ord.id}>
-                    <td>{ord.fecha}</td>
-                    <td>{ord.numOrden}</td>
-                    <td>{ord.frase}</td>
-                    <td>{ord.santoSena}</td>
-                    <td>{ord.contrasena}</td>
-                    <td>
-                      {servidor
-                        ? `${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`
-                        : "No asignado"}
-                    </td>
-                    <td>
-                      {" "}
-                      <a
-                        href={ord.urlOrden || "#"} // Si no hay URL, desactiva el enlace
-                        target={ord.urlOrden ? "_blank" : undefined} // Solo abre en una nueva pestaña si hay archivo
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          if (!ord.urlOrden) {
-                            e.preventDefault();
-                            setShowInputPdf(true);
-                            setIdUploadPdf(ord.id);
-                          }
-                        }}
-                      >
+                  return (
+                    <tr key={ord.id}>
+                      <td>
                         <img
                           className="user_icon_btn"
-                          src={`../../../${ord.urlOrden ? "vista" : "new"}.png`}
-                          alt={
-                            ord.urlOrden ? "Abrir Documento" : "Subir Archivo"
-                          }
+                          src="../../../edit.png"
+                          alt="Editar"
+                          onClick={() => {
+                            setOrdenEdit(ord);
+                            setShowFormOrden(true);
+                          }}
                         />
-                      </a>
-                    </td>
-
-                    <td>
-                      <img
-                        className="user_icon_btn"
-                        src="../../../edit.png"
-                        alt="Editar"
-                        onClick={() => {
-                          setOrdenEdit(ord);
-                          setShowFormOrden(true);
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <img
-                        className="user_icon_btn"
-                        src="../../../delete_3.png"
-                        alt="Eliminar"
-                        onClick={() => {
-                          setShowFormDelete(true);
-                          setOrdenDelete(ord);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td>
+                        {" "}
+                        <a
+                          href={ord.urlOrden || "#"} // Si no hay URL, desactiva el enlace
+                          target={ord.urlOrden ? "_blank" : undefined} // Solo abre en una nueva pestaña si hay archivo
+                          rel="noopener noreferrer"
+                          onClick={(e) => {
+                            if (!ord.urlOrden) {
+                              e.preventDefault();
+                              setShowInputPdf(true);
+                              setIdUploadPdf(ord.id);
+                            }
+                          }}
+                        >
+                          <img
+                            className="user_icon_btn"
+                            src={`../../../${
+                              ord.urlOrden ? "vista" : "new"
+                            }.png`}
+                            alt={
+                              ord.urlOrden ? "Abrir Documento" : "Subir Archivo"
+                            }
+                          />
+                        </a>
+                      </td>
+                      <td>
+                        <img
+                          className="user_icon_btn"
+                          src="../../../delete_3.png"
+                          alt="Eliminar"
+                          onClick={() => {
+                            setShowFormDelete(true);
+                            setOrdenDelete(ord);
+                          }}
+                        />
+                      </td>
+                      <td>{ord.fecha}</td>
+                      <td>{ord.numOrden}</td>
+                      <td>{ord.frase}</td>
+                      <td>{ord.santoSena}</td>
+                      <td>{ord.contrasena}</td>
+                      <td>
+                        {servidor
+                          ? `${servidor.grado} ${servidor.nombres} ${servidor.apellidos}`
+                          : "No asignado"}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </article>

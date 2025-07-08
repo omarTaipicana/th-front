@@ -74,32 +74,50 @@ const TablaResumenParte = ({
     ? new Date(formacionActualFecha?.fecha + "T12:00:00") // medio día local, evita desfase
     : null;
 
+  const horaFormacion = formacionActualFecha?.hora || ""; // Ej: "08:30"
+
   // Novedades Adicionales
-  if (fechaFormacion) {
-    const ultimasNovedades = new Map();
+if (fechaFormacion) {
+  const ultimasNovedades = new Map();
 
-    novedades.forEach((n) => {
-      const fechaInicio = new Date(n.fechaInicio + "T12:00:00");
-      const fechaFin = new Date(n.fechaFin + "T12:00:00");
+  novedades.forEach((n) => {
+    const fechaInicio = new Date(n.fechaInicio + "T12:00:00");
+    const fechaFin = n.fechaFin
+      ? new Date(n.fechaFin + "T12:00:00")
+      : new Date(8640000000000000); // ~+275760-09-13
 
-      const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
-      if (!servidor) return;
+    const horaInicio = n.horaInicio;
+    const horaFin = n.horaFin;
+
+    const servidor = servidores.find((s) => s.id === n.servidorPolicialId);
+    if (!servidor) return;
+
+    const estaEnRangoFecha =
+      n.seccion === user?.seccion &&
+      fechaFormacion >= fechaInicio &&
+      (fechaFormacion <= fechaFin || servidor.enLaDireccion === "No");
+
+
+    const dentroDeHora =
+      horaInicio && horaFin && horaFormacion
+        ? horaFormacion >= horaInicio &&
+          horaFormacion <= horaFin
+        : true; // Si no hay horas, se considera válido
+
+
+    // --- Validación completa ---
+    if (estaEnRangoFecha && dentroDeHora) {
+      const servidorId = n.servidorPolicialId;
 
       if (
-        n.seccion === user?.seccion &&
-        fechaFormacion >= fechaInicio &&
-        (fechaFormacion <= fechaFin || servidor.enLaDireccion === "No")
+        !ultimasNovedades.has(servidorId) ||
+        new Date(n.createdAt) >
+          new Date(ultimasNovedades.get(servidorId).createdAt)
       ) {
-        const servidorId = n.servidorPolicialId;
-        if (
-          !ultimasNovedades.has(servidorId) ||
-          new Date(n.createdAt) >
-            new Date(ultimasNovedades.get(servidorId).createdAt)
-        ) {
-          ultimasNovedades.set(servidorId, n);
-        }
+        ultimasNovedades.set(servidorId, n);
       }
-    });
+    }
+  });
 
     ultimasNovedades.forEach((n) => {
       const servidor = servidores.find((s) => s.id === n.servidorPolicialId);

@@ -298,7 +298,9 @@ const ParteDiario = () => {
                       novedades.some((n) => {
                         const fechaFormacion = new Date(formacionActual.fecha);
                         const inicio = new Date(n.fechaInicio);
-                        const fin = new Date(n.fechaFin);
+                        const fin = n.fechaFin
+                          ? new Date(n.fechaFin)
+                          : new Date(8640000000000000); // Fecha máxima posible (infinita)
 
                         const mismoServidor = n.servidorPolicialId === serv.id;
                         const mismaSeccion = n.seccion === user?.seccion;
@@ -308,6 +310,7 @@ const ParteDiario = () => {
                         if (serv.enLaDireccion === "No") {
                           return true;
                         }
+
                         return (
                           fechaFormacion >= inicio && fechaFormacion <= fin
                         );
@@ -317,6 +320,7 @@ const ParteDiario = () => {
                       serv?.seccion === user?.seccion && !tieneNovedadActiva
                     );
                   })
+
                   .map((serv) => (
                     <tr key={serv.id}>
                       <td>

@@ -438,18 +438,31 @@ const ServidoresPoliciales = () => {
                               new Date(b.createdAt) - new Date(a.createdAt)
                           )[0];
 
-                        if (!ultimaNovedad?.fechaFin) {
-                          return "";
+                        if (!ultimaNovedad) return "";
+
+                        const hoy = new Date().toISOString().split("T")[0];
+
+                        const fechaFin = ultimaNovedad.fechaFin
+                          ? new Date(ultimaNovedad.fechaFin)
+                              .toISOString()
+                              .split("T")[0]
+                          : null;
+
+                        const fechaInicio = ultimaNovedad.fechaInicio
+                          ? new Date(ultimaNovedad.fechaInicio)
+                              .toISOString()
+                              .split("T")[0]
+                          : null;
+
+                        if (fechaFin) {
+                          return fechaFin >= hoy ? "vigente" : "no_vigente";
                         }
 
-                        const hoyStr = new Date().toISOString().split("T")[0];
-                        const fechaFinStr = new Date(ultimaNovedad.fechaFin)
-                          .toISOString()
-                          .split("T")[0];
+                        if (!fechaFin && fechaInicio) {
+                          return fechaInicio <= hoy ? "vigente" : "";
+                        }
 
-                        const clase =
-                          fechaFinStr >= hoyStr ? "vigente" : "no_vigente";
-                        return clase;
+                        return "";
                       })()}`}
                       key={serv.cI}
                     >

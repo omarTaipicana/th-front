@@ -1,4 +1,18 @@
-.table_ord{
-  width: 50%;
+/* Tabla general */
+.table_ord {
+  width: 50%; /* Puedes usar 100% si quieres que sea responsive */
   font-size: 0.9em;
+  table-layout: fixed; /* Clave para que se respeten los anchos */
+  word-wrap: break-word;
+}
+
+/* Celdas de encabezado y cuerpo */
+.table_ord th,
+.table_ord td {
+  padding: 6px 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal; /* 🔥 Permite salto de línea */
+  text-align: center;  /* Opcional: centra el texto */
+  vertical-align: middle;
 }

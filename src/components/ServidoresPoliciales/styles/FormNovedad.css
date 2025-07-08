@@ -104,6 +104,12 @@
   ); /* Fondo más notorio al pasar el mouse */
 }
 
+.sin_dato {
+  color: red;
+  font-weight: bold;
+}
+
+
 .user_novedades_content button[type="submit"],
 .user_novedades_content form button {
   background-color: #052a9a;
