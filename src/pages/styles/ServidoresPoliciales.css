@@ -195,6 +195,10 @@ body {
   transform: scale(1.1);
 }
 
+.novedad_vencida {
+  background-color: #ba0c9d51;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .servidores_title {

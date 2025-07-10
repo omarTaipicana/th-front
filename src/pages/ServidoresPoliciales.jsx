@@ -34,6 +34,10 @@ const ServidoresPoliciales = () => {
     newReg,
     deleteReg,
     updateReg,
+    postApiFile,
+    newRegFile,
+    updateApiFile,
+    updateRegFile,
   ] = useCrud();
 
   const {
@@ -48,20 +52,36 @@ const ServidoresPoliciales = () => {
   } = useForm();
 
   const submit = (data) => {
+    const file = data?.url?.[0] || null;
+
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
         ([_, value]) => value?.toString().trim() !== ""
       )
     );
 
+    // Validar y formatear fechas
+    ["fechaInicio", "fechaFin"].forEach((key) => {
+      const val = cleanedData[key];
+      if (!val || isNaN(new Date(val).getTime())) {
+        delete cleanedData[key]; // Elimina si no es fecha válida
+      } else {
+        cleanedData[key] = new Date(val).toISOString().split("T")[0]; // Formato YYYY-MM-DD
+      }
+    });
+
     if (!servidorPolicialEdit) {
-      postApi(PATH_SERVIDORES, {
-        ...cleanedData,
-        usuarioRegistro: user.cI,
-        usuarioEdicion: user.cI,
-      });
+      postApiFile(
+        PATH_SERVIDORES,
+        {
+          ...cleanedData,
+          usuarioRegistro: user.cI,
+          usuarioEdicion: user.cI,
+        },
+        file
+      );
     } else {
-      updateApi(PATH_SERVIDORES, servidorPolicialEdit.id, {
+      updateApiFile(PATH_SERVIDORES, servidorPolicialEdit.id, file, {
         ...cleanedData,
         usuarioEdicion: user.cI,
       });
@@ -421,7 +441,10 @@ const ServidoresPoliciales = () => {
                   <th>Pase DNATH</th>
                   <th>Fecha Presentación</th>
                   <th>Figura Legal</th>
+                  <th>Fecha de Inicio</th>
+                  <th>Fecha de finalizacion</th>
                   <th>Num Documento</th>
+                  <th>Dcoumento</th>
                 </tr>
               </thead>
               <tbody>
@@ -430,7 +453,13 @@ const ServidoresPoliciales = () => {
                   .filter((serv) => serv?.eliminado !== "SI")
                   .map((serv) => (
                     <tr
-                      className={`val_novedad_vigente ${(() => {
+                      className={`val_novedad_vigente  ${
+                        serv.fechaFin &&
+                        new Date(serv.fechaFin).setHours(0, 0, 0, 0) <
+                          new Date().setHours(0, 0, 0, 0)
+                          ? "novedad_vencida"
+                          : ""
+                      }   ${(() => {
                         const ultimaNovedad = serv.novedads
                           ?.slice()
                           .sort(
@@ -524,7 +553,27 @@ const ServidoresPoliciales = () => {
                       <td>{serv.paseDNATH}</td>
                       <td>{serv.fechaPresentacion}</td>
                       <td>{serv.figuraLegal}</td>
+                      <td>{serv.fechaInicio}</td>
+                      <td>{serv.fechaFin}</td>
                       <td>{serv.numDocumento}</td>
+                      <td>
+                        {serv.url ? (
+                          <a
+                            href={serv.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              className="user_icon_btn"
+                              src="../../../vista.png"
+                              alt="Ver documento"
+                              title="Ver documento"
+                            />
+                          </a>
+                        ) : (
+                          "Sin documento"
+                        )}
+                      </td>
                     </tr>
                   ))}
               </tbody>

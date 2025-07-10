@@ -72,7 +72,7 @@ const useCrud = () => {
       .finally(() => setIsLoading(false))
       .catch((err) => {
         setError(err);
-        // console.log(err);
+        console.log(err);
       });
   };
 

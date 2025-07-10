@@ -319,6 +319,21 @@ const FormDetha = ({
         </label>
 
         <label>
+          <span>Fecha de Inicio</span>
+          <input {...register("fechaInicio")} required type="date" />
+        </label>
+
+        <label>
+          <span>Fecha de Finalización</span>
+          <input {...register("fechaFin")} type="date" />
+        </label>
+
+        <label>
+          <span>Documento: </span>
+          <input type="file" accept="application/pdf" {...register("url")} />
+        </label>
+
+        <label>
           <span>Departamento: </span>
           <select
             required
