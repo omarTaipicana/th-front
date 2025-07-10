@@ -56,7 +56,11 @@ const FormDetha = ({
   }, []);
 
   useEffect(() => {
-    if (servidorPolicialEdit && variables.length > 0) {
+    if (
+      servidorPolicialEdit &&
+      variables.length > 0 &&
+      senplades.length > 0 // <-- asegúrate que senplades ya está cargado
+    ) {
       setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
       setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
       setSeccionSeleccionada(servidorPolicialEdit.seccion);
@@ -64,7 +68,9 @@ const FormDetha = ({
 
       reset(servidorPolicialEdit);
     }
-  }, [servidorPolicialEdit, variables, reset]);
+  }, [servidorPolicialEdit, variables, senplades, reset]);
+  const alertaDiscapacidad = watch("alertaDiscapacidad");
+  const alertaEnfermedadCatastrofica = watch("alertaEnfermedadCatastrofica");
 
   return (
     <div className="form_detha_content">
@@ -182,7 +188,7 @@ const FormDetha = ({
         </label>
 
         <label>
-          <span>Provincia: </span>
+          <span>Provincia de Residencia: </span>
           <select
             required
             {...register("provinciaResidencia", {
@@ -207,7 +213,7 @@ const FormDetha = ({
         </label>
 
         <label>
-          <span>Canton: </span>
+          <span>Canton de Residencia: </span>
           <select
             required
             {...register("cantonResidencia")}
@@ -238,7 +244,7 @@ const FormDetha = ({
         </label>
 
         <label>
-          <span>Contacto de Emergencia:</span>
+          <span>Nombres de Contacto de Emergencia:</span>
           <input {...register("contactoEmergencia")} required />
         </label>
 
@@ -263,10 +269,12 @@ const FormDetha = ({
           </select>
         </label>
 
-        <label>
-          <span>Detalle de la discapacidad:</span>
-          <input {...register("detalleDiscapacidad")} />
-        </label>
+        {alertaDiscapacidad === "Si" && (
+          <label>
+            <span>Detalle de la discapacidad:</span>
+            <input {...register("detalleDiscapacidad")} required />
+          </label>
+        )}
 
         <label>
           <span>Enfermedad registrada en el SIIPNE:</span>
@@ -283,11 +291,12 @@ const FormDetha = ({
           </select>
         </label>
 
-        <label>
-          <span>Detalle de la Enfermedad Catastrófica</span>
-          <input {...register("detalleEnfermedad")} />
-        </label>
-
+        {alertaEnfermedadCatastrofica === "Si" && (
+          <label>
+            <span>Detalle de la Enfermedad Catastrófica</span>
+            <input {...register("detalleEnfermedad")} />
+          </label>
+        )}
         <label>
           <span>Grupo Administrativo:</span>
 
@@ -447,11 +456,6 @@ const FormDetha = ({
         </label>
 
         <label>
-          <span>Pase DNATH:</span>
-          <input {...register("paseDNATH")} required />
-        </label>
-
-        <label>
           <span>Fecha de Presentacion</span>
           <input {...register("fechaPresentacion")} required type="date" />
         </label>
@@ -471,6 +475,11 @@ const FormDetha = ({
             <option value="Si">Si</option>
             <option value="No">No</option>
           </select>
+        </label>
+
+        <label>
+          <span>Pase DNATH:</span>
+          <input {...register("paseDNATH")} required />
         </label>
 
         <button>{servidorPolicialEdit ? "EDITAR" : "GUARDAR"}</button>
