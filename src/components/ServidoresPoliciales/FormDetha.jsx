@@ -55,27 +55,27 @@ const FormDetha = ({
     getSenplades(PATH_SENPLADES);
   }, []);
 
-useEffect(() => {
-  if (
-    servidorPolicialEdit &&
-    variables.length > 0 &&
-    senplades.length > 0
-  ) {
-    setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
-    setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
-    setSeccionSeleccionada(servidorPolicialEdit.seccion);
-    setNomenclaturaSeleccionada(servidorPolicialEdit.nomenclatura);
+  useEffect(() => {
+    if (servidorPolicialEdit && variables.length > 0 && senplades.length > 0) {
+      setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
+      setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
+      setSeccionSeleccionada(servidorPolicialEdit.seccion);
+      setNomenclaturaSeleccionada(servidorPolicialEdit.nomenclatura);
 
-    reset(servidorPolicialEdit);
+      reset(servidorPolicialEdit);
 
-    setTimeout(() => {
+      // 🔁 Espera que nomenclatura esté seteada para luego setear el cargo
+      setTimeout(() => {
+        setValue("cargo", servidorPolicialEdit.cargo);
+      }, 100);
+    }
+  }, [servidorPolicialEdit, variables, senplades]);
+
+  useEffect(() => {
+    if (servidorPolicialEdit?.cargo && nomenclaturaSeleccionada) {
       setValue("cargo", servidorPolicialEdit.cargo);
-    }, 0);
-  }
-}, [servidorPolicialEdit, variables, senplades, reset, setValue]);
-
-
-
+    }
+  }, [nomenclaturaSeleccionada]);
 
   const alertaDiscapacidad = watch("alertaDiscapacidad");
   const alertaEnfermedadCatastrofica = watch("alertaEnfermedadCatastrofica");
@@ -439,27 +439,23 @@ useEffect(() => {
 
         <label>
           <span>Cargo: </span>
-          <select
-            required
-            {...register("cargo")}
-            disabled={!nomenclaturaSeleccionada}
-            defaultValue=""
-          >
+          <select required {...register("cargo")} defaultValue="">
             <option value="" disabled>
               -- Seleccione un cargo --
             </option>
-            {Array.from(
-              new Set(
-                variables
-                  .filter((v) => v.nomenclatura === nomenclaturaSeleccionada)
-                  .map((v) => v.cargo)
-                  .filter(Boolean)
-              )
-            ).map((cargo, i) => (
-              <option key={i} value={cargo}>
-                {cargo}
-              </option>
-            ))}
+            {nomenclaturaSeleccionada &&
+              Array.from(
+                new Set(
+                  variables
+                    .filter((v) => v.nomenclatura === nomenclaturaSeleccionada)
+                    .map((v) => v.cargo)
+                    .filter(Boolean)
+                )
+              ).map((cargo, i) => (
+                <option key={i} value={cargo}>
+                  {cargo}
+                </option>
+              ))}
           </select>
         </label>
 
