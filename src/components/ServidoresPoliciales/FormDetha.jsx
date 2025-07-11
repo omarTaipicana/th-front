@@ -55,20 +55,28 @@ const FormDetha = ({
     getSenplades(PATH_SENPLADES);
   }, []);
 
-  useEffect(() => {
-    if (
-      servidorPolicialEdit &&
-      variables.length > 0 &&
-      senplades.length > 0 // <-- asegúrate que senplades ya está cargado
-    ) {
-      setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
-      setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
-      setSeccionSeleccionada(servidorPolicialEdit.seccion);
-      setNomenclaturaSeleccionada(servidorPolicialEdit.nomenclatura);
+useEffect(() => {
+  if (
+    servidorPolicialEdit &&
+    variables.length > 0 &&
+    senplades.length > 0
+  ) {
+    setProvinciaSeleccionada(servidorPolicialEdit.provinciaResidencia);
+    setDepartamentoSeleccionado(servidorPolicialEdit.departamento);
+    setSeccionSeleccionada(servidorPolicialEdit.seccion);
+    setNomenclaturaSeleccionada(servidorPolicialEdit.nomenclatura);
 
-      reset(servidorPolicialEdit);
-    }
-  }, [servidorPolicialEdit, variables, senplades, reset]);
+    reset(servidorPolicialEdit);
+
+    setTimeout(() => {
+      setValue("cargo", servidorPolicialEdit.cargo);
+    }, 0);
+  }
+}, [servidorPolicialEdit, variables, senplades, reset, setValue]);
+
+
+
+
   const alertaDiscapacidad = watch("alertaDiscapacidad");
   const alertaEnfermedadCatastrofica = watch("alertaEnfermedadCatastrofica");
 
@@ -312,7 +320,7 @@ const FormDetha = ({
         </label>
 
         <label>
-          <span>Figuralegal: </span>
+          <span>Figura Legal: </span>
           <select required {...register("figuraLegal")} defaultValue="">
             <option value="" disabled>
               -- Seleccione una figuraLegal --

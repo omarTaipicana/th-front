@@ -51,6 +51,12 @@ const ServidoresPoliciales = () => {
     formState: { errors },
   } = useForm();
 
+  
+  useEffect(() => {
+    getApi(PATH_SERVIDORES);
+    loggedUser();
+  }, [show, newReg, showNovedad, setShow, ]);
+
   const submit = (data) => {
     const file = data?.url?.[0] || null;
 
@@ -156,10 +162,6 @@ const ServidoresPoliciales = () => {
     enLaDireccion: "",
   });
 
-  useEffect(() => {
-    getApi(PATH_SERVIDORES);
-    loggedUser();
-  }, [show, newReg, showNovedad]);
 
   const handleChange = (e) => {
     setFilters({
