@@ -1,6 +1,54 @@
+.orden_cuerpo_content {
+  width: 100%;
+  display: flex;
+  gap: 0.5em;
+}
+
+.orden_title {
+  margin-top: 0.5em;
+  font-size: 1.2em;
+  color: #04366e;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.orden_btn {
+  padding: 0.6em 1.4em;
+  margin: 0.5em auto;
+  font-size: 0.9em;
+  font-weight: bold;
+  background-color: #01063a;
+  color: white;
+  border: none;
+  border-radius: 0.6em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.orden_btn:hover {
+  background-color: #083fa5;
+  transform: scale(1.05);
+}
+
+
+.table_orden_content {
+  width: 60%;
+}
+
+.formaciones_orden_content {
+  width: 10%;
+}
+
+.comunicaciones_orden_content {
+  width: 30%;
+}
+
 /* Tabla general */
 .table_ord {
-  width: 50%; /* Puedes usar 100% si quieres que sea responsive */
+  margin-top: 0;
+  width: 100%;
+  height: 65vh;
   font-size: 0.9em;
   table-layout: fixed; /* Clave para que se respeten los anchos */
   word-wrap: break-word;
@@ -13,6 +61,6 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal; /* 🔥 Permite salto de línea */
-  text-align: center;  /* Opcional: centra el texto */
+  text-align: center; /* Opcional: centra el texto */
   vertical-align: middle;
 }

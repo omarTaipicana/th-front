@@ -1,0 +1,21 @@
+.comunicados_content {
+  width: 40%;
+  background: linear-gradient(to bottom right, #ffffff, #9a9a9a);
+  position: fixed;
+  padding: 0.5em;
+  overflow-y: auto;
+  top: 7em;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: auto;
+  border-radius: 0.5em;
+  border: solid 0.05em black;
+  z-index: 999;
+}
+
+.comunicados_content h2 {
+  text-align: center;
+  color: rgb(19, 3, 67);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}

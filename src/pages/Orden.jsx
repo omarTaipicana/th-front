@@ -12,11 +12,15 @@ import OrdenInputPdf from "../components/Orden/OrdenInputPdf";
 const Orden = () => {
   const PATH_ORDEN = "/orden";
   const PATH_SERVIDORES = "/servidores";
+  const PATH_FORMACION = "/formacion";
+
   const dispatch = useDispatch();
 
   const [servidores, getServidor] = useCrud();
+  const [formacion, getFormacion] = useCrud();
   const [, , , loggedUser, , , , , , , , , , user, setUserLogged] = useAuth();
   const [showFormOrden, setShowFormOrden] = useState(false);
+  const [showFormComunicaciones, setShowFormComunicaciones] = useState(false);
   const [showFormDelete, setShowFormDelete] = useState(false);
   const [showInputPdf, setShowInputPdf] = useState(false);
   const [idUploadPdf, setIdUploadPdf] = useState();
@@ -52,6 +56,7 @@ const Orden = () => {
     loggedUser();
     getOrden(PATH_ORDEN);
     getServidor(PATH_SERVIDORES);
+    getFormacion(PATH_FORMACION);
   }, [showFormOrden, showFormDelete, showInputPdf]);
 
   const handleDelete = () => {
@@ -75,7 +80,7 @@ const Orden = () => {
   }, [deleteReg]);
 
   return (
-    <div>
+    <div className="orden_cuerpo_content">
       <article>
         {showFormDelete && (
           <article className="user_delet_content">
@@ -97,9 +102,9 @@ const Orden = () => {
           </article>
         )}
       </article>
-      <section>
-        <h2>Orden</h2>
-        <button onClick={() => setShowFormOrden(true)}>
+      <section className="table_orden_content">
+        <h2 className="orden_title">Orden del Cuerpo</h2>
+        <button className="orden_btn" onClick={() => setShowFormOrden(true)}>
           Crear nueva Orden
         </button>
         {showFormOrden && (
@@ -207,8 +212,33 @@ const Orden = () => {
         />
       )}
 
-      <section>
-        <FormComunicaciones />
+      <section className="comunicaciones_orden_content">
+        <h2 className="orden_title">Comunicados</h2>
+        <button
+          className="orden_btn"
+          onClick={() => setShowFormComunicaciones(true)}
+        >
+          Generar Comunicados
+        </button>
+        {showFormComunicaciones && (
+          <FormComunicaciones
+            setShowFormComunicaciones={setShowFormComunicaciones}
+          />
+        )}
+      </section>
+      <section className="formaciones_orden_content">
+        <article className="formacion_list">
+          {formacion.map((form) => {
+            return (
+              <section className="formacion_item" key={form.id}>
+                <div>
+                  Formación de la fecha <strong>{form.fecha}</strong> y hora{" "}
+                  <strong>{form.hora}</strong>
+                </div>
+              </section>
+            );
+          })}
+        </article>
       </section>
     </div>
   );
