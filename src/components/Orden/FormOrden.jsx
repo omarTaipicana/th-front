@@ -190,7 +190,7 @@ const FormOrden = ({
     <div>
       {isLoading && <IsLoading />}{" "}
       <div className="orden_content">
-        <h2>Registro de ordenes</h2>
+        <h2>Registro de Ordenes</h2>
 
         <button
           className="close_btn"
